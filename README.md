@@ -68,9 +68,6 @@ URL: http://localhost:8080/voluntarios/novo
 
 URL: http://localhost:8080/admin
 
-Usuário: admin
-
-Senha: admin123
 
 📱 Acessando via Celular (Rede Local)
 Para testar o formulário no celular:
