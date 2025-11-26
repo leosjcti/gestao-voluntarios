@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login Administrativo - Ibaji</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        /* Paleta IBAJI
+           Marrom Principal: #8b5e34
+           Marrom Escuro (Hover): #744c2c
+           Laranja/Dourado (Acento): #d9a34a
+           Fundo Claro: #f9f7f4
+        */
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f9f7f4; /* Fundo creme claro */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #4a3f35; /* Texto marrom escuro */
+        }
+
+        /* Header com a cor principal */
+        .header {
+            background: #8b5e34; /* Marrom Ibaji */
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .header-logo {
+            height: 40px; /* Ajuste a altura conforme necessário */
+            filter: brightness(0) invert(1); /* Torna o logo branco para o fundo escuro */
+        }
+
+        /* Container Centralizado */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(139, 94, 52, 0.15); /* Sombra com tom marrom */
+            text-align: center;
+            border: 1px solid #ece7df;
+        }
+
+        .login-title {
+            color: #8b5e34; /* Marrom Ibaji */
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+            background-color: #fcfbf9;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #d9a34a; /* Laranja/Dourado de acento */
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #8b5e34; /* Marrom Ibaji */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: #744c2c; /* Marrom mais escuro */ }
+
+        .error-msg {
+            background-color: #fdd;
+            color: #c0392b;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #fbc;
+        }
+
+        .logout-msg {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #6b7280;
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #8b5e34; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <img src="/images/ibaji-logo.png" alt="Ibaji Logo" class="header-logo"/>
+</div>
+
+<div class="main-content">
+    <div class="login-card">
+        <h2 class="login-title">Acesso Restrito</h2>
+
+        <div th:if="${param.error}" class="error-msg">
+            Usuário ou senha inválidos.
+        </div>
+
+        <div th:if="${param.logout}" class="logout-msg">
+            Você saiu com segurança.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <input type="text" name="username" placeholder="Usuário" required autofocus />
+            <input type="password" name="password" placeholder="Senha" required />
+            <button type="submit">Entrar no Sistema</button>
+        </form>
+
+        <a href="/voluntarios/novo" class="back-link">← Voltar para o formulário</a>
+    </div>
+</div>
+
+</body>
+</html>

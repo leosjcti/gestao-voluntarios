@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editar Voluntário</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+    <style>
+        .card { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 4px 10px rgba(139, 94, 52, 0.1); border: 1px solid #ece7df; max-width: 900px; margin: 0 auto; }
+        .section-title { color: var(--primary-brown); font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+        .section-title:first-child { margin-top: 0; }
+
+        /* Grid e Inputs */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        label { font-weight: 600; margin-bottom: 6px; font-size: 14px; display: block; color: var(--text-dark); }
+        input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; background-color: #fcfbf9; box-sizing: border-box; }
+        input:focus, select:focus { outline: none; border-color: var(--accent-gold); background-color: white; box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2); }
+
+        /* Checkboxes Ministérios */
+        .ministry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; background: #fcfbf9; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb; }
+        .ministry-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+
+        /* Upload */
+        .upload-box { background: #fff8c5; border: 1px dashed #d9a34a; padding: 15px; border-radius: 6px; }
+
+        .actions { margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid #f0f0f0; padding-top: 20px; }
+
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar(ativo='voluntarios')}"></div>
+
+<div class="container">
+    <div class="card">
+        <form th:action="@{/admin/voluntarios/salvar}" th:object="${voluntario}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="section-title">Dados Pessoais</div>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Nome Completo</label>
+                    <input type="text" th:field="*{nomeCompleto}" required />
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" th:field="*{email}" required />
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="text" th:field="*{telefone}" required />
+                </div>
+                <div class="form-group">
+                    <label>Data de Nascimento</label>
+                    <input type="date" th:field="*{dataNascimento}" required />
+                </div>
+            </div>
+
+            <div class="section-title">Controle Administrativo</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Status do Termo</label>
+                    <select th:field="*{statusTermo}">
+                        <option th:each="status : ${statusOpcoes}" th:value="${status}" th:text="${status}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Manual Entregue?</label>
+                    <select th:field="*{manualEntregue}">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data de Integração</label>
+                    <input type="date" th:field="*{dataIntegracao}" />
+                </div>
+                <div class="form-group">
+                    <label>Líder da Integração</label>
+                    <input type="text" th:field="*{liderIntegracao}" />
+                </div>
+            </div>
+
+            <div class="section-title">Ministérios</div>
+            <div class="ministry-grid">
+                <div th:each="min : ${ministerios}" class="ministry-item">
+                    <input type="checkbox" th:field="*{idsMinisterios}" th:value="${min.id}" />
+                    <label th:text="${min.nome}"></label>
+                </div>
+            </div>
+
+            <div class="section-title">Documentação</div>
+            <div class="upload-box">
+                <label style="color: #854d0e;">Anexar/Substituir Atestado</label>
+                <input type="file" name="arquivoAntecedentes" style="background: white; margin-top: 5px;" />
+            </div>
+
+            <div class="actions">
+                <a href="/admin" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

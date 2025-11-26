@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    container_name: voluntariado-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      # Otimização para servidor de 1GB RAM (Limita o Java a 450MB)
+      - JAVA_TOOL_OPTIONS=-Xmx450m
+
+      # Banco de Dados
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/voluntariado_db
+      - SPRING_DATASOURCE_USERNAME=voluntario_user
+      - SPRING_DATASOURCE_PASSWORD=senha_segura_producao
+
+      # Configuração Oracle S3 (PREENCHA AQUI)
+      - AWS_REGION=sa-saopaulo-1
+      # Formato: https://{NAMESPACE}.compat.objectstorage.{REGIAO}.oraclecloud.com
+      - AWS_S3_ENDPOINT_URL=https://gri2dbzfssib.compat.objectstorage.sa-saopaulo-1.oraclecloud.com
+      - AWS_ACCESS_KEY_ID='a43f458e5793515ac285137dd091365b2c248533'
+      - AWS_SECRET_ACCESS_KEY='fNAshd8slTOlUu1uO1Akhy4UzE6N/YdeRbP30ul7rXs='
+      - AWS_S3_BUCKET_NAME=voluntariado-antecedentes-bucket
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    container_name: voluntariado-db
+    restart: always
+    environment:
+      - POSTGRES_USER=voluntario_user
+      - POSTGRES_PASSWORD=senha_segura_producao
+      - POSTGRES_DB=voluntariado_db
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+
+volumes:
+  postgres_data_prod:

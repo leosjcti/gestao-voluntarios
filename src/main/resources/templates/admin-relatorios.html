@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Relatórios Gerenciais</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+    <style>
+        /* === CARDS DE KPI (Topo) === */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-brown); /* Cor da borda lateral */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .kpi-title { font-size: 13px; color: #666; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+        .kpi-value { font-size: 28px; font-weight: 700; color: var(--text-dark); }
+
+        /* Cores específicas para cada KPI */
+        .kpi-total { border-color: #3b82f6; }
+        .kpi-novos { border-color: #10b981; }
+        .kpi-atestado { border-color: #ef4444; }
+        .kpi-manual { border-color: #f59e0b; }
+
+        /* === LAYOUT PRINCIPAL === */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr; /* Esquerda menor, Direita maior */
+            gap: 25px;
+            align-items: start; /* Alinha os cards no topo */
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* === ESTILOS DOS CARDS === */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid #ece7df;
+        }
+
+        .card-header {
+            background: var(--primary-brown);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .td-qtd { font-weight: bold; background-color: #fff8c5; text-align: center; width: 60px; color: var(--dark-brown); }
+
+        /* Datas coloridas */
+        .dias-negativo { background-color: #fee2e2; color: #991b1b; font-weight: bold; text-align: center; font-size: 12px;}
+        .dias-alerta { background-color: #fff7ed; color: #9a3412; font-weight: bold; text-align: center; font-size: 12px;}
+        .dias-ok { background-color: #dcfce7; color: #166534; font-weight: bold; text-align: center; font-size: 12px;}
+
+        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar(ativo='relatorios')}"></div>
+
+<div class="container">
+    <div class="page-header">
+        <h2 class="page-title">Relatórios Gerenciais</h2>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card kpi-total">
+            <span class="kpi-title">Total Voluntários</span>
+            <span class="kpi-value" th:text="${resumo.total}">0</span>
+        </div>
+        <div class="kpi-card kpi-novos">
+            <span class="kpi-title">Novos (Mês)</span>
+            <span class="kpi-value" th:text="${resumo.novosMes}">0</span>
+        </div>
+        <div class="kpi-card kpi-atestado">
+            <span class="kpi-title">Sem Atestado</span>
+            <span class="kpi-value" style="color: #dc2626;" th:text="${resumo.semAtestado}">0</span>
+        </div>
+        <div class="kpi-card kpi-manual">
+            <span class="kpi-title">Manual Pendente</span>
+            <span class="kpi-value" style="color: #d97706;" th:text="${resumo.manualPendente}">0</span>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+        <div class="card">
+            <div class="card-header">Voluntários por Ministério</div>
+
+            <table>
+                <thead><tr><th>Ministério</th><th style="text-align: center;">Qtd</th></tr></thead>
+                <tbody>
+                <tr th:each="m : ${contagemPage.content}">
+                    <td>
+                        <a th:href="@{/admin/relatorios/detalhe/{id}(id=${m.id})}"
+                           style="text-decoration: none; color: var(--text-dark); font-weight: 500; display: block;">
+                            <span th:text="${m.nome}"></span> 🔗
+                        </a>
+                    </td>
+                    <td class="td-qtd" th:text="${m.quantidade}">0</td>
+                </tr>
+                <tr th:if="${contagemPage.empty}">
+                    <td colspan="2" style="text-align: center; padding: 15px; color: #888;">Nenhum dado.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="card-footer" th:if="${contagemPage.totalPages > 1}"
+                 style="padding: 10px; text-align: center; background: #fafafa; border-top: 1px solid #eee;">
+
+                <div style="display: inline-flex; gap: 5px; align-items: center;">
+                    <a th:if="${contagemPage.hasPrevious()}"
+                       th:href="@{/admin/relatorios(minPage=${contagemPage.number - 1})}"
+                       class="btn btn-secondary"
+                       style="padding: 2px 8px; font-size: 12px;">◀</a>
+
+                    <span th:unless="${contagemPage.hasPrevious()}"
+                          style="color: #ccc; padding: 2px 8px; font-size: 12px;">◀</span>
+
+                    <span style="font-size: 12px; color: #666;">
+                        <span th:text="${contagemPage.number + 1}"></span> / <span th:text="${contagemPage.totalPages}"></span>
+                    </span>
+
+                    <a th:if="${contagemPage.hasNext()}"
+                       th:href="@{/admin/relatorios(minPage=${contagemPage.number + 1})}"
+                       class="btn btn-secondary"
+                       style="padding: 2px 8px; font-size: 12px;">▶</a>
+
+                    <span th:unless="${contagemPage.hasNext()}"
+                          style="color: #ccc; padding: 2px 8px; font-size: 12px;">▶</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-column">
+
+            <div class="card">
+                <div class="card-header" style="background: #d9a34a; color: #4a3f35;">
+                    <span>🎂 Aniversariantes de <span th:text="${#strings.capitalize(mesAtual)}"></span></span>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 50px;">Dia</th>
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="a : ${aniversariantes}">
+                        <td style="text-align: center; font-weight: bold;" th:text="${a.dataNascimento.dayOfMonth}">01</td>
+                        <td th:text="${a.nomeCompleto}">Nome</td>
+                        <td style="font-size: 12px; color: #666;" th:text="${a.telefone}">Tel</td>
+                    </tr>
+                    <tr th:if="${aniversariantes.empty}">
+                        <td colspan="3" style="text-align: center; padding: 15px; color: #888;">Nenhum aniversariante neste mês.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="background: #4a3f35;">⚠️ Termos a Vencer (30 dias)</div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                        <tr><th>Nome</th><th>Vencimento</th><th style="text-align: center;">Dias</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="v : ${vencimentos}">
+                            <td th:text="${v.nomeVoluntario}" style="font-size: 13px;">Nome</td>
+                            <td th:text="${#temporals.format(v.dataVencimento, 'dd/MM')}" style="font-size: 13px;">Data</td>
+                            <td th:text="${v.diasRestantes}"
+                                th:class="${v.diasRestantes < 0} ? 'dias-negativo' : (${v.diasRestantes <= 30} ? 'dias-alerta' : 'dias-ok')">
+                            </td>
+                        </tr>
+                        <tr th:if="${vencimentos.empty}">
+                            <td colspan="3" style="text-align:center; padding:15px; color: #888;">Nenhum termo vencendo.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div> </div>
+</div>
+</body>
+</html>

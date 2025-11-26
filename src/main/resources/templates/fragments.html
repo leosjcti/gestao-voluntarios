@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="estilos-globais">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            :root {
+                --primary-brown: #8b5e34;
+                --dark-brown: #744c2c;
+                --accent-gold: #d9a34a;
+                --bg-light: #f9f7f4;
+                --text-dark: #4a3f35;
+                --danger: #ef4444;
+                --danger-dark: #dc2626;
+                --success: #166534;
+                --success-bg: #dcfce7;
+            }
+
+            body {
+                font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                background: var(--bg-light);
+                margin: 0;
+                padding: 0;
+                color: var(--text-dark);
+            }
+
+            /* Classes Utilitárias Comuns */
+            .container { padding: 30px; max-width: 1400px; margin: 0 auto; }
+            .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+            .page-title { font-size: 24px; color: var(--primary-brown); font-weight: 700; margin: 0; }
+
+            /* Botões Padrão */
+            .btn { padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+            .btn-primary { background: var(--primary-brown); color: white; }
+            .btn-primary:hover { background: var(--dark-brown); }
+            .btn-secondary { background: #e5e7eb; color: #374151; }
+            .btn-secondary:hover { background: #d1d5db; }
+            .btn-danger { background: var(--danger); color: white; }
+            .btn-danger:hover { background: var(--danger-dark); }
+
+            /* Tabelas Padrão */
+            .table-responsive { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(139, 94, 52, 0.08); overflow-x: auto; border: 1px solid #ece7df; }
+            table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+            th { background: #fcfbf9; padding: 16px; font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--primary-brown); text-align: left; border-bottom: 2px solid #ece7df; }
+            td { padding: 16px; font-size: 14px; border-bottom: 1px solid #f3f4f6; color: var(--text-dark); }
+            tr:hover { background-color: #faf8f5; }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<nav th:fragment="navbar(ativo)" class="navbar">
+    <style>
+        .navbar { background: var(--primary-brown); color: white; border-bottom: 1px solid var(--dark-brown); padding: 0 30px; height: 70px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar-logo { height: 50px; filter: brightness(0) invert(1); }
+        .navbar-menu { display: flex; gap: 20px; height: 100%; }
+        .nav-link { text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 6px; height: 100%; padding: 0 10px; border-bottom: 4px solid transparent; transition: all 0.2s; }
+        .nav-link:hover { color: white; background-color: rgba(0,0,0,0.1); }
+        .nav-link.active { color: var(--accent-gold); border-bottom-color: var(--accent-gold); font-weight: 700; }
+        .logout-btn { background: #cb5a5a; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .logout-btn:hover { background: #b54343; }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; height: auto; padding: 15px; gap: 15px; }
+            .navbar-menu { width: 100%; justify-content: center; gap: 5px; flex-wrap: wrap; }
+            .nav-link { border-bottom: none; background: rgba(0,0,0,0.1); border-radius: 6px; flex: 1 1 auto; justify-content: center; padding: 10px; }
+            .nav-link.active { background: var(--accent-gold); color: white; border-bottom: none; }
+            .logout-form { width: 100%; } .logout-btn { width: 100%; }
+        }
+    </style>
+
+    <a href="/admin" class="navbar-brand">
+        <img src="/images/ibaji-logo.png" alt="Ibaji Admin" class="navbar-logo"/>
+    </a>
+
+    <div class="navbar-menu">
+        <a href="/admin" class="nav-link" th:classappend="${ativo == 'voluntarios'} ? 'active'">
+            👥 Voluntários
+        </a>
+        <a href="/admin/ministerios" class="nav-link" th:classappend="${ativo == 'ministerios'} ? 'active'">
+            🏛️ Ministérios
+        </a>
+        <a href="/admin/relatorios" class="nav-link" th:classappend="${ativo == 'relatorios'} ? 'active'">
+            📊 Relatórios
+        </a>
+    </div>
+
+    <form th:action="@{/logout}" method="post" class="logout-form">
+        <button class="logout-btn" type="submit">Sair</button>
+    </form>
+</nav>
+
+</body>
+</html>

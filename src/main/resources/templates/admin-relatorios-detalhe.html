@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalhe do Ministério</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar(ativo='relatorios')}"></div>
+
+<div class="container">
+    <div class="page-header">
+        <h2 class="page-title">
+            Voluntários: <span th:text="${nomeMinisterio}" style="color: var(--accent-gold);"></span>
+        </h2>
+        <a href="/admin/relatorios" class="btn btn-secondary">← Voltar</a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="v : ${voluntarios}">
+                <td th:text="${v.nomeCompleto}">Nome</td>
+                <td th:text="${v.telefone}">Tel</td>
+                <td th:text="${v.email}">Email</td>
+                <td>
+                    <a th:href="@{/admin/voluntarios/editar/{id}(id=${v.id})}" class="btn btn-secondary" style="font-size: 12px; padding: 4px 8px;">Ver Cadastro</a>
+                </td>
+            </tr>
+            <tr th:if="${voluntarios.empty}">
+                <td colspan="4" style="text-align: center; padding: 20px;">Nenhum voluntário neste ministério.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
