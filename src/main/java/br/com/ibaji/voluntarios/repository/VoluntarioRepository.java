@@ -57,4 +57,18 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
             countQuery = "SELECT count(*) FROM ministerios", // Ensina o Spring a contar o total
             nativeQuery = true)
     Page<RelatorioMinisterioDTO> contarVoluntariosPorMinisterio(Pageable pageable);
+
+    long countByDataIntegracaoIsNull();
+
+    // 2. Agrupar voluntários por BASE do ministério
+    // (Essa query é mais complexa pois cruza Voluntario -> Ministerio)
+    @Query(value = """
+        SELECT m.base as nome, COUNT(DISTINCT vm.voluntario_id) as quantidade 
+        FROM ministerios m 
+        JOIN voluntario_ministerios vm ON m.id = vm.ministerio_id 
+        WHERE m.base IS NOT NULL 
+        GROUP BY m.base 
+        ORDER BY quantidade DESC
+    """, nativeQuery = true)
+    List<RelatorioMinisterioDTO> contarVoluntariosPorBase();
 }

@@ -36,7 +36,6 @@
         <table>
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Nome / Email</th>
                 <th>Telefone</th>
                 <th>Ministérios</th>
@@ -50,8 +49,6 @@
 
             <tbody>
             <tr th:each="v : ${voluntariosPage.content}">
-                <td th:text="${v.id}" style="color: #888;">1</td>
-
                 <td>
                     <div th:text="${v.nomeCompleto}" style="font-weight: 600; color: var(--text-dark);">Nome</div>
                     <div th:text="${v.email}" style="font-size: 12px; color: #777;">email</div>

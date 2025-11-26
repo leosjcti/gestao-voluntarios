@@ -4,47 +4,64 @@
     <th:block th:fragment="estilos-globais">
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
         <style>
             :root {
+                /* Paleta IBAJI */
                 --primary-brown: #8b5e34;
                 --dark-brown: #744c2c;
                 --accent-gold: #d9a34a;
-                --bg-light: #f9f7f4;
+                --bg-light: #fdfbf7;
                 --text-dark: #4a3f35;
-                --danger: #ef4444;
-                --danger-dark: #dc2626;
+                --danger: #c0392b;
+                --danger-bg: #fee2e2;
                 --success: #166534;
                 --success-bg: #dcfce7;
+                --white: #ffffff;
             }
 
             body {
-                font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
                 background: var(--bg-light);
                 margin: 0;
                 padding: 0;
                 color: var(--text-dark);
+                /* CORREÇÃO DO BUG VISUAL AQUI: */
+                display: block !important;
+                min-height: 100vh;
             }
 
             /* Classes Utilitárias Comuns */
             .container { padding: 30px; max-width: 1400px; margin: 0 auto; }
-            .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+            .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
             .page-title { font-size: 24px; color: var(--primary-brown); font-weight: 700; margin: 0; }
 
             /* Botões Padrão */
-            .btn { padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+            .btn { padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.2s; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; justify-content: center; }
+
             .btn-primary { background: var(--primary-brown); color: white; }
             .btn-primary:hover { background: var(--dark-brown); }
+
             .btn-secondary { background: #e5e7eb; color: #374151; }
             .btn-secondary:hover { background: #d1d5db; }
-            .btn-danger { background: var(--danger); color: white; }
-            .btn-danger:hover { background: var(--danger-dark); }
 
-            /* Tabelas Padrão */
-            .table-responsive { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(139, 94, 52, 0.08); overflow-x: auto; border: 1px solid #ece7df; }
+            .btn-danger { background: var(--danger); color: white; }
+            .btn-danger:hover { background: #a93226; }
+
+            /* Tabelas Responsivas */
+            .table-responsive { background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(139, 94, 52, 0.08); overflow-x: auto; border: 1px solid #ece7df; }
             table { width: 100%; border-collapse: collapse; white-space: nowrap; }
             th { background: #fcfbf9; padding: 16px; font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--primary-brown); text-align: left; border-bottom: 2px solid #ece7df; }
             td { padding: 16px; font-size: 14px; border-bottom: 1px solid #f3f4f6; color: var(--text-dark); }
             tr:hover { background-color: #faf8f5; }
+
+            /* Badges */
+            .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+            .badge-success { background-color: var(--success-bg); color: var(--success); }
+            .badge-warning { background-color: #fff8c5; color: #854d0e; }
+            .badge-danger { background-color: var(--danger-bg); color: var(--danger); }
         </style>
     </th:block>
 </head>
@@ -52,20 +69,159 @@
 
 <nav th:fragment="navbar(ativo)" class="navbar">
     <style>
-        .navbar { background: var(--primary-brown); color: white; border-bottom: 1px solid var(--dark-brown); padding: 0 30px; height: 70px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        /* === ESTILOS DA NAVBAR (Desktop) === */
+        .navbar {
+            background: var(--primary-brown);
+            color: white;
+            border-bottom: 1px solid var(--dark-brown);
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
         .navbar-logo { height: 50px; filter: brightness(0) invert(1); }
-        .navbar-menu { display: flex; gap: 20px; height: 100%; }
-        .nav-link { text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 6px; height: 100%; padding: 0 10px; border-bottom: 4px solid transparent; transition: all 0.2s; }
-        .nav-link:hover { color: white; background-color: rgba(0,0,0,0.1); }
-        .nav-link.active { color: var(--accent-gold); border-bottom-color: var(--accent-gold); font-weight: 700; }
-        .logout-btn { background: #cb5a5a; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-        .logout-btn:hover { background: #b54343; }
+
+        /* Menu Desktop */
+        .navbar-menu {
+            display: flex;
+            gap: 5px;
+            height: 100%;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255,255,255,0.85);
+            font-weight: 500;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-gold);
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .logout-form { margin-left: 15px; }
+
+        .logout-btn {
+            background: transparent;
+            color: #ffcccc;
+            border: 1px solid rgba(255,200,200,0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: #cb5a5a;
+            color: white;
+            border-color: #cb5a5a;
+        }
+
+        /* Botão Hambúrguer (Invisível no Desktop) */
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* === VERSÃO MOBILE (Telas menores que 768px) === */
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; height: auto; padding: 15px; gap: 15px; }
-            .navbar-menu { width: 100%; justify-content: center; gap: 5px; flex-wrap: wrap; }
-            .nav-link { border-bottom: none; background: rgba(0,0,0,0.1); border-radius: 6px; flex: 1 1 auto; justify-content: center; padding: 10px; }
-            .nav-link.active { background: var(--accent-gold); color: white; border-bottom: none; }
-            .logout-form { width: 100%; } .logout-btn { width: 100%; }
+            .navbar {
+                padding: 0 15px;
+                height: 60px;
+            }
+
+            .navbar-logo { height: 35px; }
+
+            .hamburger { display: block; }
+
+            .navbar-menu {
+                    display: none; /* Escondido inicialmente */
+                    position: absolute;
+                    top: 60px; /* Logo abaixo da barra */
+                    left: 0;
+                    width: 100%;
+
+                    /* CORREÇÃO: Fundo sólido e sobreposição */
+                    background-color: #ffffff; /* Fundo branco sólido */
+                    z-index: 9999; /* Garante que fique NA FRENTE de tudo */
+                    border-bottom: 2px solid var(--primary-brown); /* Borda embaixo pra destacar */
+
+                    flex-direction: column;
+                    align-items: stretch;
+                    padding: 0; /* Removi padding extra */
+                    box-shadow: 0 10px 15px rgba(0,0,0,0.2); /* Sombra mais forte */
+            }
+
+            .navbar-menu.show {
+                display: flex;
+                animation: slideDown 0.3s ease;
+            }
+
+            .nav-link {
+                    color: var(--text-dark);
+                    padding: 15px 20px; /* Espaçamento generoso para o dedo */
+                    border-radius: 0;
+                    border-bottom: 1px solid #f0f0f0; /* Linha divisória sutil */
+                    justify-content: flex-start;
+                    background-color: #fff; /* Garante fundo branco no item também */
+            }
+
+            .nav-link:hover {
+                background-color: #f9fafb;
+                color: var(--primary-brown);
+            }
+
+            .nav-link.active {
+                background-color: #fff8e1;
+                color: var(--primary-brown);
+                border-left: 5px solid var(--primary-brown);
+            }
+
+            .logout-form { margin: 10px 20px; }
+
+            .logout-btn {
+                width: 100%;
+                background-color: var(--danger-bg);
+                color: var(--danger);
+                border: none;
+                padding: 12px;
+            }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 
@@ -73,21 +229,36 @@
         <img src="/images/ibaji-logo.png" alt="Ibaji Admin" class="navbar-logo"/>
     </a>
 
-    <div class="navbar-menu">
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Abrir Menu">
+        ☰
+    </button>
+
+    <div class="navbar-menu" id="navMenu">
         <a href="/admin" class="nav-link" th:classappend="${ativo == 'voluntarios'} ? 'active'">
-            👥 Voluntários
+            🙋 <span style="margin-left:5px">Voluntários</span>
         </a>
         <a href="/admin/ministerios" class="nav-link" th:classappend="${ativo == 'ministerios'} ? 'active'">
-            🏛️ Ministérios
+            🏛️ <span style="margin-left:5px">Ministérios</span>
         </a>
         <a href="/admin/relatorios" class="nav-link" th:classappend="${ativo == 'relatorios'} ? 'active'">
-            📊 Relatórios
+            📊 <span style="margin-left:5px">Relatórios</span>
         </a>
+
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button class="logout-btn" type="submit">Sair</button>
+        </form>
     </div>
 
-    <form th:action="@{/logout}" method="post" class="logout-form">
-        <button class="logout-btn" type="submit">Sair</button>
-    </form>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById('navMenu');
+            if (menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            } else {
+                menu.classList.add('show');
+            }
+        }
+    </script>
 </nav>
 
 </body>

@@ -37,9 +37,9 @@ public class VoluntarioController {
             RedirectAttributes redirect) {
 
 
-//        if (arquivo.isEmpty()) {
-//            erros.rejectValue("termosAceitos", "erro.arquivo", "O arquivo de antecedentes é obrigatório.");
-//        }
+        if (arquivo == null || arquivo.isEmpty()) {
+            erros.rejectValue("termosAceitos", "erro.arquivo", "O arquivo de antecedentes é obrigatório.");
+        }
 
         if (erros.hasErrors()) {
             modelo.addAttribute("listaMinisterios", servico.listarTodosMinisterios());

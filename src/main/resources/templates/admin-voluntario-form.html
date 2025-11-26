@@ -8,16 +8,56 @@
         .section-title { color: var(--primary-brown); font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
         .section-title:first-child { margin-top: 0; }
 
-        /* Grid e Inputs */
+        /* Grid e Inputs Gerais */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-group.full-width { grid-column: 1 / -1; }
         label { font-weight: 600; margin-bottom: 6px; font-size: 14px; display: block; color: var(--text-dark); }
-        input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; background-color: #fcfbf9; box-sizing: border-box; }
+
+        /* Regra Geral para Inputs de Texto */
+        input[type="text"], input[type="email"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fcfbf9;
+            box-sizing: border-box;
+        }
         input:focus, select:focus { outline: none; border-color: var(--accent-gold); background-color: white; box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2); }
 
-        /* Checkboxes Ministérios */
-        .ministry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; background: #fcfbf9; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb; }
-        .ministry-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        /* === CORREÇÃO DOS CHECKBOXES MINISTÉRIOS === */
+        .ministry-grid {
+            display: grid;
+            /* Cria colunas automáticas de no mínimo 180px */
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            background: #fcfbf9;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .ministry-item {
+            display: flex;
+            align-items: center; /* Centraliza verticalmente */
+            justify-content: flex-start; /* Garante que fiquem a esquerda */
+            gap: 10px; /* Distância entre o quadrado e o texto */
+        }
+
+        /* Força o checkbox a ter tamanho normal e não 100% */
+        .ministry-item input[type="checkbox"] {
+            width: auto !important;
+            margin: 0;
+            transform: scale(1.2); /* Deixa o checkbox um pouquinho maior para facilitar o clique */
+            cursor: pointer;
+        }
+
+        .ministry-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            line-height: 1; /* Melhora alinhamento vertical */
+        }
 
         /* Upload */
         .upload-box { background: #fff8c5; border: 1px dashed #d9a34a; padding: 15px; border-radius: 6px; }
@@ -84,15 +124,18 @@
             <div class="section-title">Ministérios</div>
             <div class="ministry-grid">
                 <div th:each="min : ${ministerios}" class="ministry-item">
-                    <input type="checkbox" th:field="*{idsMinisterios}" th:value="${min.id}" />
-                    <label th:text="${min.nome}"></label>
+                    <input type="checkbox"
+                           th:field="*{idsMinisterios}"
+                           th:value="${min.id}"
+                           th:id="${'min_' + min.id}"/>
+                    <label th:for="${'min_' + min.id}" th:text="${min.nome}"></label>
                 </div>
             </div>
 
             <div class="section-title">Documentação</div>
             <div class="upload-box">
                 <label style="color: #854d0e;">Anexar/Substituir Atestado</label>
-                <input type="file" name="arquivoAntecedentes" style="background: white; margin-top: 5px;" />
+                <input type="file" name="arquivoAntecedentes" style="background: white; margin-top: 5px; width: 100%;" />
             </div>
 
             <div class="actions">
