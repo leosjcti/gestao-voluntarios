@@ -20,7 +20,9 @@ public class Voluntario {
     private String nomeCompleto;
     private String email;
     private String telefone;
+    private String cpf;
     private Boolean termosAceitos;
+
 
     @Column(nullable = false)
     private LocalDate dataNascimento;
@@ -81,6 +83,9 @@ public class Voluntario {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 
     public Boolean getTermosAceitos() {
         return termosAceitos;

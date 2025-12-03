@@ -18,7 +18,9 @@ public class AntecedentesCriminais {
     @Enumerated(EnumType.STRING)
     private StatusAntecedentes status;
 
+    @Column(name = "caminho_arquivo_s3")
     private String caminhoArquivoS3;
+
     private String nomeOriginalArquivo;
 
     // Getters e Setters

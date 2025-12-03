@@ -4,12 +4,20 @@
     <title>Cadastro de Ministério</title>
     <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
     <style>
-        /* Estilos específicos desta página */
-        .form-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(139, 94, 52, 0.1); max-width: 600px; margin: 0 auto; }
-        label { display: block; margin-top: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 5px;}
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; background: #fcfbf9; box-sizing: border-box; }
-        input:focus, textarea:focus { outline: none; border-color: var(--accent-gold); background: white; box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2); }
+        .form-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(139, 94, 52, 0.1); max-width: 700px; margin: 0 auto; }
+        .section-title { color: var(--primary-brown); font-size: 15px; font-weight: 700; margin-bottom: 15px; margin-top: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+        .section-title:first-child { margin-top: 0; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        label { margin-bottom: 5px; font-weight: 600; color: var(--text-dark); font-size: 14px; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; background: #fcfbf9; box-sizing: border-box; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-gold); background: white; box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2); }
         .actions { margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eee; padding-top: 20px;}
+
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -25,33 +33,34 @@
             <input type="hidden" th:field="*{id}" />
 
             <div class="section-title">Dados do Ministério</div>
-
             <div class="form-grid">
                 <div class="form-group">
                     <label>Nome do Ministério:</label>
-                    <input type="text" th:field="*{nome}" placeholder="Ex: Casais e Famílias" required />
+                    <input type="text" th:field="*{nome}" required />
                 </div>
                 <div class="form-group">
                     <label>Base (Área):</label>
-                    <input type="text" th:field="*{base}" placeholder="Ex: COMUNHÃO, ADORAÇÃO..." />
+                    <select th:field="*{base}">
+                        <option value="">Selecione...</option>
+                        <option th:each="b : ${bases}" th:value="${b.id}" th:text="${b.nome}"></option>
+                    </select>
                 </div>
             </div>
 
             <div class="section-title">Liderança</div>
-
             <div class="form-group full-width">
                 <label>Pastor Responsável:</label>
-                <input type="text" th:field="*{pastorResponsavel}" placeholder="Ex: Pr. Esio" />
+                <input type="text" th:field="*{pastorResponsavel}" />
             </div>
 
             <div class="form-grid">
                 <div class="form-group">
                     <label>Líder(es) do Ministério:</label>
-                    <input type="text" th:field="*{lider}" placeholder="Ex: Lucas e Erica" />
+                    <input type="text" th:field="*{lider}" />
                 </div>
                 <div class="form-group">
                     <label>Contato do Líder (Zap):</label>
-                    <input type="text" th:field="*{contatoLider}" placeholder="(00) 00000-0000" />
+                    <input type="text" th:field="*{contatoLider}" />
                 </div>
             </div>
 

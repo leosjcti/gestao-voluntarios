@@ -3,6 +3,7 @@ package br.com.ibaji.voluntarios.service;
 import br.com.ibaji.voluntarios.model.AntecedentesCriminais;
 import br.com.ibaji.voluntarios.model.Ministerio;
 import br.com.ibaji.voluntarios.model.Voluntario;
+import br.com.ibaji.voluntarios.model.dto.ArquivoDTO;
 import br.com.ibaji.voluntarios.model.dto.MinisterioDTO;
 import br.com.ibaji.voluntarios.model.dto.VoluntarioAdminDTO;
 import br.com.ibaji.voluntarios.model.dto.VoluntarioFormDTO;
@@ -20,9 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,13 +33,15 @@ public class VoluntarioService {
     private final MinisterioRepository ministerioRepository;
     private final AntecedentesCriminaisRepository antecedentesRepository;
     private final S3Service s3Service;
+    private final PdfEmailService pdfEmailService;
 
     public VoluntarioService(VoluntarioRepository voluntarioRepo, MinisterioRepository ministerioRepo,
-                             AntecedentesCriminaisRepository antecedentesRepo, S3Service s3Service) {
+                             AntecedentesCriminaisRepository antecedentesRepo, S3Service s3Service, PdfEmailService pdfEmailService) {
         this.voluntarioRepository = voluntarioRepo;
         this.ministerioRepository = ministerioRepo;
         this.antecedentesRepository = antecedentesRepo;
         this.s3Service = s3Service;
+        this.pdfEmailService =  pdfEmailService;
     }
 
     public List<MinisterioDTO> listarTodosMinisterios() {
@@ -54,6 +57,7 @@ public class VoluntarioService {
         voluntario.setNomeCompleto(FormatadorTexto.padronizarNome(dto.getNomeCompleto()));
         voluntario.setEmail(dto.getEmail().toLowerCase());
         voluntario.setTelefone(dto.getTelefone());
+        voluntario.setCpf(dto.getCpf());
         voluntario.setDataNascimento(dto.getDataNascimento());
         voluntario.setTermosAceitos(dto.getTermosAceitos());
 
@@ -82,6 +86,8 @@ public class VoluntarioService {
             antecedentes.setStatus(StatusAntecedentes.PENDENTE_ANALISE);
 
             antecedentesRepository.save(antecedentes);
+
+            pdfEmailService.gerarEEnviarTermo(salvo);
         }
         // Se não tiver arquivo, o voluntário é salvo sem registro de antecedentes
         // e no dashboard aparecerá como "Pendente"
@@ -166,4 +172,29 @@ public class VoluntarioService {
 
         return voluntarioRepository.findAll(pageable);
     }
+
+    public ArquivoDTO baixarAntecedentes(Long id) throws FileNotFoundException {
+        // 1. Busca o voluntário
+        Voluntario voluntario = voluntarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Voluntário não encontrado"));
+
+        // 2. Valida se tem antecedentes vinculados
+        if (voluntario.getAntecedentes() == null || voluntario.getAntecedentes().getCaminhoArquivoS3() == null) {
+            throw new FileNotFoundException("Nenhum arquivo de antecedentes anexado para este voluntário.");
+        }
+
+        // 3. Busca os metadados
+        String s3Key = voluntario.getAntecedentes().getCaminhoArquivoS3();
+        String nomeOriginal = voluntario.getAntecedentes().getNomeOriginalArquivo();
+
+        // 4. Chama o serviço de S3 para pegar o Stream real
+        var s3Stream = s3Service.baixarArquivo(s3Key);
+
+        return new ArquivoDTO(nomeOriginal, s3Stream);
+    }
+
+    // DTO Interno para o Gráfico (pode colocar no pacote DTO se preferir)
+    public record DadoGrafico(String label, long valor, int alturaPercentual) {}
+
+
 }

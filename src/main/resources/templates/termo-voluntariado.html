@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        body { font-family: 'Helvetica', sans-serif; font-size: 12px; line-height: 1.5; color: #000; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { width: 80px; height: auto; margin-bottom: 10px; }
+        .title { font-weight: bold; text-decoration: underline; text-align: center; margin: 20px 0; font-size: 14px; }
+        p { text-align: justify; margin-bottom: 10px; }
+        .clause { font-weight: bold; margin-top: 15px; display: block; }
+        .signature-box { margin-top: 50px; width: 100%; }
+        .sig-line { border-top: 1px solid #000; width: 40%; display: inline-block; margin-top: 40px; padding-top: 5px; }
+        .footer-quote { text-align: center; font-style: italic; font-size: 10px; margin-top: 50px; border-top: 1px solid #ccc; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <strong>PRIMEIRA IGREJA BATISTA NO JARDIM DAS INDÚSTRIAS (IBAJI)</strong><br/>
+    Av. Engenheiro Francisco Prestes Maia, 955 - Jardim das Indústrias<br/>
+    São José dos Campos - São Paulo - 12240-680 - CNPJ 60.127.289/0001-36<br/>
+    Organizada em 14 de Janeiro de 1989
+</div>
+
+<div class="title">TERMO DE VOLUNTARIADO</div>
+
+<p>Pelo presente instrumento, de um lado:</p>
+
+<p><strong>Primeira Igreja Batista no Jardim das Indústrias</strong>, com sede em Avenida Engenheiro Francisco Prestes Maia, 955 – Jardim das Indústrias – CEP: 12.240-680 - São José dos Campos – SP, inscrita no CNPJ sob o nº 60.127.289/0001-36, neste ato representada por Marcos Davi Ferreira de Andrade, doravante denominada organização religiosa sem fins lucrativos;</p>
+
+<p>E, de outro lado:</p>
+
+<p>
+    <strong th:text="${voluntario.nomeCompleto}">NOME DO VOLUNTÁRIO</strong>,
+    CPF nº <strong th:text="${voluntario.cpf}">000.000.000-00</strong>,
+    doravante denominado VOLUNTÁRIO;
+</p>
+
+<p>Celebram o presente Termo de Voluntariado, nos termos da Lei nº 9.608, de 18 de fevereiro de 1998, mediante as seguintes cláusulas e condições:</p>
+
+<span class="clause">Cláusula 1ª - Objeto</span>
+<p>O presente termo tem por objeto a prestação de serviços voluntários pelo VOLUNTÁRIO, sem vínculo empregatício, trabalhista ou previdenciário, para a realização das atividades inerentes aos ministérios escolhidos.</p>
+
+<span class="clause">Cláusula 2ª - Duração e Carga Horária</span>
+<p>A prestação dos serviços voluntários terá início em <strong th:text="${dataInicio}">DATA</strong> e término indeterminado, com carga horária de acordo com a escala do ministério.</p>
+
+<span class="clause">Cláusula 3ª - Responsabilidades do Voluntário</span>
+<p>O VOLUNTÁRIO compromete-se a:<br/>
+    a) Cumprir as atividades que lhe forem atribuídas com zelo e dedicação;<br/>
+    b) Obedecer às orientações fornecidas pela ORGANIZAÇÃO;<br/>
+    c) Manter confidencialidade sobre as informações sensíveis da ORGANIZAÇÃO, em especial a Lei 13.709/2018 (LGPD).</p>
+
+<span class="clause">Cláusula 4ª - Direitos do Voluntário</span>
+<p>O VOLUNTÁRIO tem direito a:<br/>
+    a) Receber orientação adequada para o desempenho das atividades;<br/>
+    b) Ser tratado com respeito e dignidade.</p>
+
+<span class="clause">Cláusula 5ª - Despesas e Reembolsos</span>
+<p>As despesas realizadas pelo VOLUNTÁRIO no exercício de suas atividades poderão ser reembolsadas, desde que previamente autorizadas pela ORGANIZAÇÃO e mediante apresentação de cupom fiscal.</p>
+
+<span class="clause">Cláusula 6ª - Rescisão</span>
+<p>O presente termo poderá ser rescindido a qualquer momento por ambas as partes, mediante aviso prévio.</p>
+
+<span class="clause">Cláusula 7ª - Disposições Gerais</span>
+<p>O presente termo não cria vínculo empregatício, obrigação de natureza trabalhista ou previdenciária entre as partes.</p>
+
+<p style="margin-top: 30px;">
+    São José dos Campos (SP), <span th:text="${dataExtenso}">01 de Janeiro de 2025</span>.
+</p>
+
+<div class="signature-box">
+    <table style="width: 100%;">
+        <tr>
+            <td style="width: 50%; text-align: center;">
+                <div class="sig-line"></div><br/>
+                Marcos Davi Ferreira de Andrade<br/>
+                Pastor Presidente
+            </td>
+            <td style="width: 50%; text-align: center;">
+                <div class="sig-line"></div><br/>
+                <span th:text="${voluntario.nomeCompleto}">NOME</span><br/>
+                Voluntário(a)
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="footer-quote">
+    "Queremos ser como Jesus, acolhendo e amando pessoas, para transformar vidas e relacionamentos."
+</div>
+
+</body>
+</html>

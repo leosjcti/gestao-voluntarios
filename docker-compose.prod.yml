@@ -8,7 +8,6 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      # Otimização para servidor de 1GB RAM (Limita o Java a 450MB)
       - JAVA_TOOL_OPTIONS=-Xmx450m
 
       # Banco de Dados
@@ -16,13 +15,27 @@ services:
       - SPRING_DATASOURCE_USERNAME=voluntario_user
       - SPRING_DATASOURCE_PASSWORD=senha_segura_producao
 
-      # Configuração Oracle S3 (PREENCHA AQUI)
+      # --- CONFIGURAÇÃO ORACLE S3 ---
       - AWS_REGION=sa-saopaulo-1
-      # Formato: https://{NAMESPACE}.compat.objectstorage.{REGIAO}.oraclecloud.com
       - AWS_S3_ENDPOINT_URL=https://gri2dbzfssib.compat.objectstorage.sa-saopaulo-1.oraclecloud.com
-      - AWS_ACCESS_KEY_ID='a43f458e5793515ac285137dd091365b2c248533'
-      - AWS_SECRET_ACCESS_KEY='fNAshd8slTOlUu1uO1Akhy4UzE6N/YdeRbP30ul7rXs='
       - AWS_S3_BUCKET_NAME=voluntariado-antecedentes-bucket
+
+      # Correção: Passando com o nome da variável do Java E do Sistema para garantir
+      - AWS_ACCESS_KEY_ID='AWS_ACCESS_KEY_ID'
+      - AWS_SECRET_ACCESS_KEY='AWS_SECRET_ACCESS_KEY'
+
+      # Redundância para o Java pegar direto (caso o properties falhe)
+      - AWS_ACCESS_KEY='AWS_ACCESS_KEY'
+      - AWS_SECRET_KEY='AWS_SECRET_ACCESS_KEY'
+
+      # --- CONFIGURAÇÃO E-MAIL ---
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=leomelolima86@gmail.com
+      # CORREÇÃO: Aspas obrigatórias aqui por causa dos espaços
+      - SPRING_MAIL_PASSWORD=SPRING_MAIL_PASSWORD
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     depends_on:
       - db
 

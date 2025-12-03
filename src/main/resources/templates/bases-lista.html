@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gerenciar Bases</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar(ativo='ministerios')}"></div>
+
+<div class="container">
+    <div class="page-header">
+        <h2 class="page-title">Gerenciar Bases Ministeriais</h2>
+        <div>
+            <a href="/admin/ministerios" class="btn btn-secondary">← Voltar</a>
+            <a href="/admin/bases/novo" class="btn btn-primary">+ Nova Base</a>
+        </div>
+    </div>
+
+    <div th:if="${sucesso}" style="background:#dcfce7; color:#166534; padding:10px; border-radius:6px; margin-bottom:15px;">✅ <span th:text="${sucesso}"></span></div>
+    <div th:if="${erro}" style="background:#fee2e2; color:#991b1b; padding:10px; border-radius:6px; margin-bottom:15px;">⚠️ <span th:text="${erro}"></span></div>
+
+    <div class="table-responsive">
+        <table style="width: 100%;">
+            <thead>
+            <tr>
+                <th style="width: 40%;">Nome da Base</th>
+                <th style="width: 40%;">Líder / Pastor</th>
+                <th style="text-align: right;">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b : ${bases}">
+                <td>
+                    <span th:text="${b.nome}" style="font-weight: 600; color: var(--text-dark);">ADORAÇÃO</span>
+                </td>
+                <td th:text="${b.lider != null ? b.lider : '-'}" style="color: #666;">Pr. Fulano</td>
+                <td style="text-align: right;">
+                    <a th:href="@{/admin/bases/editar/{id}(id=${b.id})}" class="btn btn-secondary" style="padding: 4px 8px;">✏️</a>
+                    <a th:href="@{/admin/bases/deletar/{id}(id=${b.id})}"
+                       class="btn btn-danger" style="padding: 4px 8px;"
+                       onclick="return confirm('ATENÇÃO: Excluir uma base pode afetar relatórios. Tem certeza?')">🗑️</a>
+                </td>
+            </tr>
+            <tr th:if="${bases.empty}">
+                <td colspan="3" style="text-align: center; padding: 20px; color: #888;">Nenhuma base cadastrada.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

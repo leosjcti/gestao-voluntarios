@@ -63,12 +63,19 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
     // 2. Agrupar voluntários por BASE do ministério
     // (Essa query é mais complexa pois cruza Voluntario -> Ministerio)
     @Query(value = """
-        SELECT m.base as nome, COUNT(DISTINCT vm.voluntario_id) as quantidade 
+        SELECT b.nome as nome, COUNT(DISTINCT vm.voluntario_id) as quantidade 
         FROM ministerios m 
+        JOIN bases b ON m.base_id = b.id  -- JOIN COM A NOVA TABELA
         JOIN voluntario_ministerios vm ON m.id = vm.ministerio_id 
-        WHERE m.base IS NOT NULL 
-        GROUP BY m.base 
+        GROUP BY b.id, b.nome 
         ORDER BY quantidade DESC
     """, nativeQuery = true)
     List<RelatorioMinisterioDTO> contarVoluntariosPorBase();
+
+    // Conta quantos foram criados em um mês/ano específico
+    @Query("SELECT COUNT(v) FROM Voluntario v WHERE MONTH(v.dataCriacao) = :mes AND YEAR(v.dataCriacao) = :ano")
+    long countByMesAno(int mes, int ano);
+
+    @Query("SELECT v.dataNascimento FROM Voluntario v WHERE v.dataNascimento IS NOT NULL")
+    List<LocalDate> findAllDataNascimento();
 }

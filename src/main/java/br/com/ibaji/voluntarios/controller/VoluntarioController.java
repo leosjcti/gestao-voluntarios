@@ -1,6 +1,7 @@
 package br.com.ibaji.voluntarios.controller;
 
 import br.com.ibaji.voluntarios.model.dto.VoluntarioFormDTO;
+import br.com.ibaji.voluntarios.repository.BaseRepository;
 import br.com.ibaji.voluntarios.service.VoluntarioService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -15,15 +16,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class VoluntarioController {
 
     private final VoluntarioService servico;
+    private final BaseRepository baseRepository;
 
-    public VoluntarioController(VoluntarioService servico) {
+    public VoluntarioController(VoluntarioService servico, BaseRepository baseRepository) {
         this.servico = servico;
+        this.baseRepository = baseRepository;
     }
 
     @GetMapping("/novo")
     public String exibirFormulario(Model modelo) {
         modelo.addAttribute("formDto", new VoluntarioFormDTO());
-        modelo.addAttribute("listaMinisterios", servico.listarTodosMinisterios());
+        //modelo.addAttribute("listaMinisterios", servico.listarTodosMinisterios());
+        modelo.addAttribute("listaBases", baseRepository.findAll());
         return "formulario-voluntario";
     }
 
@@ -42,7 +46,7 @@ public class VoluntarioController {
         }
 
         if (erros.hasErrors()) {
-            modelo.addAttribute("listaMinisterios", servico.listarTodosMinisterios());
+            modelo.addAttribute("listaBases", baseRepository.findAll());
             return "formulario-voluntario";
         }
 

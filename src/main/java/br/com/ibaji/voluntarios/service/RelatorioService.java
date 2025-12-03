@@ -1,5 +1,6 @@
 package br.com.ibaji.voluntarios.service;
 
+import br.com.ibaji.voluntarios.model.dto.GraficoDTO;
 import br.com.ibaji.voluntarios.model.dto.RelatorioMinisterioDTO;
 import br.com.ibaji.voluntarios.model.dto.RelatorioVencimentoDTO;
 import br.com.ibaji.voluntarios.model.Ministerio;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,5 +125,77 @@ public class RelatorioService {
         Pageable pageable = PageRequest.of(page, size);
 
         return new PageImpl<>(pageContent, pageable, list.size());
+    }
+
+    public List<VoluntarioService.DadoGrafico> getGraficoCrescimento() {
+        List<VoluntarioService.DadoGrafico> grafico = new ArrayList<>();
+        LocalDate data = LocalDate.now().minusMonths(5); // Começa 5 meses atrás
+
+        // Busca o maior valor para calcular a escala (100%)
+        long maxValor = 1;
+        Map<String, Long> tempMap = new HashMap<>();
+
+        for (int i = 0; i < 6; i++) {
+            long qtd = voluntarioRepository.countByMesAno(data.getMonthValue(), data.getYear());
+            if (qtd > maxValor) maxValor = qtd;
+
+            // Ex: "NOV"
+            String label = data.getMonth().getDisplayName(java.time.format.TextStyle.SHORT, new java.util.Locale("pt", "BR")).toUpperCase();
+            tempMap.put(label, qtd);
+
+            // Avança pro próximo mês do loop
+            data = data.plusMonths(1);
+        }
+
+        // Reconstrói a lista ordenada e calcula altura
+        data = LocalDate.now().minusMonths(5);
+        for (int i = 0; i < 6; i++) {
+            String label = data.getMonth().getDisplayName(java.time.format.TextStyle.SHORT, new java.util.Locale("pt", "BR")).toUpperCase();
+            long qtd = tempMap.get(label);
+
+            // Regra de 3 para altura da barra (mínimo 5% pra não sumir)
+            int altura = (int) ((qtd * 100) / maxValor);
+            if (altura < 5) altura = 5;
+
+            grafico.add(new VoluntarioService.DadoGrafico(label, qtd, altura));
+            data = data.plusMonths(1);
+        }
+
+        return grafico;
+    }
+
+    public List<GraficoDTO> getPerfilEtario() {
+        List<LocalDate> nascimentos = voluntarioRepository.findAllDataNascimento();
+        LocalDate hoje = LocalDate.now();
+
+        long total = nascimentos.size();
+        if (total == 0) return new ArrayList<>();
+
+        long teens = 0;   // < 18
+        long jovens = 0;  // 18 - 29
+        long adultos = 0; // 30 - 49
+        long senior = 0;  // 50+
+
+        for (LocalDate nasc : nascimentos) {
+            int idade = Period.between(nasc, hoje).getYears();
+            if (idade < 18) teens++;
+            else if (idade < 30) jovens++;
+            else if (idade < 50) adultos++;
+            else senior++;
+        }
+
+        List<GraficoDTO> grafico = new ArrayList<>();
+        // Helper para calcular % seguro
+        grafico.add(new GraficoDTO("Teens (<18)", teens, calcularPorcentagem(teens, total)));
+        grafico.add(new GraficoDTO("Jovens (18-29)", jovens, calcularPorcentagem(jovens, total)));
+        grafico.add(new GraficoDTO("Adultos (30-49)", adultos, calcularPorcentagem(adultos, total)));
+        grafico.add(new GraficoDTO("Sênior (50+)", senior, calcularPorcentagem(senior, total)));
+
+        return grafico;
+    }
+
+    private int calcularPorcentagem(long parte, long total) {
+        if (total == 0) return 0;
+        return (int) ((parte * 100) / total);
     }
 }

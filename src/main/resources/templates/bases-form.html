@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro de Base</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+    <style>
+        .form-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(139, 94, 52, 0.1); max-width: 600px; margin: 0 auto; }
+        label { display: block; margin-top: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 5px;}
+        input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; background: #fcfbf9; box-sizing: border-box; }
+        input:focus { outline: none; border-color: var(--accent-gold); background: white; box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2); }
+        .actions { margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eee; padding-top: 20px;}
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar(ativo='ministerios')}"></div>
+
+<div class="container">
+    <div class="form-card">
+        <h2 class="page-title" style="margin-bottom: 20px; font-size: 20px;"
+            th:text="${base.id == null} ? 'Nova Base' : 'Editar Base'"></h2>
+
+        <form th:action="@{/admin/bases/salvar}" th:object="${base}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <label>Nome da Base (Área):</label>
+            <input type="text" th:field="*{nome}" placeholder="Ex: ADORAÇÃO" required autofocus />
+
+            <label>Líder / Pastor Responsável:</label>
+            <input type="text" th:field="*{lider}" placeholder="Ex: Pr. Esio" />
+
+            <div class="actions">
+                <a href="/admin/bases" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

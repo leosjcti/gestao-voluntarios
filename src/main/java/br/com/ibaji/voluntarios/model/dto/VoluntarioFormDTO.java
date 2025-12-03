@@ -18,6 +18,9 @@ public class VoluntarioFormDTO {
     @NotBlank(message = "Telefone é obrigatório")
     private String telefone;
 
+    @NotBlank(message = "CPF é obrigatório")
+    private String cpf;
+
     @NotNull(message = "Data de nascimento é obrigatória")
     @DateTimeFormat(pattern = "yyyy-MM-dd") // Formato do HTML5 input date
     private LocalDate dataNascimento;
@@ -37,6 +40,8 @@ public class VoluntarioFormDTO {
     public void setEmail(String email) { this.email = email; }
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
     public List<Long> getIdsMinisterios() { return idsMinisterios; }
     public void setIdsMinisterios(List<Long> idsMinisterios) { this.idsMinisterios = idsMinisterios; }
     public Boolean getTermosAceitos() { return termosAceitos; }

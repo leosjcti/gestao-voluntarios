@@ -8,15 +8,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
     <style>
-        /* === PALETA IBAJI ===
-           Marrom: #8b5e34
-           Dourado: #d9a34a
-           Erro: #c0392b
-        */
+        /* PALETA IBAJI */
+        :root {
+            --primary-brown: #8b5e34;
+            --accent-gold: #d9a34a;
+            --error: #c0392b;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
-            /* Fundo suave em tons terrosos muito claros */
             background: linear-gradient(135deg, #fdfbf7, #f3efe9);
             margin: 0;
             padding: 0;
@@ -24,7 +24,7 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            color: #4a3f35; /* Texto marrom escuro */
+            color: #4a3f35;
         }
 
         .card {
@@ -34,7 +34,6 @@
             margin: 2.5rem auto;
             padding: 2.5rem 2.8rem;
             border-radius: 18px;
-            /* Sombra mais quente */
             box-shadow: 0 10px 30px rgba(139, 94, 52, 0.08);
             animation: fadeIn 0.6s ease;
             border: 1px solid #f0ebe5;
@@ -45,169 +44,79 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 1.8rem;
-        }
-
-        .logo img {
-            max-width: 260px;
-        }
+        .logo { text-align: center; margin-bottom: 1.8rem; }
+        .logo img { max-width: 260px; }
 
         h1 {
-            text-align: center;
-            font-size: 1.9rem;
-            color: #8b5e34; /* Título na cor da marca */
-            margin-bottom: 1.8rem;
-            font-weight: 700;
+            text-align: center; font-size: 1.9rem; color: var(--primary-brown);
+            margin-bottom: 1.8rem; font-weight: 700;
         }
 
-        .campo {
-            margin-bottom: 1.4rem;
+        .campo { margin-bottom: 1.4rem; }
+        label { font-weight: 600; margin-bottom: 0.3rem; display: block; color: #5d4037; }
+
+        input[type="text"], input[type="email"], input[type="file"], input[type="date"], select {
+            width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #dccfc5;
+            font-size: 1rem; background: #faf9f8; transition: all 0.2s; box-sizing: border-box;
+            font-family: 'Inter', sans-serif; color: #333;
         }
 
-        label {
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-            display: block;
-            color: #5d4037;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="file"],
-        input[type="date"],
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 10px;
-            border: 1px solid #dccfc5; /* Borda levemente bege */
-            font-size: 1rem;
-            background: #faf9f8;
-            transition: all 0.2s;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            color: #333;
-        }
-
-        input:focus,
-        select:focus {
-            outline: none;
-            border-color: #d9a34a; /* Foco Dourado */
-            background: #fff;
+        input:focus {
+            outline: none; border-color: var(--accent-gold); background: #fff;
             box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2);
         }
 
-        /* Estilo da lista de Ministérios */
+        /* ACORDEÃO (DETAILS/SUMMARY) */
+        details { border-bottom: 1px solid #eee; background: #fff; border-radius: 4px; margin-bottom: 5px; border: 1px solid #eee;}
+        details[open] { background: #fdfdfd; border-color: var(--accent-gold); }
+
+        summary {
+            padding: 15px; cursor: pointer; font-weight: 600; color: var(--primary-brown);
+            background: #faf9f8; outline: none; display: flex; justify-content: space-between; align-items: center;
+            border-radius: 4px;
+        }
+        summary:hover { background: #f3efe9; }
+        summary::after { content: '+'; font-size: 1.2em; font-weight: bold; color: var(--accent-gold); }
+        details[open] summary::after { content: '-'; }
+
         .ministerios-list {
-            background: #fcfcfc;
-            border: 1px solid #e6e6e6;
-            padding: 1rem 1.2rem;
-            border-radius: 12px;
-            max-height: 200px;
-            overflow-y: auto;
-            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.02);
-
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px 20px;
+            padding: 15px; border-top: 1px solid #eee; background: #fff;
+            display: grid; grid-template-columns: 1fr; gap: 10px;
         }
 
-        @media (min-width: 600px) {
-            .ministerios-list { grid-template-columns: repeat(2, 1fr); }
-        }
+        @media (min-width: 600px) { .ministerios-list { grid-template-columns: 1fr 1fr; } }
 
-        @media (min-width: 900px) {
-            .ministerios-list { grid-template-columns: repeat(3, 1fr); }
-        }
+        .check-item { display: flex; align-items: center; }
+        input[type="checkbox"] { transform: scale(1.25); margin-right: 8px; cursor: pointer; accent-color: var(--primary-brown); width: auto; }
+        .check-label { cursor: pointer; font-weight: normal; color: #333; }
 
-        .ministerios-list div {
-            margin-bottom: 0.55rem;
-            display: flex;
-            align-items: center;
-        }
-
-        input[type="checkbox"] {
-            transform: scale(1.25);
-            margin-right: 8px;
-            cursor: pointer;
-            accent-color: #8b5e34; /* Cor do check marrom */
-        }
-
-        /* Estilo da Caixa de Termos com Scroll */
+        /* Termo Box */
         .termo-box {
-            height: 150px;
-            overflow-y: auto;
-            background: #faf9f8;
-            border: 1px solid #dccfc5;
-            padding: 1rem;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #555;
-            margin-bottom: 10px;
-            text-align: justify;
+            height: 150px; overflow-y: auto; background: #faf9f8; border: 1px solid #dccfc5;
+            padding: 1rem; border-radius: 10px; font-size: 0.9rem; line-height: 1.6; color: #555;
+            margin-bottom: 10px; text-align: justify;
         }
 
-        .termo-box p { margin-top: 0; }
-
-        .erro {
-            color: #c0392b;
-            font-size: 0.85rem;
-            margin-top: 0.3rem;
-        }
-
+        .erro { color: var(--error); font-size: 0.85rem; margin-top: 0.3rem; }
         .mensagem-erro {
-            background: #ffe4e4;
-            color: #b20000;
-            border-left: 5px solid #cc0000;
-            padding: 0.9rem 1rem;
-            margin-bottom: 1.2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
+            background: #ffe4e4; color: #b20000; border-left: 5px solid #cc0000;
+            padding: 0.9rem 1rem; margin-bottom: 1.2rem; border-radius: 8px; font-weight: 600;
         }
 
         button {
-            width: 100%;
-            padding: 1rem;
-            background: #8b5e34; /* Botão Marrom */
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.25s, transform 0.1s;
-            margin-top: 1rem;
+            width: 100%; padding: 1rem; background: var(--primary-brown); color: white;
+            border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600;
+            cursor: pointer; transition: background 0.25s, transform 0.1s; margin-top: 1rem;
         }
-
-        button:hover {
-            background: #744c2c; /* Marrom Escuro */
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        /* Barra de rolagem personalizada */
-        .termo-box::-webkit-scrollbar { width: 8px; }
-        .termo-box::-webkit-scrollbar-track { background: #f1f1f1; }
-        .termo-box::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-        .termo-box::-webkit-scrollbar-thumb:hover { background: #999; }
-
+        button:hover { background: #744c2c; }
+        button:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
 <div class="card">
-
-    <div class="logo">
-        <img src="/images/ibaji-logo.png" alt="Logo IBAJI">
-    </div>
-
-    <h1>Ficha de Voluntariado</h1>
-
+    <div class="logo"><img src="/images/ibaji-logo.png" alt="Logo IBAJI"></div>
+    <h1>Termo de Voluntariado</h1>
     <div th:if="${mensagemErro}" class="mensagem-erro" th:text="${mensagemErro}"></div>
 
     <form th:action="@{/voluntarios/salvar}" th:object="${formDto}" method="post" enctype="multipart/form-data">
@@ -216,6 +125,12 @@
             <label>Nome Completo</label>
             <input type="text" th:field="*{nomeCompleto}" placeholder="Ex: João da Silva">
             <div class="erro" th:if="${#fields.hasErrors('nomeCompleto')}" th:errors="*{nomeCompleto}"></div>
+        </div>
+
+        <div class="campo">
+            <label>CPF</label>
+            <input type="text" th:field="*{cpf}" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+            <div class="erro" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></div>
         </div>
 
         <div class="campo">
@@ -237,45 +152,78 @@
         </div>
 
         <div class="campo">
-            <label>Escolha os Ministérios (Máx. 3)</label>
+            <label>Escolha os Ministérios (Máx. 4)</label>
+            <div style="border: 1px solid #dccfc5; border-radius: 10px; overflow: hidden; background: #faf9f8;">
 
-            <div class="ministerios-list">
-                <div th:each="min : ${listaMinisterios}">
-                    <input type="checkbox"
-                           th:value="${min.id}"
-                           th:field="*{idsMinisterios}"
-                           class="ministerio-check"
-                           onclick="validarLimite(this)">
-                    <label th:text="${min.nome}" style="display:inline; font-weight: normal; cursor: pointer;"></label>
-                </div>
+                <details th:each="base : ${listaBases}">
+                    <summary>
+                        <span>
+                            <span th:text="${base.nome}">ADORAÇÃO</span>
+                            <span th:if="${base.lider != null}"
+                                  th:text="'(Líder: ' + ${base.lider} + ')'"
+                                  style="font-size: 0.85em; font-weight: normal; color: #777; margin-left: 5px;">
+                            </span>
+                        </span>
+                    </summary>
+
+                    <div class="ministerios-list">
+                        <div th:each="min : ${base.ministerios}" class="check-item">
+                            <input type="checkbox"
+                                   th:value="${min.id}"
+                                   th:field="*{idsMinisterios}"
+                                   class="ministerio-check"
+                                   th:id="${'min_' + min.id}"
+                                   onclick="validarLimite(this)">
+                            <label th:for="${'min_' + min.id}" th:text="${min.nome}" class="check-label"></label>
+                        </div>
+                        <div th:if="${base.ministerios.empty}" style="color: #999; font-style: italic; padding: 10px;">
+                            Nenhum ministério cadastrado nesta base.
+                        </div>
+                    </div>
+                </details>
+
             </div>
-
             <div class="erro" th:if="${#fields.hasErrors('idsMinisterios')}" th:errors="*{idsMinisterios}"></div>
         </div>
 
         <div class="campo">
-            <label>Atestado de Antecedentes (PDF/Imagem)</label>
+            <label>Atestado de Antecedentes (PDF/Imagem) *</label>
             <input type="file" name="arquivoAntecedentes" accept="image/*,.pdf" required>
         </div>
 
         <div class="campo" style="margin-top: 1.5rem;">
             <label>Termo de Compromisso</label>
-
             <div class="termo-box">
-                <p><strong>TERMO DE VOLUNTARIADO</strong></p>
-                <p>1. Declaro que sirvo por livre e espontânea vontade, motivado pelo amor a Cristo e à igreja.</p>
-                <p>2. Comprometo-me a zelar pelo bom testemunho dentro e fora da igreja, mantendo uma conduta irrepreensível.</p>
-                <p>3. Entendo que a verificação de antecedentes criminais é uma medida de segurança padrão para proteção de todos, especialmente das crianças e vulneráveis.</p>
-                <p>4. Comprometo-me a participar das reuniões de alinhamento, treinamentos e escalas do meu ministério com pontualidade e excelência.</p>
-                <p>5. Estou ciente de que este termo tem validade de 1 ano e deverá ser renovado periodicamente.</p>
-                <p>6. Autorizo o uso da minha imagem em fotos e vídeos institucionais da igreja para fins de divulgação dos trabalhos realizados.</p>
-                <p>7. Submeto-me à liderança espiritual e administrativa da igreja, buscando sempre a unidade e o crescimento do corpo de Cristo.</p>
-                <p>--- Fim do Termo ---</p>
-            </div>
+                <div class="title">TERMO DE VOLUNTARIADO</div>
 
+                <p>Pelo presente instrumento, de um lado:</p>
+
+                <p><strong>Primeira Igreja Batista no Jardim das Indústrias</strong>, com sede em Avenida Engenheiro Francisco Prestes Maia, 955 – Jardim das Indústrias – CEP: 12.240-680 - São José dos Campos – SP, inscrita no CNPJ sob o nº 60.127.289/0001-36, neste ato representada por Marcos Davi Ferreira de Andrade, doravante denominada organização religiosa sem fins lucrativos;</p>
+
+                </p>
+                <p>Duração do Contrato</p>
+                <p>A prestação dos serviços voluntários será de um ano, com carga horária semanal/mensal</p>
+                <p>Responsabilidade do Voluntário</p>
+                <p>O VOLUNTÁRIO compromete-se a:<br/>
+                    a) Cumprir as atividades que lhe forem atribuídas com zelo e dedicação;<br/>
+                    b) Obedecer às orientações fornecidas pela ORGANIZAÇÃO;<br/>
+                    c) Manter confidencialidade sobre as informações sensíveis da ORGANIZAÇÃO, em especial a Lei 13.709/2018 (LGPD).</p>
+                <span class="clause">Direitos do Voluntário</span>
+                <p>O VOLUNTÁRIO tem direito a:<br/>
+                    a) Receber orientação adequada para o desempenho das atividades;<br/>
+                    b) Ser tratado com respeito e dignidade.</p>
+                <span class="clause">Despesas e Reembolsos</span>
+                <p>As despesas realizadas pelo VOLUNTÁRIO no exercício de suas atividades poderão ser reembolsadas, desde que previamente autorizadas pela ORGANIZAÇÃO e mediante apresentação de cupom fiscal.</p>
+
+                <span class="clause">Rescisão</span>
+                <p>O presente termo poderá ser rescindido a qualquer momento por ambas as partes, mediante aviso prévio.</p>
+
+                <span class="clause">Disposições Gerais</span>
+                <p>O presente termo não cria vínculo empregatício, obrigação de natureza trabalhista ou previdenciária entre as partes.</p>
+            </div>
             <div style="display: flex; align-items: center;">
                 <input type="checkbox" th:field="*{termosAceitos}" id="termos">
-                <label for="termos" style="font-weight: normal; cursor: pointer; color: #4a3f35;">Li e aceito os termos de compromisso da igreja.</label>
+                <label for="termos" class="check-label">Li e aceito os termos de compromisso.</label>
             </div>
             <div class="erro" th:if="${#fields.hasErrors('termosAceitos')}" th:errors="*{termosAceitos}"></div>
         </div>
@@ -286,14 +234,20 @@
 
 <script>
     function validarLimite(checkbox) {
-        var checkboxesMarcados = document.querySelectorAll('.ministerio-check:checked');
-        // Ajustei para 4, pois seu texto diz "Máx. 4" mas o código estava "3"
-        if (checkboxesMarcados.length > 3) {
+        var checkboxes = document.querySelectorAll('.ministerio-check:checked');
+        if (checkboxes.length > 4) {
             checkbox.checked = false;
-            alert("Atenção: Você só pode selecionar no máximo 3 ministérios.");
+            alert("Atenção: Você só pode selecionar no máximo 4 ministérios.");
         }
     }
-</script>
 
+    function mascaraCPF(i) {
+        var v = i.value;
+        if(isNaN(v[v.length-1])){ i.value = v.substring(0, v.length-1); return; }
+        i.setAttribute("maxlength", "14");
+        if (v.length == 3 || v.length == 7) i.value += ".";
+        if (v.length == 11) i.value += "-";
+    }
+</script>
 </body>
 </html>

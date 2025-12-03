@@ -14,7 +14,9 @@ public class Ministerio {
     private String lider;
     private String pastorResponsavel;
     private String contatoLider;
-    private String base;
+    @ManyToOne
+    @JoinColumn(name = "base_id")
+    private Base base;
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -29,6 +31,6 @@ public class Ministerio {
     public void setPastorResponsavel(String pastorResponsavel) { this.pastorResponsavel = pastorResponsavel; }
     public String getContatoLider() { return contatoLider; }
     public void setContatoLider(String contatoLider) { this.contatoLider = contatoLider; }
-    public String getBase() { return base; }
-    public void setBase(String base) { this.base = base; }
+    public Base getBase() { return base; }
+    public void setBase(Base base) { this.base = base; }
 }

@@ -38,6 +38,8 @@ public class RelatorioController {
         model.addAttribute("aniversariantesPage", service.getAniversariantesMesPaginado(anivPage, PAGE_SIZE));
         model.addAttribute("basesPage", service.getContagemPorBasePaginado(basePage, PAGE_SIZE));
         model.addAttribute("vencimentosPage", service.getTermosAVencerPaginado(termoPage, PAGE_SIZE));
+        model.addAttribute("graficoCrescimento", service.getGraficoCrescimento());
+        model.addAttribute("graficoEtario", service.getPerfilEtario());
 
         // 2. Carrega os dados de resumo (KPIs)
         model.addAttribute("resumo", service.getResumoGeral());

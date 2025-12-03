@@ -4,11 +4,9 @@
     <title>Gerenciar Ministérios</title>
     <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
     <style>
-        /* Estilo da Barra de Busca */
         .search-box { display: flex; gap: 10px; margin-bottom: 20px; max-width: 500px; }
         .search-input { flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
 
-        /* Estilo da Paginação */
         .pagination { display: flex; justify-content: center; gap: 5px; margin-top: 20px; }
         .page-link { padding: 8px 12px; border: 1px solid #e5e7eb; background: white; color: var(--primary-brown); text-decoration: none; border-radius: 4px; }
         .page-link.active { background: var(--primary-brown); color: white; border-color: var(--primary-brown); }
@@ -23,7 +21,12 @@
 <div class="container">
     <div class="page-header">
         <h2 class="page-title">Gerenciar Ministérios</h2>
-        <a href="/admin/ministerios/novo" class="btn btn-primary">+ Novo Ministério</a>
+        <div style="display: flex; gap: 10px;">
+            <a href="/admin/bases" class="btn btn-secondary" style="background-color: #fff; border: 1px solid #ccc; color: #555;">
+                ⚙️ Gerenciar Bases
+            </a>
+            <a href="/admin/ministerios/novo" class="btn btn-primary">+ Novo Ministério</a>
+        </div>
     </div>
 
     <form action="/admin/ministerios" method="get" class="search-box">
@@ -32,12 +35,8 @@
         <a href="/admin/ministerios" class="btn btn-secondary" th:if="${busca != null}">Limpar</a>
     </form>
 
-    <div th:if="${sucesso}" style="background:#dcfce7; color:#166534; padding:10px; border-radius:6px; margin-bottom:15px;">
-        ✅ <span th:text="${sucesso}"></span>
-    </div>
-    <div th:if="${erro}" style="background:#fee2e2; color:#991b1b; padding:10px; border-radius:6px; margin-bottom:15px;">
-        ⚠️ <span th:text="${erro}"></span>
-    </div>
+    <div th:if="${sucesso}" style="background:#dcfce7; color:#166534; padding:10px; border-radius:6px; margin-bottom:15px;">✅ <span th:text="${sucesso}"></span></div>
+    <div th:if="${erro}" style="background:#fee2e2; color:#991b1b; padding:10px; border-radius:6px; margin-bottom:15px;">⚠️ <span th:text="${erro}"></span></div>
 
     <div class="table-responsive">
         <table>
@@ -56,27 +55,22 @@
                 <td th:text="${m.nome}" style="font-weight: 600; color: var(--text-dark);">Nome</td>
 
                 <td>
-                    <span th:if="${m.base != null}"
-                          th:text="${m.base}"
-                          class="badge" style="background-color: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;">BASE</span>
+                    <span th:if="${m.base != null}" th:text="${m.base.nome}"
+                          class="badge" style="background-color: #e0e7ff; color: #3730a3;">BASE</span>
                 </td>
 
                 <td th:text="${m.pastorResponsavel != null ? m.pastorResponsavel : '-'}" style="color: #555;">Pr. Esio</td>
 
                 <td>
                     <div th:text="${m.lider != null ? m.lider : '-'}" style="font-weight: 600; font-size: 13px;">Líder</div>
-                    <div th:if="${m.contatoLider != null}"
-                         th:text="${m.contatoLider}"
-                         style="font-size: 12px; color: #666; margin-top: 2px;">📞 9999-9999</div>
+                    <div th:if="${m.contatoLider != null}" th:text="${m.contatoLider}" style="font-size: 12px; color: #666;">📞 Tel</div>
                 </td>
 
                 <td th:text="${#strings.abbreviate(m.descricao, 30)}" style="color: #888; font-style: italic;">Desc</td>
 
                 <td style="text-align: right;">
-                    <a th:href="@{/admin/ministerios/editar/{id}(id=${m.id})}" class="btn btn-icon btn-edit" title="Editar">✏️</a>
-                    <a th:href="@{/admin/ministerios/deletar/{id}(id=${m.id})}"
-                       class="btn btn-icon btn-delete"
-                       onclick="return confirm('Tem certeza?')" title="Excluir">🗑️</a>
+                    <a th:href="@{/admin/ministerios/editar/{id}(id=${m.id})}" class="btn btn-secondary" style="padding: 4px 8px;">✏️</a>
+                    <a th:href="@{/admin/ministerios/deletar/{id}(id=${m.id})}" class="btn btn-danger" style="padding: 4px 8px;" onclick="return confirm('Tem certeza?')">🗑️</a>
                 </td>
             </tr>
             </tbody>
@@ -85,25 +79,14 @@
 
     <div th:if="${ministeriosPage.totalPages > 1}">
         <div class="pagination">
-            <a th:if="${ministeriosPage.hasPrevious()}"
-               th:href="@{/admin/ministerios(page=${ministeriosPage.number - 1}, busca=${busca})}"
-               class="page-link">← Anterior</a>
-
+            <a th:if="${ministeriosPage.hasPrevious()}" th:href="@{/admin/ministerios(page=${ministeriosPage.number - 1}, busca=${busca})}" class="page-link">← Anterior</a>
             <span th:each="i : ${#numbers.sequence(0, ministeriosPage.totalPages - 1)}">
-                <a th:href="@{/admin/ministerios(page=${i}, busca=${busca})}"
-                   th:text="${i + 1}"
-                   th:class="${i == ministeriosPage.number} ? 'page-link active' : 'page-link'"></a>
+                <a th:href="@{/admin/ministerios(page=${i}, busca=${busca})}" th:text="${i + 1}" th:class="${i == ministeriosPage.number} ? 'page-link active' : 'page-link'"></a>
             </span>
-
-            <a th:if="${ministeriosPage.hasNext()}"
-               th:href="@{/admin/ministerios(page=${ministeriosPage.number + 1}, busca=${busca})}"
-               class="page-link">Próximo →</a>
+            <a th:if="${ministeriosPage.hasNext()}" th:href="@{/admin/ministerios(page=${ministeriosPage.number + 1}, busca=${busca})}" class="page-link">Próximo →</a>
         </div>
-        <div class="page-info">
-            Mostrando página <span th:text="${ministeriosPage.number + 1}"></span> de <span th:text="${ministeriosPage.totalPages}"></span>
-        </div>
+        <div class="page-info">Página <span th:text="${ministeriosPage.number + 1}"></span> de <span th:text="${ministeriosPage.totalPages}"></span></div>
     </div>
-
 </div>
 </body>
 </html>
