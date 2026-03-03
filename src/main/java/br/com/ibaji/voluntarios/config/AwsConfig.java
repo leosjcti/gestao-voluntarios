@@ -34,8 +34,8 @@ public class AwsConfig {
 
         // --- PREENCHA AQUI COM AS CHAVES NOVAS ---
         // Cuidado: Não deixe espaços em branco dentro das aspas!
-        String accessKeyFixa = "accessKeyFixa";
-        String secretKeyFixa = "secretKeyFixa";
+        String accessKeyFixa = "dcf81cb7c0060fc318dc613946a646733a7976c7";
+        String secretKeyFixa = "1IHvgc7X9R7kesLf448JvAshMovtVrMGf9AIZG0EID8=";
         String regionFixa = "sa-saopaulo-1";
         String endpointFixo = "https://gri2dbzfssib.compat.objectstorage.sa-saopaulo-1.oraclecloud.com";
 

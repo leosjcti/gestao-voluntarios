@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gerenciar Usuários</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+</head>
+<body>
+<div th:replace="~{fragments :: navbar(ativo='usuarios')}"></div>
+
+<div class="container">
+    <div class="page-header">
+        <h2 class="page-title">Gerenciar Usuários do Sistema</h2>
+        <a href="/admin/usuarios/novo" class="btn btn-primary">+ Novo Usuário</a>
+    </div>
+
+    <div th:if="${sucesso}" style="background:#dcfce7; color:#166534; padding:10px; border-radius:6px; margin-bottom:15px;">✅ <span th:text="${sucesso}"></span></div>
+    <div th:if="${erro}" style="background:#fee2e2; color:#991b1b; padding:10px; border-radius:6px; margin-bottom:15px;">⚠️ <span th:text="${erro}"></span></div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Login</th>
+                <th>Permissão</th>
+                <th style="text-align: right;">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${usuarios}">
+                <td th:text="${u.id}">1</td>
+                <td th:text="${u.login}" style="font-weight: bold;">admin</td>
+                <td>
+                    <span th:if="${u.role == 'SUPER_ADMIN'}" class="badge badge-warning">Super Admin</span>
+                    <span th:if="${u.role == 'ADMIN'}" class="badge badge-success">Admin Comum</span>
+                </td>
+                <td style="text-align: right;">
+                    <a th:href="@{/admin/usuarios/editar/{id}(id=${u.id})}" class="btn btn-secondary" style="padding: 4px 8px;">✏️</a>
+                    <a th:if="${u.id != 1}" th:href="@{/admin/usuarios/deletar/{id}(id=${u.id})}"
+                       class="btn btn-danger" style="padding: 4px 8px;"
+                       onclick="return confirm('Tem certeza? O usuário perderá o acesso imediatamente.')">🗑️</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

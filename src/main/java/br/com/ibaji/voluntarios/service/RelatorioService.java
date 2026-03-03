@@ -5,6 +5,7 @@ import br.com.ibaji.voluntarios.model.dto.RelatorioMinisterioDTO;
 import br.com.ibaji.voluntarios.model.dto.RelatorioVencimentoDTO;
 import br.com.ibaji.voluntarios.model.Ministerio;
 import br.com.ibaji.voluntarios.model.Voluntario;
+import br.com.ibaji.voluntarios.model.enums.StatusTermo;
 import br.com.ibaji.voluntarios.repository.MinisterioRepository;
 import br.com.ibaji.voluntarios.repository.VoluntarioRepository;
 import org.springframework.data.domain.Page;
@@ -88,9 +89,9 @@ public class RelatorioService {
 
         resumo.put("total", voluntarioRepository.count());
         resumo.put("novosMes", voluntarioRepository.contarNovosNoMes(hoje.getMonthValue(), hoje.getYear()));
-        resumo.put("semAtestado", voluntarioRepository.countByAntecedentesIsNull());
-        resumo.put("faltaIntegracao", voluntarioRepository.countByDataIntegracaoIsNull());
-        resumo.put("manualPendente", voluntarioRepository.countByManualEntregueFalse());
+        resumo.put("analisePendente", voluntarioRepository.countByAntecedentesAnalisadosFalse());
+        resumo.put("termosVencidos", voluntarioRepository.countByStatusTermo(StatusTermo.VENCIDO));
+        resumo.put("menores", voluntarioRepository.countByMenorIdadeTrue());
 
         return resumo;
     }

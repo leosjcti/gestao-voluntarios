@@ -12,6 +12,10 @@
         .signature-box { margin-top: 50px; width: 100%; }
         .sig-line { border-top: 1px solid #000; width: 40%; display: inline-block; margin-top: 40px; padding-top: 5px; }
         .footer-quote { text-align: center; font-style: italic; font-size: 10px; margin-top: 50px; border-top: 1px solid #ccc; padding-top: 10px; }
+
+        /* Estilo para a lista de ministérios */
+        .ministerios-list { margin-left: 20px; margin-top: 5px; }
+        .ministerios-list li { margin-bottom: 5px; text-align: justify; }
     </style>
 </head>
 <body>
@@ -31,11 +35,24 @@
 
 <p>E, de outro lado:</p>
 
-<p>
-    <strong th:text="${voluntario.nomeCompleto}">NOME DO VOLUNTÁRIO</strong>,
-    CPF nº <strong th:text="${voluntario.cpf}">000.000.000-00</strong>,
-    doravante denominado VOLUNTÁRIO;
-</p>
+<div th:unless="${voluntario.menorIdade}">
+    <p>
+        <strong th:text="${voluntario.nomeCompleto}">NOME</strong>,
+        CPF nº <strong th:text="${voluntario.cpf}">000</strong>,
+        doravante denominado VOLUNTÁRIO;
+    </p>
+</div>
+
+<div th:if="${voluntario.menorIdade}">
+    <p>
+        <strong th:text="${voluntario.nomeResponsavel}">NOME DO PAI</strong>,
+        CPF nº <strong th:text="${voluntario.cpfResponsavel}">CPF PAI</strong>,
+        residente e domiciliado nesta cidade, responsável legal pelo menor
+        <strong th:text="${voluntario.nomeCompleto}">NOME DO MENOR</strong>,
+        nascido em <span th:text="${#temporals.format(voluntario.dataNascimento, 'dd/MM/yyyy')}">DATA</span>,
+        doravante denominado VOLUNTÁRIO;
+    </p>
+</div>
 
 <p>Celebram o presente Termo de Voluntariado, nos termos da Lei nº 9.608, de 18 de fevereiro de 1998, mediante as seguintes cláusulas e condições:</p>
 
@@ -43,7 +60,7 @@
 <p>O presente termo tem por objeto a prestação de serviços voluntários pelo VOLUNTÁRIO, sem vínculo empregatício, trabalhista ou previdenciário, para a realização das atividades inerentes aos ministérios escolhidos.</p>
 
 <span class="clause">Cláusula 2ª - Duração e Carga Horária</span>
-<p>A prestação dos serviços voluntários terá início em <strong th:text="${dataInicio}">DATA</strong> e término indeterminado, com carga horária de acordo com a escala do ministério.</p>
+<p>A prestação dos serviços voluntários terá início em <strong th:text="${dataInicio}">DATA</strong> e duração de um ano, com carga horária de acordo com a escala do ministério.</p>
 
 <span class="clause">Cláusula 3ª - Responsabilidades do Voluntário</span>
 <p>O VOLUNTÁRIO compromete-se a:<br/>
@@ -65,6 +82,15 @@
 <span class="clause">Cláusula 7ª - Disposições Gerais</span>
 <p>O presente termo não cria vínculo empregatício, obrigação de natureza trabalhista ou previdenciária entre as partes.</p>
 
+<span class="clause">Anexo - Ministérios e Atividades</span>
+<p>O VOLUNTÁRIO atuará nos seguintes ministérios, desempenhando as atividades descritas abaixo:</p>
+<ul class="ministerios-list">
+    <li th:each="min : ${voluntario.ministerios}">
+        <strong th:text="${min.nome}">Nome do Ministério</strong>:
+        <span th:text="${min.descricao}">Descrição da atividade desempenhada.</span>
+    </li>
+</ul>
+
 <p style="margin-top: 30px;">
     São José dos Campos (SP), <span th:text="${dataExtenso}">01 de Janeiro de 2025</span>.
 </p>
@@ -79,8 +105,13 @@
             </td>
             <td style="width: 50%; text-align: center;">
                 <div class="sig-line"></div><br/>
-                <span th:text="${voluntario.nomeCompleto}">NOME</span><br/>
-                Voluntário(a)
+
+                <span th:if="${voluntario.menorIdade}" th:text="${voluntario.nomeResponsavel}">NOME RESPONSAVEL</span>
+                <span th:unless="${voluntario.menorIdade}" th:text="${voluntario.nomeCompleto}">NOME VOLUNTARIO</span>
+                <br/>
+
+                <span th:if="${voluntario.menorIdade}">Responsável Legal</span>
+                <span th:unless="${voluntario.menorIdade}">Voluntário(a)</span>
             </td>
         </tr>
     </table>

@@ -8,11 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
     <style>
-        /* PALETA IBAJI */
+        /* === PALETA IBAJI === */
         :root {
             --primary-brown: #8b5e34;
             --accent-gold: #d9a34a;
             --error: #c0392b;
+            --bg-light: #fdfbf7;
         }
 
         body {
@@ -52,7 +53,7 @@
             margin-bottom: 1.8rem; font-weight: 700;
         }
 
-        .campo { margin-bottom: 1.4rem; }
+        .campo { margin-bottom: 1.4rem; position: relative; }
         label { font-weight: 600; margin-bottom: 0.3rem; display: block; color: #5d4037; }
 
         input[type="text"], input[type="email"], input[type="file"], input[type="date"], select {
@@ -66,28 +67,131 @@
             box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2);
         }
 
-        /* ACORDEÃO (DETAILS/SUMMARY) */
-        details { border-bottom: 1px solid #eee; background: #fff; border-radius: 4px; margin-bottom: 5px; border: 1px solid #eee;}
+        /* Estilo Erro JS */
+        input.input-error { border-color: var(--error) !important; background-color: #fff5f5 !important; }
+        .js-error-msg { color: var(--error); font-size: 0.85rem; margin-top: 4px; display: none; }
+
+        /* === ESTILO PROFISSIONAL PARA O CHECKBOX DE IDADE === */
+        .idade-container {
+            background-color: #fffbf2; /* Fundo creme bem suave */
+            border: 1px solid #f3e5c5;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* Quando marcado/ativo */
+        .idade-container.ativo {
+            border-color: var(--accent-gold);
+            background-color: #fff9e6;
+            border-bottom: 1px solid transparent; /* Remove borda inferior para colar */
+            border-radius: 12px 12px 0 0; /* Arredonda só em cima */
+            position: relative;
+            z-index: 2;
+        }
+
+        .idade-icon {
+            font-size: 1.8rem;
+            margin-right: 15px;
+        }
+
+        .idade-checkbox-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .idade-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .idade-header input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-brown);
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .idade-label {
+            font-weight: 700;
+            color: var(--primary-brown);
+            font-size: 1.05rem;
+            cursor: pointer;
+        }
+
+        .idade-sublabel {
+            display: block;
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 4px;
+            margin-left: 32px; /* Alinha com o texto acima (pula o checkbox) */
+        }
+
+        /* === ÁREA DO RESPONSÁVEL INTEGRADA === */
+        #area-responsavel {
+            display: none;
+            background: #fff9e6; /* Mesmo fundo do ativo */
+            border: 1px solid var(--accent-gold);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            padding: 25px;
+            margin-top: -1.5rem; /* Puxa para cima */
+            margin-bottom: 1.5rem;
+            animation: slideDown 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #area-responsavel h4 {
+            margin-top: 0;
+            color: var(--primary-brown);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        #area-responsavel h4::before {
+            content: '👨‍👩‍👧‍👦';
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+
+        /* ACORDEÃO (MINISTÉRIOS) */
+        details { border-bottom: 1px solid #eee; background: #fff; border-radius: 4px; margin-bottom: 5px; border: 1px solid #dccfc5; overflow: hidden; }
         details[open] { background: #fdfdfd; border-color: var(--accent-gold); }
 
         summary {
             padding: 15px; cursor: pointer; font-weight: 600; color: var(--primary-brown);
             background: #faf9f8; outline: none; display: flex; justify-content: space-between; align-items: center;
-            border-radius: 4px;
+            list-style: none;
         }
+        summary::-webkit-details-marker { display: none; }
         summary:hover { background: #f3efe9; }
-        summary::after { content: '+'; font-size: 1.2em; font-weight: bold; color: var(--accent-gold); }
+        summary::after { content: '+'; font-size: 1.5em; font-weight: bold; color: var(--accent-gold); line-height: 1; margin-left: 10px; }
         details[open] summary::after { content: '-'; }
 
         .ministerios-list {
             padding: 15px; border-top: 1px solid #eee; background: #fff;
             display: grid; grid-template-columns: 1fr; gap: 10px;
         }
-
         @media (min-width: 600px) { .ministerios-list { grid-template-columns: 1fr 1fr; } }
 
         .check-item { display: flex; align-items: center; }
-        input[type="checkbox"] { transform: scale(1.25); margin-right: 8px; cursor: pointer; accent-color: var(--primary-brown); width: auto; }
+        input[type="checkbox"].ministerio-check { transform: scale(1.25); margin-right: 8px; cursor: pointer; accent-color: var(--primary-brown); width: auto; }
         .check-label { cursor: pointer; font-weight: normal; color: #333; }
 
         /* Termo Box */
@@ -96,6 +200,13 @@
             padding: 1rem; border-radius: 10px; font-size: 0.9rem; line-height: 1.6; color: #555;
             margin-bottom: 10px; text-align: justify;
         }
+        .termo-box .title { font-weight: bold; text-align: center; margin-bottom: 10px; color: var(--primary-brown); }
+        .clause { font-weight: bold; display: block; margin-top: 10px; color: #4a3f35; }
+
+        /* Scrollbar */
+        .termo-box::-webkit-scrollbar { width: 8px; }
+        .termo-box::-webkit-scrollbar-track { background: #f1f1f1; }
+        .termo-box::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 
         .erro { color: var(--error); font-size: 0.85rem; margin-top: 0.3rem; }
         .mensagem-erro {
@@ -110,16 +221,18 @@
         }
         button:hover { background: #744c2c; }
         button:active { transform: scale(0.98); }
+
     </style>
 </head>
 <body>
 
 <div class="card">
     <div class="logo"><img src="/images/ibaji-logo.png" alt="Logo IBAJI"></div>
-    <h1>Termo de Voluntariado</h1>
+    <h1>Inscrição de Voluntários</h1>
+
     <div th:if="${mensagemErro}" class="mensagem-erro" th:text="${mensagemErro}"></div>
 
-    <form th:action="@{/voluntarios/salvar}" th:object="${formDto}" method="post" enctype="multipart/form-data">
+    <form id="formVoluntario" th:action="@{/voluntarios/salvar}" th:object="${formDto}" method="post" enctype="multipart/form-data">
 
         <div class="campo">
             <label>Nome Completo</label>
@@ -129,8 +242,10 @@
 
         <div class="campo">
             <label>CPF</label>
-            <input type="text" th:field="*{cpf}" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+            <input type="text" th:field="*{cpf}" id="cpf" placeholder="000.000.000-00" maxlength="14"
+                   oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)">
             <div class="erro" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></div>
+            <div id="erro-cpf-js" class="js-error-msg">CPF inválido. Verifique os números.</div>
         </div>
 
         <div class="campo">
@@ -139,22 +254,61 @@
             <div class="erro" th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}"></div>
         </div>
 
+        <div class="idade-container" id="containerMenorIdade" onclick="triggerCheckbox()">
+            <div class="idade-icon">🔞</div>
+            <div class="idade-checkbox-group">
+                <div class="idade-header">
+                    <input type="checkbox" id="checkMenor" th:field="*{menorIdade}" onchange="toggleResponsavel()" onclick="event.stopPropagation()">
+                    <label for="checkMenor" class="idade-label" onclick="event.stopPropagation()">
+                        Sou menor de 18 anos
+                    </label>
+                </div>
+                <span class="idade-sublabel">Necessário autorização do responsável legal.</span>
+            </div>
+        </div>
+
+        <div id="area-responsavel">
+            <h4>Dados do Responsável Legal</h4>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">
+                Por favor, preencha os dados do pai, mãe ou tutor que assinará o termo de autorização.
+            </p>
+
+            <div class="campo">
+                <label>Nome Completo do Responsável *</label>
+                <input type="text" th:field="*{nomeResponsavel}" id="nomeResp" placeholder="Nome do pai, mãe ou tutor">
+            </div>
+
+            <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="campo">
+                    <label>CPF do Responsável *</label>
+                    <input type="text" th:field="*{cpfResponsavel}" id="cpfResp" placeholder="000.000.000-00" maxlength="14" oninput="aplicarMascaraCPF(this)">
+                </div>
+                <div class="campo">
+                    <label>Telefone do Responsável *</label>
+                    <input type="text" th:field="*{telefoneResponsavel}" id="telResp" placeholder="(00) 00000-0000" maxlength="15" oninput="aplicarMascaraTelefone(this)">
+                </div>
+            </div>
+
+            <div class="campo">
+                <label>E-mail do Responsável (Para assinatura) *</label>
+                <input type="email" th:field="*{emailResponsavel}" id="emailResp" placeholder="email.responsavel@exemplo.com">
+            </div>
+        </div>
         <div class="campo">
-            <label>E-mail</label>
+            <label>E-mail (Seu E-mail)</label>
             <input type="email" th:field="*{email}" placeholder="seu@email.com">
             <div class="erro" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
         </div>
 
         <div class="campo">
-            <label>Telefone (WhatsApp)</label>
-            <input type="text" th:field="*{telefone}" placeholder="(00) 00000-0000">
+            <label>Telefone / WhatsApp</label>
+            <input type="text" th:field="*{telefone}" id="telefone" placeholder="(00) 00000-0000" maxlength="15" oninput="aplicarMascaraTelefone(this)">
             <div class="erro" th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></div>
         </div>
 
         <div class="campo">
-            <label>Escolha os Ministérios (Máx. 4)</label>
+            <label>Escolha os Ministérios</label>
             <div style="border: 1px solid #dccfc5; border-radius: 10px; overflow: hidden; background: #faf9f8;">
-
                 <details th:each="base : ${listaBases}">
                     <summary>
                         <span>
@@ -165,7 +319,6 @@
                             </span>
                         </span>
                     </summary>
-
                     <div class="ministerios-list">
                         <div th:each="min : ${base.ministerios}" class="check-item">
                             <input type="checkbox"
@@ -173,7 +326,7 @@
                                    th:field="*{idsMinisterios}"
                                    class="ministerio-check"
                                    th:id="${'min_' + min.id}"
-                                   onclick="validarLimite(this)">
+                            >
                             <label th:for="${'min_' + min.id}" th:text="${min.nome}" class="check-label"></label>
                         </div>
                         <div th:if="${base.ministerios.empty}" style="color: #999; font-style: italic; padding: 10px;">
@@ -181,7 +334,6 @@
                         </div>
                     </div>
                 </details>
-
             </div>
             <div class="erro" th:if="${#fields.hasErrors('idsMinisterios')}" th:errors="*{idsMinisterios}"></div>
         </div>
@@ -197,21 +349,22 @@
                 <div class="title">TERMO DE VOLUNTARIADO</div>
 
                 <p>Pelo presente instrumento, de um lado:</p>
-
                 <p><strong>Primeira Igreja Batista no Jardim das Indústrias</strong>, com sede em Avenida Engenheiro Francisco Prestes Maia, 955 – Jardim das Indústrias – CEP: 12.240-680 - São José dos Campos – SP, inscrita no CNPJ sob o nº 60.127.289/0001-36, neste ato representada por Marcos Davi Ferreira de Andrade, doravante denominada organização religiosa sem fins lucrativos;</p>
 
-                </p>
-                <p>Duração do Contrato</p>
-                <p>A prestação dos serviços voluntários será de um ano, com carga horária semanal/mensal</p>
-                <p>Responsabilidade do Voluntário</p>
+                <span class="clause">Duração do Contrato</span>
+                <p>A prestação dos serviços voluntários será de um ano, com carga horária semanal/mensal de acordo com a escala.</p>
+
+                <span class="clause">Responsabilidade do Voluntário</span>
                 <p>O VOLUNTÁRIO compromete-se a:<br/>
                     a) Cumprir as atividades que lhe forem atribuídas com zelo e dedicação;<br/>
                     b) Obedecer às orientações fornecidas pela ORGANIZAÇÃO;<br/>
                     c) Manter confidencialidade sobre as informações sensíveis da ORGANIZAÇÃO, em especial a Lei 13.709/2018 (LGPD).</p>
+
                 <span class="clause">Direitos do Voluntário</span>
                 <p>O VOLUNTÁRIO tem direito a:<br/>
                     a) Receber orientação adequada para o desempenho das atividades;<br/>
                     b) Ser tratado com respeito e dignidade.</p>
+
                 <span class="clause">Despesas e Reembolsos</span>
                 <p>As despesas realizadas pelo VOLUNTÁRIO no exercício de suas atividades poderão ser reembolsadas, desde que previamente autorizadas pela ORGANIZAÇÃO e mediante apresentação de cupom fiscal.</p>
 
@@ -220,10 +373,11 @@
 
                 <span class="clause">Disposições Gerais</span>
                 <p>O presente termo não cria vínculo empregatício, obrigação de natureza trabalhista ou previdenciária entre as partes.</p>
+                <p>--- Fim do Termo ---</p>
             </div>
             <div style="display: flex; align-items: center;">
                 <input type="checkbox" th:field="*{termosAceitos}" id="termos">
-                <label for="termos" class="check-label">Li e aceito os termos de compromisso.</label>
+                <label for="termos" class="check-label" style="margin-left: 8px;">Li e aceito os termos de compromisso.</label>
             </div>
             <div class="erro" th:if="${#fields.hasErrors('termosAceitos')}" th:errors="*{termosAceitos}"></div>
         </div>
@@ -233,21 +387,108 @@
 </div>
 
 <script>
-    function validarLimite(checkbox) {
-        var checkboxes = document.querySelectorAll('.ministerio-check:checked');
-        if (checkboxes.length > 4) {
-            checkbox.checked = false;
-            alert("Atenção: Você só pode selecionar no máximo 4 ministérios.");
+    // === MÁSCARA DE TELEFONE ===
+    function aplicarMascaraTelefone(input) {
+        let v = input.value.replace(/\D/g, "");
+        v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+        v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+        input.value = v;
+    }
+
+    // === MÁSCARA DE CPF ===
+    function aplicarMascaraCPF(input) {
+        let v = input.value.replace(/\D/g, "");
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        input.value = v;
+
+        input.classList.remove('input-error');
+        document.getElementById('erro-cpf-js').style.display = 'none';
+    }
+
+    // === VALIDAÇÃO DE CPF (Algoritmo) ===
+    function validarCPF(input) {
+        const cpfLimpo = input.value.replace(/\D/g, '');
+        const erroMsg = document.getElementById('erro-cpf-js');
+
+        if (cpfLimpo === "") return;
+
+        if (!isCPFValido(cpfLimpo)) {
+            input.classList.add('input-error');
+            erroMsg.style.display = 'block';
+            input.setCustomValidity("CPF Inválido");
+        } else {
+            input.classList.remove('input-error');
+            erroMsg.style.display = 'none';
+            input.setCustomValidity("");
         }
     }
 
-    function mascaraCPF(i) {
-        var v = i.value;
-        if(isNaN(v[v.length-1])){ i.value = v.substring(0, v.length-1); return; }
-        i.setAttribute("maxlength", "14");
-        if (v.length == 3 || v.length == 7) i.value += ".";
-        if (v.length == 11) i.value += "-";
+    function isCPFValido(cpf) {
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+        let soma = 0, resto;
+        for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+        resto = (soma * 10) % 11;
+        if ((resto === 10) || (resto === 11)) resto = 0;
+        if (resto !== parseInt(cpf.substring(9, 10))) return false;
+        soma = 0;
+        for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+        resto = (soma * 10) % 11;
+        if ((resto === 10) || (resto === 11)) resto = 0;
+        return resto === parseInt(cpf.substring(10, 11));
+    }
+
+
+    // Bloqueio no Submit
+    document.getElementById('formVoluntario').addEventListener('submit', function(event) {
+        const cpfInput = document.getElementById('cpf');
+        if (cpfInput.value && !isCPFValido(cpfInput.value.replace(/\D/g, ''))) {
+             alert("Por favor, corrija o CPF antes de enviar.");
+             event.preventDefault();
+        }
+    });
+
+    // Função auxiliar para permitir clicar na div inteira
+    function triggerCheckbox() {
+        const checkbox = document.getElementById('checkMenor');
+        checkbox.checked = !checkbox.checked;
+        toggleResponsavel();
+    }
+
+    function toggleResponsavel() {
+        const checkbox = document.getElementById('checkMenor');
+        const isMenor = checkbox.checked;
+        const area = document.getElementById('area-responsavel');
+        const container = document.getElementById('containerMenorIdade');
+
+        if (isMenor) {
+            area.style.display = 'block';
+            container.classList.add('ativo');
+
+            // Torna obrigatório
+            document.getElementById('nomeResp').required = true;
+            document.getElementById('cpfResp').required = true;
+            document.getElementById('emailResp').required = true;
+        } else {
+            area.style.display = 'none';
+            container.classList.remove('ativo');
+
+            // Remove obrigatoriedade
+            document.getElementById('nomeResp').required = false;
+            document.getElementById('cpfResp').required = false;
+            document.getElementById('emailResp').required = false;
+
+            // Limpa campos
+            document.getElementById('nomeResp').value = '';
+            document.getElementById('cpfResp').value = '';
+            document.getElementById('emailResp').value = '';
+            // Limpa máscaras
+            document.getElementById('cpfResp').value = '';
+            document.getElementById('telResp').value = '';
+        }
     }
 </script>
+
 </body>
 </html>

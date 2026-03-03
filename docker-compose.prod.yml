@@ -21,19 +21,19 @@ services:
       - AWS_S3_BUCKET_NAME=voluntariado-antecedentes-bucket
 
       # Correção: Passando com o nome da variável do Java E do Sistema para garantir
-      - AWS_ACCESS_KEY_ID='AWS_ACCESS_KEY_ID'
-      - AWS_SECRET_ACCESS_KEY='AWS_SECRET_ACCESS_KEY'
+      - AWS_ACCESS_KEY_ID='a43f458e5793515ac285137dd091365b2c248533'
+      - AWS_SECRET_ACCESS_KEY='fNAshd8slTOlUu1uO1Akhy4UzE6N/YdeRbP30ul7rXs='
 
       # Redundância para o Java pegar direto (caso o properties falhe)
-      - AWS_ACCESS_KEY='AWS_ACCESS_KEY'
-      - AWS_SECRET_KEY='AWS_SECRET_ACCESS_KEY'
+      - AWS_ACCESS_KEY='a43f458e5793515ac285137dd091365b2c248533'
+      - AWS_SECRET_KEY='fNAshd8slTOlUu1uO1Akhy4UzE6N/YdeRbP30ul7rXs='
 
       # --- CONFIGURAÇÃO E-MAIL ---
       - SPRING_MAIL_HOST=smtp.gmail.com
       - SPRING_MAIL_PORT=587
       - SPRING_MAIL_USERNAME=leomelolima86@gmail.com
       # CORREÇÃO: Aspas obrigatórias aqui por causa dos espaços
-      - SPRING_MAIL_PASSWORD=SPRING_MAIL_PASSWORD
+      - SPRING_MAIL_PASSWORD=uwoc paqi rdno qdzh
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     depends_on:

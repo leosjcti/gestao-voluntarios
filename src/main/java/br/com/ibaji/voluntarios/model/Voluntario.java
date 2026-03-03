@@ -23,11 +23,9 @@ public class Voluntario {
     private String cpf;
     private Boolean termosAceitos;
 
-
     @Column(nullable = false)
     private LocalDate dataNascimento;
 
-    // === NOVOS CAMPOS DE CONTROLE (SISTEMA) ===
     private LocalDate dataTermo;      // Data que aceitou
     private LocalDate proximaRenovacao; // Ex: +1 ano
 
@@ -37,9 +35,6 @@ public class Voluntario {
     @CreationTimestamp
     private LocalDateTime dataCriacao;
 
-    private Boolean manualEntregue = false;
-    private LocalDate dataIntegracao;
-    private String liderIntegracao;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -51,6 +46,17 @@ public class Voluntario {
 
     @OneToOne(mappedBy = "voluntario", cascade = CascadeType.ALL)
     private AntecedentesCriminais antecedentes;
+
+    private Boolean antecedentesAnalisados = false;
+
+
+    // --- MENOR DE IDADE ---
+    private boolean menorIdade;
+    private String nomeResponsavel;
+    private String cpfResponsavel;
+    private String emailResponsavel;
+    private String telefoneResponsavel;
+
 
     public Long getId() {
         return id;
@@ -151,27 +157,19 @@ public class Voluntario {
         this.statusTermo = statusTermo;
     }
 
-    public Boolean getManualEntregue() {
-        return manualEntregue;
-    }
 
-    public void setManualEntregue(Boolean manualEntregue) {
-        this.manualEntregue = manualEntregue;
-    }
+    public Boolean getAntecedentesAnalisados() { return antecedentesAnalisados; }
+    public void setAntecedentesAnalisados(Boolean antecedentesAnalisados) { this.antecedentesAnalisados = antecedentesAnalisados; }
 
-    public LocalDate getDataIntegracao() {
-        return dataIntegracao;
-    }
-
-    public void setDataIntegracao(LocalDate dataIntegracao) {
-        this.dataIntegracao = dataIntegracao;
-    }
-
-    public String getLiderIntegracao() {
-        return liderIntegracao;
-    }
-
-    public void setLiderIntegracao(String liderIntegracao) {
-        this.liderIntegracao = liderIntegracao;
-    }
+    // Menor de idade
+    public boolean isMenorIdade() { return menorIdade; }
+    public void setMenorIdade(boolean menorIdade) { this.menorIdade = menorIdade; }
+    public String getNomeResponsavel() { return nomeResponsavel; }
+    public void setNomeResponsavel(String nomeResponsavel) { this.nomeResponsavel = nomeResponsavel; }
+    public String getCpfResponsavel() { return cpfResponsavel; }
+    public void setCpfResponsavel(String cpfResponsavel) { this.cpfResponsavel = cpfResponsavel; }
+    public String getEmailResponsavel() { return emailResponsavel; }
+    public void setEmailResponsavel(String emailResponsavel) { this.emailResponsavel = emailResponsavel; }
+    public String getTelefoneResponsavel() { return telefoneResponsavel; }
+    public void setTelefoneResponsavel(String telefoneResponsavel) { this.telefoneResponsavel = telefoneResponsavel; }
 }

@@ -2,6 +2,7 @@ package br.com.ibaji.voluntarios.repository;
 
 import br.com.ibaji.voluntarios.model.Voluntario;
 import br.com.ibaji.voluntarios.model.dto.RelatorioMinisterioDTO;
+import br.com.ibaji.voluntarios.model.enums.StatusTermo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,8 +36,6 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
     // 1. Contar voluntários sem atestado (antecedentes is null)
     long countByAntecedentesIsNull();
 
-    // 2. Contar manuais pendentes
-    long countByManualEntregueFalse();
 
     // 3. Contar novos no mês atual (Postgres/H2 compatível)
     @Query("SELECT COUNT(v) FROM Voluntario v WHERE MONTH(v.dataCriacao) = :mes AND YEAR(v.dataCriacao) = :ano")
@@ -58,7 +57,6 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
             nativeQuery = true)
     Page<RelatorioMinisterioDTO> contarVoluntariosPorMinisterio(Pageable pageable);
 
-    long countByDataIntegracaoIsNull();
 
     // 2. Agrupar voluntários por BASE do ministério
     // (Essa query é mais complexa pois cruza Voluntario -> Ministerio)
@@ -78,4 +76,13 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
 
     @Query("SELECT v.dataNascimento FROM Voluntario v WHERE v.dataNascimento IS NOT NULL")
     List<LocalDate> findAllDataNascimento();
+
+    long countByAntecedentesAnalisadosFalse();
+
+    @Query("SELECT COUNT(v) FROM Voluntario v WHERE v.antecedentes IS NOT NULL AND v.antecedentesAnalisados = false")
+    long countByAnalisePendente();
+
+    long countByStatusTermo(StatusTermo status);
+
+    long countByMenorIdadeTrue();
 }

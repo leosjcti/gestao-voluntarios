@@ -1,5 +1,6 @@
 package br.com.ibaji.voluntarios.service;
 
+import br.com.ibaji.voluntarios.util.ImagemUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,21 +24,36 @@ public class S3Service {
         this.clienteS3 = clienteS3;
     }
 
-    public String enviarArquivo(MultipartFile arquivo, Long idVoluntario) {
+    public String enviarArquivo(MultipartFile file, Long volunteerId) {
         try {
-            String chaveArquivo = "antecedentes/" + idVoluntario + "/" + System.currentTimeMillis() + "-" + arquivo.getOriginalFilename();
+            // 1. Processa/Comprime a imagem
+            ImagemUtil.ImagemProcessada imagem = ImagemUtil.comprimir(file);
 
-            PutObjectRequest requisicao = PutObjectRequest.builder()
+            // 2. Define o nome (se virou JPG, garante a extensão)
+            String fileName = file.getOriginalFilename();
+            if (imagem.contentType.equals("image/jpeg") && fileName != null && !fileName.toLowerCase().endsWith(".jpg")) {
+                fileName = fileName + ".jpg";
+            }
+
+            String fileKey = "antecedentes/" + volunteerId + "/" + System.currentTimeMillis() + "-" + fileName;
+
+            // 3. Monta a requisição (CORREÇÃO DO ERRO OBJECT METADATA)
+            // No SDK v2, passamos os metadados direto no builder
+            PutObjectRequest putRequest = PutObjectRequest.builder()
                     .bucket(nomeBucket)
-                    .key(chaveArquivo)
-                    .contentType(arquivo.getContentType())
+                    .key(fileKey)
+                    .contentType(imagem.contentType)
+                    .contentLength(imagem.tamanho) // <--- O Pulo do Gato (sem ObjectMetadata)
                     .build();
 
-            clienteS3.putObject(requisicao, RequestBody.fromInputStream(arquivo.getInputStream(), arquivo.getSize()));
+            // 4. Envia o stream processado
+            clienteS3.putObject(putRequest,
+                    RequestBody.fromInputStream(imagem.inputStream, imagem.tamanho));
 
-            return chaveArquivo;
+            return fileKey;
+
         } catch (IOException e) {
-            throw new RuntimeException("Erro ao enviar arquivo para AWS S3", e);
+            throw new RuntimeException("Erro ao processar/enviar arquivo para S3", e);
         }
     }
 

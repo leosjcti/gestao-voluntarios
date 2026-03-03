@@ -39,10 +39,21 @@ public class PdfEmailService {
             // 1. Gerar PDF
             byte[] pdfBytes = gerarPdfTermo(voluntario);
 
-            // 2. Enviar E-mail
-            enviarEmailComAnexo(voluntario, pdfBytes);
+            // 2. Definir o Destinatário (LÓGICA DO MENOR DE IDADE)
+            String emailDestino = voluntario.getEmail();
 
-            System.out.println("E-mail com termo enviado para: " + voluntario.getEmail());
+            // Se for menor de idade e tiver e-mail do responsável, envia para o responsável
+            if (voluntario.isMenorIdade() &&
+                    voluntario.getEmailResponsavel() != null &&
+                    !voluntario.getEmailResponsavel().isEmpty()) {
+
+                emailDestino = voluntario.getEmailResponsavel();
+            }
+
+            // 3. Enviar E-mail
+            enviarEmailComAnexo(emailDestino, voluntario, pdfBytes);
+
+            System.out.println("E-mail com termo enviado para: " + emailDestino);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,7 +77,6 @@ public class PdfEmailService {
             builder.useFastMode();
             builder.withHtmlContent(html, null);
 
-            // --- CORREÇÃO: DIZENDO ONDE GRAVAR ---
             builder.toStream(os);
 
             builder.run();
@@ -74,17 +84,25 @@ public class PdfEmailService {
         }
     }
 
-    private void enviarEmailComAnexo(Voluntario voluntario, byte[] pdfBytes) throws MessagingException {
+    // Ajustei a assinatura para receber o 'destinatario' explicitamente
+    private void enviarEmailComAnexo(String destinatario, Voluntario voluntario, byte[] pdfBytes) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
-        // true = multipart (para aceitar anexo)
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true); // true = multipart (anexo)
 
         helper.setFrom(remetente);
-        helper.setTo(voluntario.getEmail());
+        helper.setTo(destinatario); // Usa o e-mail calculado (Voluntário ou Pai)
+
         helper.setSubject("Seu Termo de Voluntariado - IBAJI");
-        helper.setText("Olá " + voluntario.getNomeCompleto() + ",\n\n" +
+
+        // Personaliza levemente o texto
+        String saudacao = "Olá " + voluntario.getNomeCompleto();
+        if (voluntario.isMenorIdade()) {
+            saudacao += " (e Responsável Legal)";
+        }
+
+        helper.setText(saudacao + ",\n\n" +
                 "Bem-vindo ao time de voluntários!\n" +
-                "Segue em anexo o seu Termo de Voluntariado preenchido.\n\n" +
+                "Segue em anexo o Termo de Voluntariado preenchido para assinatura/conferência.\n\n" +
                 "Deus abençoe,\nIgreja Batista no Jardim das Indústrias.");
 
         // Adiciona o PDF

@@ -26,12 +26,18 @@ public class VoluntarioFormDTO {
     private LocalDate dataNascimento;
 
     @NotNull(message = "Selecione pelo menos um ministério")
-    @Size(min = 1, max = 4, message = "Selecione entre 1 e 4 ministérios") // VALIDAÇÃO DO LIMITE
     private List<Long> idsMinisterios;
 
     @NotNull(message = "O aceite dos termos é obrigatório")
     @AssertTrue(message = "Você deve aceitar os termos")
     private Boolean termosAceitos;
+
+    // --- MENOR DE IDADE ---
+    private boolean menorIdade;
+    private String nomeResponsavel;
+    private String cpfResponsavel;
+    private String emailResponsavel;
+    private String telefoneResponsavel;
 
     // Getters e Setters
     public String getNomeCompleto() { return nomeCompleto; }
@@ -48,4 +54,16 @@ public class VoluntarioFormDTO {
     public void setTermosAceitos(Boolean termosAceitos) { this.termosAceitos = termosAceitos; }
     public LocalDate getDataNascimento() { return dataNascimento; }
     public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+
+    // Getters e Setters
+    public boolean isMenorIdade() { return menorIdade; }
+    public void setMenorIdade(boolean menorIdade) { this.menorIdade = menorIdade; }
+    public String getNomeResponsavel() { return nomeResponsavel; }
+    public void setNomeResponsavel(String nomeResponsavel) { this.nomeResponsavel = nomeResponsavel; }
+    public String getCpfResponsavel() { return cpfResponsavel; }
+    public void setCpfResponsavel(String cpfResponsavel) { this.cpfResponsavel = cpfResponsavel; }
+    public String getEmailResponsavel() { return emailResponsavel; }
+    public void setEmailResponsavel(String emailResponsavel) { this.emailResponsavel = emailResponsavel; }
+    public String getTelefoneResponsavel() { return telefoneResponsavel; }
+    public void setTelefoneResponsavel(String telefoneResponsavel) { this.telefoneResponsavel = telefoneResponsavel; }
 }

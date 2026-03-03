@@ -13,26 +13,26 @@ public class VoluntarioAdminDTO {
     private String nomeCompleto;
     private String email;
     private String telefone;
+    private String cpf;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataNascimento;
-
-    // Controle
-    private Boolean manualEntregue;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dataIntegracao;
-
-    private String liderIntegracao;
 
     private StatusTermo statusTermo;
 
     private List<Long> idsMinisterios;
 
-    // Arquivo (Opcional para o admin)
     private MultipartFile arquivoAntecedentes;
 
-    // Getters e Setters (Gere todos)
+    private Boolean antecedentesAnalisados;
+
+    // --- MENOR DE IDADE ---
+    private boolean menorIdade;
+    private String nomeResponsavel;
+    private String cpfResponsavel;
+    private String emailResponsavel;
+    private String telefoneResponsavel;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNomeCompleto() { return nomeCompleto; }
@@ -43,16 +43,25 @@ public class VoluntarioAdminDTO {
     public void setTelefone(String telefone) { this.telefone = telefone; }
     public LocalDate getDataNascimento() { return dataNascimento; }
     public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
-    public Boolean getManualEntregue() { return manualEntregue; }
-    public void setManualEntregue(Boolean manualEntregue) { this.manualEntregue = manualEntregue; }
-    public LocalDate getDataIntegracao() { return dataIntegracao; }
-    public void setDataIntegracao(LocalDate dataIntegracao) { this.dataIntegracao = dataIntegracao; }
-    public String getLiderIntegracao() { return liderIntegracao; }
-    public void setLiderIntegracao(String liderIntegracao) { this.liderIntegracao = liderIntegracao; }
     public StatusTermo getStatusTermo() { return statusTermo; }
     public void setStatusTermo(StatusTermo statusTermo) { this.statusTermo = statusTermo; }
     public List<Long> getIdsMinisterios() { return idsMinisterios; }
     public void setIdsMinisterios(List<Long> idsMinisterios) { this.idsMinisterios = idsMinisterios; }
     public MultipartFile getArquivoAntecedentes() { return arquivoAntecedentes; }
     public void setArquivoAntecedentes(MultipartFile arquivoAntecedentes) { this.arquivoAntecedentes = arquivoAntecedentes; }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+    public Boolean getAntecedentesAnalisados() { return antecedentesAnalisados; }
+    public void setAntecedentesAnalisados(Boolean antecedentesAnalisados) { this.antecedentesAnalisados = antecedentesAnalisados; }
+
+    public boolean isMenorIdade() { return menorIdade; }
+    public void setMenorIdade(boolean menorIdade) { this.menorIdade = menorIdade; }
+    public String getNomeResponsavel() { return nomeResponsavel; }
+    public void setNomeResponsavel(String nomeResponsavel) { this.nomeResponsavel = nomeResponsavel; }
+    public String getCpfResponsavel() { return cpfResponsavel; }
+    public void setCpfResponsavel(String cpfResponsavel) { this.cpfResponsavel = cpfResponsavel; }
+    public String getEmailResponsavel() { return emailResponsavel; }
+    public void setEmailResponsavel(String emailResponsavel) { this.emailResponsavel = emailResponsavel; }
+    public String getTelefoneResponsavel() { return telefoneResponsavel; }
+    public void setTelefoneResponsavel(String telefoneResponsavel) { this.telefoneResponsavel = telefoneResponsavel; }
 }

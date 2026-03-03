@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,11 +67,19 @@ public class VoluntarioService {
         voluntario.setDataTermo(hoje);
         voluntario.setProximaRenovacao(hoje.plusYears(1));
         voluntario.setStatusTermo(StatusTermo.ATIVO);
-        voluntario.setManualEntregue(false);
 
         // Ministérios (mantém igual)
         Set<Ministerio> ministerios = ministerioRepository.findAllByIdIn(dto.getIdsMinisterios());
         voluntario.setMinisterios(ministerios);
+
+        // --- NOVO: MAPEAMENTO DO MENOR ---
+        voluntario.setMenorIdade(dto.isMenorIdade());
+        if (dto.isMenorIdade()) {
+            voluntario.setNomeResponsavel(dto.getNomeResponsavel());
+            voluntario.setCpfResponsavel(dto.getCpfResponsavel());
+            voluntario.setEmailResponsavel(dto.getEmailResponsavel());
+            voluntario.setTelefoneResponsavel(dto.getTelefoneResponsavel());
+        }
 
         // Salva o voluntário primeiro
         Voluntario salvo = voluntarioRepository.save(voluntario);
@@ -89,8 +98,6 @@ public class VoluntarioService {
 
             pdfEmailService.gerarEEnviarTermo(salvo);
         }
-        // Se não tiver arquivo, o voluntário é salvo sem registro de antecedentes
-        // e no dashboard aparecerá como "Pendente"
     }
 
     public VoluntarioAdminDTO buscarParaEdicao(Long id) {
@@ -103,10 +110,9 @@ public class VoluntarioService {
         dto.setEmail(v.getEmail());
         dto.setTelefone(v.getTelefone());
         dto.setDataNascimento(v.getDataNascimento());
-        dto.setManualEntregue(v.getManualEntregue());
-        dto.setDataIntegracao(v.getDataIntegracao());
-        dto.setLiderIntegracao(v.getLiderIntegracao());
+        dto.setCpf(v.getCpf());
         dto.setStatusTermo(v.getStatusTermo());
+        dto.setAntecedentesAnalisados(v.getAntecedentesAnalisados());
 
         // Mapeia os IDs dos ministérios
         List<Long> ids = v.getMinisterios().stream().map(Ministerio::getId).toList();
@@ -116,47 +122,75 @@ public class VoluntarioService {
     }
 
     @Transactional
-    public void atualizarPeloAdmin(VoluntarioAdminDTO dto) {
-        Voluntario v = voluntarioRepository.findById(dto.getId())
-                .orElseThrow(() -> new RuntimeException("Voluntário não encontrado"));
+    public void salvarPeloAdmin(VoluntarioAdminDTO dto) {
+        Voluntario v;
+        boolean isNovoCadastro = false;
 
-        // Atualiza dados básicos
+        if (dto.getId() != null) {
+            // EDIÇÃO: Busca o existente
+            v = voluntarioRepository.findById(dto.getId())
+                    .orElseThrow(() -> new RuntimeException("Voluntário não encontrado"));
+        } else {
+            // CRIAÇÃO: Instancia um novo
+            v = new Voluntario();
+            v.setDataCriacao(LocalDateTime.now()); // Data de hoje
+            v.setTermosAceitos(true); // Se o admin está cadastrando, assume-se que aceitou (ex: papel)
+            isNovoCadastro = true;
+        }
+
         v.setNomeCompleto(FormatadorTexto.padronizarNome(dto.getNomeCompleto()));
         v.setEmail(dto.getEmail().toLowerCase());
         v.setTelefone(dto.getTelefone());
         v.setDataNascimento(dto.getDataNascimento());
-
-        // Atualiza dados administrativos
-        v.setManualEntregue(dto.getManualEntregue());
-        v.setDataIntegracao(dto.getDataIntegracao());
-        v.setLiderIntegracao(FormatadorTexto.padronizarNome(dto.getLiderIntegracao()));
+        v.setCpf(dto.getCpf()); // Não esqueça do CPF se adicionou no DTO
         v.setStatusTermo(dto.getStatusTermo());
+        v.setAntecedentesAnalisados(dto.getAntecedentesAnalisados());
 
-        // Atualiza Ministérios
+        // Ministérios
         if (dto.getIdsMinisterios() != null) {
             v.setMinisterios(ministerioRepository.findAllByIdIn(dto.getIdsMinisterios()));
         }
 
-        // LÓGICA DO ARQUIVO (O Pulo do Gato)
-        if (dto.getArquivoAntecedentes() != null && !dto.getArquivoAntecedentes().isEmpty()) {
-            // Faz o upload
-            String key = s3Service.enviarArquivo(dto.getArquivoAntecedentes(), v.getId());
-
-            // Verifica se já existe o objeto Antecedentes, se não, cria
-            if (v.getAntecedentes() == null) {
-                AntecedentesCriminais ant = new AntecedentesCriminais();
-                ant.setVoluntario(v);
-                ant.setStatus(StatusAntecedentes.APROVADO); // Se o admin subiu, já tá aprovado
-                v.setAntecedentes(ant);
-            }
-
-            // Atualiza o link do arquivo
-            v.getAntecedentes().setCaminhoArquivoS3(key);
-            v.getAntecedentes().setNomeOriginalArquivo(dto.getArquivoAntecedentes().getOriginalFilename());
-            antecedentesRepository.save(v.getAntecedentes());
+        // --- NOVO: MAPEAMENTO DO MENOR ---
+        v.setMenorIdade(dto.isMenorIdade());
+        if (dto.isMenorIdade()) {
+            v.setNomeResponsavel(dto.getNomeResponsavel());
+            v.setCpfResponsavel(dto.getCpfResponsavel());
+            v.setEmailResponsavel(dto.getEmailResponsavel());
+            v.setTelefoneResponsavel(dto.getTelefoneResponsavel());
         }
 
-        voluntarioRepository.save(v);
+        // Cálculos de Datas automáticas (Apenas na criação)
+        if (dto.getId() == null) {
+            LocalDate hoje = LocalDate.now();
+            if (v.getDataTermo() == null) v.setDataTermo(hoje);
+            if (v.getProximaRenovacao() == null) v.setProximaRenovacao(hoje.plusYears(1));
+            if (v.getStatusTermo() == null) v.setStatusTermo(StatusTermo.ATIVO);
+        }
+
+        // Salva para gerar o ID (necessário para o S3)
+        Voluntario salvo = voluntarioRepository.save(v);
+
+        if (isNovoCadastro) {
+            // O envio é assíncrono, não trava a tela do admin
+            pdfEmailService.gerarEEnviarTermo(salvo);
+        }
+
+        // Lógica de Arquivo (Upload)
+        if (dto.getArquivoAntecedentes() != null && !dto.getArquivoAntecedentes().isEmpty()) {
+            String key = s3Service.enviarArquivo(dto.getArquivoAntecedentes(), salvo.getId());
+
+            if (salvo.getAntecedentes() == null) {
+                AntecedentesCriminais ant = new AntecedentesCriminais();
+                ant.setVoluntario(salvo);
+                ant.setStatus(StatusAntecedentes.APROVADO);
+                salvo.setAntecedentes(ant);
+            }
+            salvo.getAntecedentes().setCaminhoArquivoS3(key);
+            salvo.getAntecedentes().setNomeOriginalArquivo(dto.getArquivoAntecedentes().getOriginalFilename());
+
+            antecedentesRepository.save(salvo.getAntecedentes());
+        }
     }
 
     public void deletarVoluntario(Long id) {

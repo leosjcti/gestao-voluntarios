@@ -28,30 +28,31 @@
                 margin: 0;
                 padding: 0;
                 color: var(--text-dark);
-                /* CORREÇÃO DO BUG VISUAL AQUI: */
                 display: block !important;
                 min-height: 100vh;
             }
 
-            /* Classes Utilitárias Comuns */
+            /* Utilitários */
             .container { padding: 30px; max-width: 1400px; margin: 0 auto; }
             .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
             .page-title { font-size: 24px; color: var(--primary-brown); font-weight: 700; margin: 0; }
 
-            /* Botões Padrão */
+            /* Botões */
             .btn { padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.2s; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; justify-content: center; }
-
             .btn-primary { background: var(--primary-brown); color: white; }
             .btn-primary:hover { background: var(--dark-brown); }
-
             .btn-secondary { background: #e5e7eb; color: #374151; }
             .btn-secondary:hover { background: #d1d5db; }
-
             .btn-danger { background: var(--danger); color: white; }
             .btn-danger:hover { background: #a93226; }
 
-            /* Tabelas Responsivas */
-            .table-responsive { background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(139, 94, 52, 0.08); overflow-x: auto; border: 1px solid #ece7df; }
+            /* === TABELAS ESTRUTURAIS === */
+            .table-responsive {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 10px rgba(139, 94, 52, 0.08);
+                border: 1px solid #ece7df;
+            }
             table { width: 100%; border-collapse: collapse; white-space: nowrap; }
             th { background: #fcfbf9; padding: 16px; font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--primary-brown); text-align: left; border-bottom: 2px solid #ece7df; }
             td { padding: 16px; font-size: 14px; border-bottom: 1px solid #f3f4f6; color: var(--text-dark); }
@@ -62,6 +63,67 @@
             .badge-success { background-color: var(--success-bg); color: var(--success); }
             .badge-warning { background-color: #fff8c5; color: #854d0e; }
             .badge-danger { background-color: var(--danger-bg); color: var(--danger); }
+
+            /* === PAGINAÇÃO (CORRIGIDA) === */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 6px;
+                margin-top: 25px;
+                flex-wrap: wrap;
+            }
+
+            .page-link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 36px;           /* Altura fixa */
+                min-width: 36px;        /* Largura mínima para números */
+                padding: 0 10px;
+                background: white;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                color: var(--primary-brown);
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 1;
+                transition: all 0.2s;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            }
+
+            .page-link:hover {
+                background-color: #f9fafb;
+                border-color: var(--primary-brown);
+                transform: translateY(-1px);
+            }
+
+            .page-link.active {
+                background-color: var(--primary-brown);
+                color: white;
+                border-color: var(--primary-brown);
+            }
+
+            .page-info { text-align: center; font-size: 12px; color: #6b7280; margin-top: 10px; }
+
+            /* === MENU MOBILE CORRIGIDO === */
+            @media (max-width: 768px) {
+                .container { padding: 15px; }
+
+                /* Table to Card */
+                .table-responsive table thead { display: none; }
+                .table-responsive { box-shadow: none; border: none; background: transparent; }
+                .table-responsive table tbody tr {
+                    display: block; background: white; margin-bottom: 15px; border-radius: 10px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #ddd; padding: 15px;
+                }
+                .table-responsive table tbody td {
+                    display: flex; justify-content: space-between; align-items: center;
+                    padding: 8px 0; border-bottom: 1px solid #f0f0f0; text-align: right; white-space: normal;
+                }
+                .table-responsive table tbody td:last-child { border-bottom: none; justify-content: flex-end; padding-top: 15px; }
+            }
         </style>
     </th:block>
 </head>
@@ -69,159 +131,31 @@
 
 <nav th:fragment="navbar(ativo)" class="navbar">
     <style>
-        /* === ESTILOS DA NAVBAR (Desktop) === */
-        .navbar {
-            background: var(--primary-brown);
-            color: white;
-            border-bottom: 1px solid var(--dark-brown);
-            padding: 0 20px;
-            height: 70px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            position: relative;
-            z-index: 1000;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
+        /* Navbar Styles Inline para garantir prioridade */
+        .navbar { background: var(--primary-brown); color: white; border-bottom: 1px solid var(--dark-brown); padding: 0 20px; height: 70px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); position: relative; z-index: 1000; }
+        .navbar-brand { display: flex; align-items: center; text-decoration: none; }
         .navbar-logo { height: 50px; filter: brightness(0) invert(1); }
-
-        /* Menu Desktop */
-        .navbar-menu {
-            display: flex;
-            gap: 5px;
-            height: 100%;
-            align-items: center;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: rgba(255,255,255,0.85);
-            font-weight: 500;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .nav-link.active {
-            background-color: var(--accent-gold);
-            color: var(--text-dark);
-            font-weight: 700;
-        }
-
+        .navbar-menu { display: flex; gap: 5px; height: 100%; align-items: center; }
+        .nav-link { text-decoration: none; color: rgba(255,255,255,0.85); font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 6px; transition: all 0.2s; }
+        .nav-link:hover { background-color: rgba(255,255,255,0.1); color: white; }
+        .nav-link.active { background-color: var(--accent-gold); color: var(--text-dark); font-weight: 700; }
         .logout-form { margin-left: 15px; }
+        .logout-btn { background: transparent; color: #ffcccc; border: 1px solid rgba(255,200,200,0.3); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+        .logout-btn:hover { background: #cb5a5a; color: white; border-color: #cb5a5a; }
+        .hamburger { display: none; font-size: 28px; background: none; border: none; color: white; cursor: pointer; padding: 5px; }
 
-        .logout-btn {
-            background: transparent;
-            color: #ffcccc;
-            border: 1px solid rgba(255,200,200,0.3);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .logout-btn:hover {
-            background: #cb5a5a;
-            color: white;
-            border-color: #cb5a5a;
-        }
-
-        /* Botão Hambúrguer (Invisível no Desktop) */
-        .hamburger {
-            display: none;
-            font-size: 24px;
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        /* === VERSÃO MOBILE (Telas menores que 768px) === */
         @media (max-width: 768px) {
-            .navbar {
-                padding: 0 15px;
-                height: 60px;
-            }
-
+            .navbar { padding: 0 15px; height: 60px; }
             .navbar-logo { height: 35px; }
-
             .hamburger { display: block; }
-
-            .navbar-menu {
-                    display: none; /* Escondido inicialmente */
-                    position: absolute;
-                    top: 60px; /* Logo abaixo da barra */
-                    left: 0;
-                    width: 100%;
-
-                    /* CORREÇÃO: Fundo sólido e sobreposição */
-                    background-color: #ffffff; /* Fundo branco sólido */
-                    z-index: 9999; /* Garante que fique NA FRENTE de tudo */
-                    border-bottom: 2px solid var(--primary-brown); /* Borda embaixo pra destacar */
-
-                    flex-direction: column;
-                    align-items: stretch;
-                    padding: 0; /* Removi padding extra */
-                    box-shadow: 0 10px 15px rgba(0,0,0,0.2); /* Sombra mais forte */
-            }
-
-            .navbar-menu.show {
-                display: flex;
-                animation: slideDown 0.3s ease;
-            }
-
-            .nav-link {
-                    color: var(--text-dark);
-                    padding: 15px 20px; /* Espaçamento generoso para o dedo */
-                    border-radius: 0;
-                    border-bottom: 1px solid #f0f0f0; /* Linha divisória sutil */
-                    justify-content: flex-start;
-                    background-color: #fff; /* Garante fundo branco no item também */
-            }
-
-            .nav-link:hover {
-                background-color: #f9fafb;
-                color: var(--primary-brown);
-            }
-
-            .nav-link.active {
-                background-color: #fff8e1;
-                color: var(--primary-brown);
-                border-left: 5px solid var(--primary-brown);
-            }
-
-            .logout-form { margin: 10px 20px; }
-
-            .logout-btn {
-                width: 100%;
-                background-color: var(--danger-bg);
-                color: var(--danger);
-                border: none;
-                padding: 12px;
-            }
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            .navbar-menu { display: none; position: absolute; top: 60px; left: 0; width: 100%; height: auto; background-color: var(--primary-brown) !important; z-index: 99999 !important; box-shadow: 0 10px 20px rgba(0,0,0,0.5); flex-direction: column; align-items: stretch; padding: 0; border-top: 1px solid rgba(255,255,255,0.1); }
+            .navbar-menu.show { display: flex !important; }
+            .nav-link { color: white !important; padding: 18px 25px; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,0.1); justify-content: flex-start; font-size: 16px; background-color: var(--primary-brown); }
+            .nav-link:hover { background-color: var(--dark-brown); }
+            .nav-link.active { background-color: var(--accent-gold) !important; color: var(--text-dark) !important; border-left: 8px solid white; }
+            .logout-form { margin: 0; width: 100%; }
+            .logout-btn { width: 100%; background-color: #5d3a2a; color: #ffcccc; border: none; padding: 20px 25px; border-radius: 0; text-align: left; display: flex; align-items: center; gap: 10px; font-size: 16px; margin-top: 10px; }
+            .logout-btn::before { content: '🚪'; }
         }
     </style>
 
@@ -229,37 +163,24 @@
         <img src="/images/ibaji-logo.png" alt="Ibaji Admin" class="navbar-logo"/>
     </a>
 
-    <button class="hamburger" onclick="toggleMenu()" aria-label="Abrir Menu">
-        ☰
-    </button>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Abrir Menu">☰</button>
 
     <div class="navbar-menu" id="navMenu">
-        <a href="/admin" class="nav-link" th:classappend="${ativo == 'voluntarios'} ? 'active'">
-            🙋 <span style="margin-left:5px">Voluntários</span>
-        </a>
-        <a href="/admin/ministerios" class="nav-link" th:classappend="${ativo == 'ministerios'} ? 'active'">
-            🏛️ <span style="margin-left:5px">Ministérios</span>
-        </a>
-        <a href="/admin/relatorios" class="nav-link" th:classappend="${ativo == 'relatorios'} ? 'active'">
-            📊 <span style="margin-left:5px">Relatórios</span>
-        </a>
-
+        <a href="/admin" class="nav-link" th:classappend="${ativo == 'voluntarios'} ? 'active'">🙋 <span style="margin-left:5px">Voluntários</span></a>
+        <a href="/admin/ministerios" class="nav-link" th:classappend="${ativo == 'ministerios'} ? 'active'">🏛️ <span style="margin-left:5px">Ministérios</span></a>
+        <a href="/admin/relatorios" class="nav-link" th:classappend="${ativo == 'relatorios'} ? 'active'">📊 <span style="margin-left:5px">Relatórios</span></a>
+        <a href="/admin/usuarios" class="nav-link" th:classappend="${ativo == 'usuarios'} ? 'active'" sec:authorize="hasRole('SUPER_ADMIN')">🔑 <span style="margin-left:5px">Usuários</span></a>
         <form th:action="@{/logout}" method="post" class="logout-form">
-            <button class="logout-btn" type="submit">Sair</button>
+            <button class="logout-btn" type="submit">Sair do Sistema</button>
         </form>
     </div>
 
     <script>
         function toggleMenu() {
             var menu = document.getElementById('navMenu');
-            if (menu.classList.contains('show')) {
-                menu.classList.remove('show');
-            } else {
-                menu.classList.add('show');
-            }
+            if (menu.classList.contains('show')) { menu.classList.remove('show'); } else { menu.classList.add('show'); }
         }
     </script>
 </nav>
-
 </body>
 </html>

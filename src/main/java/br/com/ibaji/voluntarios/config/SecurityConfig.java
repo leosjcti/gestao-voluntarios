@@ -22,6 +22,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         // Libera arquivos estáticos e a área pública
                         .requestMatchers("/voluntarios/**", "/css/**", "/js/**", "/images/**").permitAll()
+
+                        .requestMatchers("/admin/usuarios/**").hasRole("SUPER_ADMIN")
+
                         // Qualquer outra coisa exige login
                         .anyRequest().authenticated()
                 )

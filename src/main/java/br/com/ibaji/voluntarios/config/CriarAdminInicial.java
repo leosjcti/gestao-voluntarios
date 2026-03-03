@@ -19,13 +19,17 @@ public class CriarAdminInicial implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (repository.count() == 0) {
+        // Verifica se o usuário 'admin' JÁ existe especificamente
+        if (repository.findByLogin("admin").isEmpty()) {
             Usuario admin = new Usuario();
             admin.setLogin("admin");
-            admin.setSenha(passwordEncoder.encode("admin123")); // Criptografa
-            admin.setRole("ADMIN");
+
+            // Defina a senha que você quer aqui
+            admin.setSenha(passwordEncoder.encode("Admin123"));
+
+            admin.setRole("SUPER_ADMIN");
             repository.save(admin);
-            System.out.println("--- USUÁRIO ADMIN CRIADO ---");
+            System.out.println("--- USUÁRIO ADMIN RECRIADO COM SUCESSO ---");
         }
     }
 }

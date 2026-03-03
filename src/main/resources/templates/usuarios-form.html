@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro de Usuário</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+    <style>
+        .form-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(139, 94, 52, 0.1); max-width: 500px; margin: 0 auto; }
+        label { display: block; margin-top: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 5px;}
+        input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; background: #fcfbf9; box-sizing: border-box; }
+        input:focus, select:focus { outline: none; border-color: var(--accent-gold); background: white; box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2); }
+        .actions { margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eee; padding-top: 20px;}
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments :: navbar(ativo='usuarios')}"></div>
+
+<div class="container">
+    <div class="form-card">
+        <h2 class="page-title" style="margin-bottom: 20px; font-size: 20px;">Dados do Usuário</h2>
+
+        <form th:action="@{/admin/usuarios/salvar}" th:object="${usuario}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <label>Login (Usuário):</label>
+            <input type="text" th:field="*{login}" required autocomplete="off"/>
+
+            <label>Senha:</label>
+            <input type="password" th:field="*{senha}" placeholder="Deixe em branco para manter a atual (se editando)" autocomplete="new-password"/>
+
+            <label>Permissão:</label>
+            <select th:field="*{role}">
+                <option value="ADMIN">Admin Comum (Acessa tudo menos usuários)</option>
+                <option value="SUPER_ADMIN">Super Admin (Acesso Total)</option>
+            </select>
+
+            <div class="actions">
+                <a href="/admin/usuarios" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

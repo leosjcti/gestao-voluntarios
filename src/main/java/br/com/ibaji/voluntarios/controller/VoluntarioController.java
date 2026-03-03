@@ -3,6 +3,7 @@ package br.com.ibaji.voluntarios.controller;
 import br.com.ibaji.voluntarios.model.dto.VoluntarioFormDTO;
 import br.com.ibaji.voluntarios.repository.BaseRepository;
 import br.com.ibaji.voluntarios.service.VoluntarioService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,10 @@ public class VoluntarioController {
     }
 
     @GetMapping("/novo")
-    public String exibirFormulario(Model modelo) {
+    public String exibirFormulario(Model modelo, HttpServletRequest request) {
+
+        request.getSession(true);
+
         modelo.addAttribute("formDto", new VoluntarioFormDTO());
         //modelo.addAttribute("listaMinisterios", servico.listarTodosMinisterios());
         modelo.addAttribute("listaBases", baseRepository.findAll());

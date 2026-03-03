@@ -1,0 +1,1 @@
+UPDATE usuarios SET role = 'SUPER_ADMIN' WHERE login = 'admin';
