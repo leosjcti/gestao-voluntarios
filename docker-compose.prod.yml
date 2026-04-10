@@ -5,7 +5,7 @@ services:
     container_name: voluntariado-app
     restart: always
     ports:
-      - "8080:8080"
+      - "80:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - JAVA_TOOL_OPTIONS=-Xmx450m
@@ -31,9 +31,9 @@ services:
       # --- CONFIGURAÇÃO E-MAIL ---
       - SPRING_MAIL_HOST=smtp.gmail.com
       - SPRING_MAIL_PORT=587
-      - SPRING_MAIL_USERNAME=leomelolima86@gmail.com
+      - SPRING_MAIL_USERNAME=ibaji.gestaoministerial@gmail.com
       # CORREÇÃO: Aspas obrigatórias aqui por causa dos espaços
-      - SPRING_MAIL_PASSWORD=uwoc paqi rdno qdzh
+      - SPRING_MAIL_PASSWORD=${EMAIL_PASSWORD:-SUA_SENHA_AQUI}
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     depends_on:

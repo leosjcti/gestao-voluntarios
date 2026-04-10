@@ -39,31 +39,111 @@ public class VoluntarioFormDTO {
     private String emailResponsavel;
     private String telefoneResponsavel;
 
-    // Getters e Setters
-    public String getNomeCompleto() { return nomeCompleto; }
-    public void setNomeCompleto(String nomeCompleto) { this.nomeCompleto = nomeCompleto; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getTelefone() { return telefone; }
-    public void setTelefone(String telefone) { this.telefone = telefone; }
-    public String getCpf() { return cpf; }
-    public void setCpf(String cpf) { this.cpf = cpf; }
-    public List<Long> getIdsMinisterios() { return idsMinisterios; }
-    public void setIdsMinisterios(List<Long> idsMinisterios) { this.idsMinisterios = idsMinisterios; }
-    public Boolean getTermosAceitos() { return termosAceitos; }
-    public void setTermosAceitos(Boolean termosAceitos) { this.termosAceitos = termosAceitos; }
-    public LocalDate getDataNascimento() { return dataNascimento; }
-    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+    private boolean membroIbaji;
 
     // Getters e Setters
-    public boolean isMenorIdade() { return menorIdade; }
-    public void setMenorIdade(boolean menorIdade) { this.menorIdade = menorIdade; }
-    public String getNomeResponsavel() { return nomeResponsavel; }
-    public void setNomeResponsavel(String nomeResponsavel) { this.nomeResponsavel = nomeResponsavel; }
-    public String getCpfResponsavel() { return cpfResponsavel; }
-    public void setCpfResponsavel(String cpfResponsavel) { this.cpfResponsavel = cpfResponsavel; }
-    public String getEmailResponsavel() { return emailResponsavel; }
-    public void setEmailResponsavel(String emailResponsavel) { this.emailResponsavel = emailResponsavel; }
-    public String getTelefoneResponsavel() { return telefoneResponsavel; }
-    public void setTelefoneResponsavel(String telefoneResponsavel) { this.telefoneResponsavel = telefoneResponsavel; }
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
+
+    public void setNomeCompleto(String nomeCompleto) {
+        this.nomeCompleto = nomeCompleto;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public List<Long> getIdsMinisterios() {
+        return idsMinisterios;
+    }
+
+    public void setIdsMinisterios(List<Long> idsMinisterios) {
+        this.idsMinisterios = idsMinisterios;
+    }
+
+    public Boolean getTermosAceitos() {
+        return termosAceitos;
+    }
+
+    public void setTermosAceitos(Boolean termosAceitos) {
+        this.termosAceitos = termosAceitos;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    // Getters e Setters
+    public boolean isMenorIdade() {
+        return menorIdade;
+    }
+
+    public void setMenorIdade(boolean menorIdade) {
+        this.menorIdade = menorIdade;
+    }
+
+    public boolean isMembroIbaji() {
+        return membroIbaji;
+    }
+
+    public void setMembroIbaji(boolean membroIbaji) {
+        this.membroIbaji = membroIbaji;
+    }
+
+    public String getNomeResponsavel() {
+        return nomeResponsavel;
+    }
+
+    public void setNomeResponsavel(String nomeResponsavel) {
+        this.nomeResponsavel = nomeResponsavel;
+    }
+
+    public String getCpfResponsavel() {
+        return cpfResponsavel;
+    }
+
+    public void setCpfResponsavel(String cpfResponsavel) {
+        this.cpfResponsavel = cpfResponsavel;
+    }
+
+    public String getEmailResponsavel() {
+        return emailResponsavel;
+    }
+
+    public void setEmailResponsavel(String emailResponsavel) {
+        this.emailResponsavel = emailResponsavel;
+    }
+
+    public String getTelefoneResponsavel() {
+        return telefoneResponsavel;
+    }
+
+    public void setTelefoneResponsavel(String telefoneResponsavel) {
+        this.telefoneResponsavel = telefoneResponsavel;
+    }
 }

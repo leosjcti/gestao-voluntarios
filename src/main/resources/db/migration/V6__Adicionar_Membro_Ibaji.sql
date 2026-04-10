@@ -1,0 +1,1 @@
+ALTER TABLE voluntarios ADD COLUMN membro_ibaji BOOLEAN DEFAULT FALSE;

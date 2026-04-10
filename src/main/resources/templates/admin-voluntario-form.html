@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Gestão de Voluntário</title>
     <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
@@ -35,6 +36,7 @@
             gap: 5px;
             transition: all 0.2s;
         }
+
         .btn-back:hover {
             background-color: #f3f4f6;
             color: var(--primary-brown);
@@ -46,7 +48,7 @@
             background: white;
             border-radius: 8px;
             padding: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             border: 1px solid #ece7df;
             max-width: 900px;
             margin: 0 auto;
@@ -64,7 +66,10 @@
             border-left: 4px solid var(--accent-gold);
             padding-left: 10px;
         }
-        .section-title:first-of-type { margin-top: 0; }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
 
         /* Grid System */
         .form-grid {
@@ -72,8 +77,15 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        .form-group { display: flex; flex-direction: column; }
-        .form-group.full-width { grid-column: 1 / -1; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
 
         label {
             font-weight: 600;
@@ -82,7 +94,8 @@
             color: #4b5563;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 10px;
             border: 1px solid #d1d5db;
@@ -91,7 +104,9 @@
             background-color: #f9fafb;
             box-sizing: border-box;
         }
-        input:focus, select:focus {
+
+        input:focus,
+        select:focus {
             outline: none;
             border-color: var(--accent-gold);
             background-color: white;
@@ -109,8 +124,14 @@
             border-bottom: 1px solid #f0f0f0;
             background: white;
         }
-        details:last-child { border-bottom: none; }
-        details[open] { background: #fcfbf9; }
+
+        details:last-child {
+            border-bottom: none;
+        }
+
+        details[open] {
+            background: #fcfbf9;
+        }
 
         summary {
             padding: 12px 15px;
@@ -119,14 +140,24 @@
             color: var(--primary-brown);
             font-size: 14px;
             outline: none;
-            list-style: none; /* Remove triângulo padrão */
+            list-style: none;
+            /* Remove triângulo padrão */
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
         /* Ícone personalizado */
-        summary::after { content: '+'; font-weight: bold; color: #999; }
-        details[open] summary::after { content: '-'; color: var(--accent-gold); }
+        summary::after {
+            content: '+';
+            font-weight: bold;
+            color: #999;
+        }
+
+        details[open] summary::after {
+            content: '-';
+            color: var(--accent-gold);
+        }
 
         .ministry-list {
             padding: 15px;
@@ -141,8 +172,19 @@
             align-items: center;
             gap: 8px;
         }
-        .ministry-item input { width: auto; cursor: pointer; accent-color: var(--primary-brown); }
-        .ministry-item label { margin: 0; cursor: pointer; font-weight: normal; font-size: 14px; }
+
+        .ministry-item input {
+            width: auto;
+            cursor: pointer;
+            accent-color: var(--primary-brown);
+        }
+
+        .ministry-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+            font-size: 14px;
+        }
 
         /* === UPLOAD BOX === */
         .upload-box {
@@ -163,7 +205,11 @@
             border-top: 1px solid #e5e7eb;
         }
 
-        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
         /* ACORDEÃO BLINDADO PARA IOS/SAFARI */
         details {
@@ -171,8 +217,10 @@
             background: #fff;
             border-radius: 4px;
             margin-bottom: 5px;
-            border: 1px solid #dccfc5; /* Cor da borda igual ao input */
-            overflow: hidden; /* Garante que bordas arredondadas funcionem */
+            border: 1px solid #dccfc5;
+            /* Cor da borda igual ao input */
+            overflow: hidden;
+            /* Garante que bordas arredondadas funcionem */
         }
 
         details[open] {
@@ -202,191 +250,217 @@
             display: none;
         }
 
-        summary:hover { background: #f3efe9; }
+        summary:hover {
+            background: #f3efe9;
+        }
 
         /* Nosso ícone personalizado */
         summary::after {
             content: '+';
-            font-size: 1.5em; /* Aumentei um pouco */
+            font-size: 1.5em;
+            /* Aumentei um pouco */
             font-weight: bold;
             color: var(--accent-gold);
             line-height: 1;
-            margin-left: 10px; /* Garante espaço entre texto e ícone */
+            margin-left: 10px;
+            /* Garante espaço entre texto e ícone */
         }
 
-        details[open] summary::after { content: '-'; }
+        details[open] summary::after {
+            content: '-';
+        }
     </style>
 </head>
+
 <body>
 
-<div th:replace="~{fragments :: navbar(ativo='voluntarios')}"></div>
+    <div th:replace="~{fragments :: navbar(ativo='voluntarios')}"></div>
 
-<div class="container">
+    <div class="container">
 
-    <div class="form-card">
-        <div class="form-header-wrapper">
-            <h2 class="page-title"
-                th:text="${voluntario.id == null} ? 'Novo Voluntário' : 'Editar Voluntário'">
-            </h2>
-            <a href="/admin" class="btn-back">← Voltar para Lista</a>
+        <div class="form-card">
+            <div class="form-header-wrapper">
+                <h2 class="page-title"
+                    th:text="${modoLeitura} ? 'Visualizar Voluntário' : (${voluntario.id == null} ? 'Novo Voluntário' : 'Editar Voluntário')">
+                </h2>
+                <a href="/admin" class="btn-back">← Voltar para Lista</a>
+            </div>
+
+            <form id="formAdmin" th:action="@{/admin/voluntarios/salvar}" th:object="${voluntario}" method="post"
+                enctype="multipart/form-data">
+                <input type="hidden" th:field="*{id}" />
+
+                <fieldset th:disabled="${modoLeitura == true}" style="border: none; padding: 0; margin: 0;">
+
+                    <div class="section-title">Dados Pessoais</div>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Nome Completo</label>
+                            <input type="text" th:field="*{nomeCompleto}" required />
+                        </div>
+                        <div class="form-group">
+                            <label>CPF</label>
+                            <input type="text" th:field="*{cpf}" id="cpf" placeholder="000.000.000-00" maxlength="14"
+                                oninput="mascaraCPF(this)" onblur="validarCPF(this)" />
+
+                            <div id="erro-cpf-js"
+                                style="color: #c0392b; font-size: 0.85rem; margin-top: 4px; display: none;">
+                                CPF inválido.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Nascimento</label>
+                            <input type="date" th:field="*{dataNascimento}" required />
+                        </div>
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" th:field="*{email}" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone (WhatsApp)</label>
+                            <input type="text" th:field="*{telefone}" maxlength="15" oninput="mascaraTelefone(this)"
+                                required />
+                        </div>
+
+                        <!-- CHECKBOX MEMBRO IBAJI (RE-ADICIONADO) -->
+                        <div class="form-group full-width"
+                            style="display: flex; flex-direction: row; align-items: center; gap: 8px;">
+                            <input type="checkbox" th:field="*{membroIbaji}" id="adminMembroIbaji"
+                                style="width: 20px; height: 20px; accent-color: var(--primary-brown); margin: 0;" />
+                            <label for="adminMembroIbaji" style="margin-bottom: 0;">Sou membro da IBAJI</label>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Controle Administrativo</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Status do Termo</label>
+                            <select th:field="*{statusTermo}">
+                                <option th:each="status : ${statusOpcoes}" th:value="${status}" th:text="${status}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Documento Analisado?</label>
+                            <select th:field="*{antecedentesAnalisados}" style="font-weight: bold;">
+                                <option value="false" style="color:red;">⚠️ Pendente / Não Analisado</option>
+                                <option value="true" style="color:green;">✅ Aprovado / Analisado</option>
+                            </select>
+                            <small style="color: #666; margin-top: 5px;">Marque como "Aprovado" após verificar o
+                                anexo.</small>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Ministérios</div>
+                    <div class="ministry-container">
+
+                        <details th:each="base : ${listaBases}">
+                            <summary>
+                                <span th:text="${base.nome}">ADORAÇÃO</span>
+                            </summary>
+
+                            <div class="ministry-list">
+                                <div th:each="min : ${base.ministerios}" class="ministry-item">
+                                    <input type="checkbox" th:field="*{idsMinisterios}" th:value="${min.id}"
+                                        th:id="${'min_' + min.id}" />
+                                    <label th:for="${'min_' + min.id}" th:text="${min.nome}"></label>
+                                </div>
+                                <div th:if="${base.ministerios.empty}"
+                                    style="color:#999; font-size:12px; font-style:italic;">
+                                    Nenhum ministério nesta base.
+                                </div>
+                            </div>
+                        </details>
+
+                    </div>
+
+                    <div class="section-title">Documentação</div>
+                    <div class="upload-box">
+                        <label style="color: #854d0e; font-weight:bold; display:block; margin-bottom:5px;">
+                            Anexar/Substituir Atestado
+                        </label>
+                        <input type="file" name="arquivoAntecedentes" style="background:white; width:auto;" />
+                        <div style="font-size:12px; color:#666; margin-top:5px;">
+                            Selecione um arquivo apenas se desejar adicionar ou substituir o atual.
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="actions">
+                    <a href="/admin" class="btn btn-secondary">Cancelar</a>
+                </div>
+
+                <div class="form-actions" th:if="${modoLeitura != true}">
+                    <button type="submit" class="btn-submit">Salvar Dados</button>
+                </div>
+            </form>
         </div>
-
-        <form id="formAdmin" th:action="@{/admin/voluntarios/salvar}" th:object="${voluntario}" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:field="*{id}" />
-
-            <div class="section-title">Dados Pessoais</div>
-            <div class="form-grid">
-                <div class="form-group full-width">
-                    <label>Nome Completo</label>
-                    <input type="text" th:field="*{nomeCompleto}" required />
-                </div>
-                <div class="form-group">
-                    <label>CPF</label>
-                    <input type="text" th:field="*{cpf}" id="cpf" placeholder="000.000.000-00" maxlength="14"
-                           oninput="mascaraCPF(this)" onblur="validarCPF(this)" />
-
-                    <div id="erro-cpf-js" style="color: #c0392b; font-size: 0.85rem; margin-top: 4px; display: none;">
-                        CPF inválido.
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Data de Nascimento</label>
-                    <input type="date" th:field="*{dataNascimento}" required />
-                </div>
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" th:field="*{email}" required />
-                </div>
-                <div class="form-group">
-                    <label>Telefone (WhatsApp)</label>
-                    <input type="text" th:field="*{telefone}" maxlength="15" oninput="mascaraTelefone(this)" required />
-                </div>
-            </div>
-
-            <div class="section-title">Controle Administrativo</div>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Status do Termo</label>
-                    <select th:field="*{statusTermo}">
-                        <option th:each="status : ${statusOpcoes}" th:value="${status}" th:text="${status}"></option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Documento Analisado?</label>
-                    <select th:field="*{antecedentesAnalisados}" style="font-weight: bold;">
-                        <option value="false" style="color:red;">⚠️ Pendente / Não Analisado</option>
-                        <option value="true" style="color:green;">✅ Aprovado / Analisado</option>
-                    </select>
-                    <small style="color: #666; margin-top: 5px;">Marque como "Aprovado" após verificar o anexo.</small>
-                </div>
-            </div>
-
-            <div class="section-title">Ministérios</div>
-            <div class="ministry-container">
-
-                <details th:each="base : ${listaBases}">
-                    <summary>
-                        <span th:text="${base.nome}">ADORAÇÃO</span>
-                    </summary>
-
-                    <div class="ministry-list">
-                        <div th:each="min : ${base.ministerios}" class="ministry-item">
-                            <input type="checkbox"
-                                   th:field="*{idsMinisterios}"
-                                   th:value="${min.id}"
-                                   th:id="${'min_' + min.id}" />
-                            <label th:for="${'min_' + min.id}" th:text="${min.nome}"></label>
-                        </div>
-                        <div th:if="${base.ministerios.empty}" style="color:#999; font-size:12px; font-style:italic;">
-                            Nenhum ministério nesta base.
-                        </div>
-                    </div>
-                </details>
-
-            </div>
-
-            <div class="section-title">Documentação</div>
-            <div class="upload-box">
-                <label style="color: #854d0e; font-weight:bold; display:block; margin-bottom:5px;">
-                    Anexar/Substituir Atestado
-                </label>
-                <input type="file" name="arquivoAntecedentes" style="background:white; width:auto;" />
-                <div style="font-size:12px; color:#666; margin-top:5px;">
-                    Selecione um arquivo apenas se desejar adicionar ou substituir o atual.
-                </div>
-            </div>
-
-            <div class="actions">
-                <a href="/admin" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Salvar Dados</button>
-            </div>
-        </form>
     </div>
-</div>
 
-<script>
-    // Máscara CPF
-    function mascaraCPF(i) {
-        var v = i.value.replace(/\D/g, "");
-        i.value = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    <script>
+        // Máscara CPF
+        function mascaraCPF(i) {
+            var v = i.value.replace(/\D/g, "");
+            i.value = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 
-        // Limpa erro ao digitar
-        i.style.borderColor = "#d1d5db";
-        document.getElementById('erro-cpf-js').style.display = 'none';
-    }
-
-    // Máscara Telefone
-    function mascaraTelefone(input) {
-        let v = input.value.replace(/\D/g, "");
-        v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
-        v = v.replace(/(\d)(\d{4})$/, "$1-$2");
-        input.value = v;
-    }
-
-    // Validação Visual (On Blur)
-    function validarCPF(input) {
-        const cpfLimpo = input.value.replace(/\D/g, '');
-        const erroMsg = document.getElementById('erro-cpf-js');
-
-        if (cpfLimpo === "") return; // Se vazio, deixa passar (se for required, o HTML segura)
-
-        if (!isCPFValido(cpfLimpo)) {
-            input.style.borderColor = "#c0392b";
-            input.style.backgroundColor = "#fff5f5";
-            erroMsg.style.display = 'block';
-        } else {
-            input.style.borderColor = "#d1d5db";
-            input.style.backgroundColor = "#fcfbf9";
-            erroMsg.style.display = 'none';
+            // Limpa erro ao digitar
+            i.style.borderColor = "#d1d5db";
+            document.getElementById('erro-cpf-js').style.display = 'none';
         }
-    }
 
-    // Algoritmo Matemático
-    function isCPFValido(cpf) {
-        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-        let soma = 0, resto;
-        for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
-        resto = (soma * 10) % 11;
-        if ((resto === 10) || (resto === 11)) resto = 0;
-        if (resto !== parseInt(cpf.substring(9, 10))) return false;
-        soma = 0;
-        for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
-        resto = (soma * 10) % 11;
-        if ((resto === 10) || (resto === 11)) resto = 0;
-        return resto === parseInt(cpf.substring(10, 11));
-    }
-
-    // BLOQUEIO DO SUBMIT (O Importante)
-    document.getElementById('formAdmin').addEventListener('submit', function(event) {
-        const cpfInput = document.getElementById('cpf');
-        // Só valida se tiver algo digitado
-        if (cpfInput.value && !isCPFValido(cpfInput.value.replace(/\D/g, ''))) {
-             alert("ERRO: O CPF informado é inválido. Corrija antes de salvar.");
-             cpfInput.focus();
-             event.preventDefault(); // Cancela o envio
+        // Máscara Telefone
+        function mascaraTelefone(input) {
+            let v = input.value.replace(/\D/g, "");
+            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+            input.value = v;
         }
-    });
-</script>
+
+        // Validação Visual (On Blur)
+        function validarCPF(input) {
+            const cpfLimpo = input.value.replace(/\D/g, '');
+            const erroMsg = document.getElementById('erro-cpf-js');
+
+            if (cpfLimpo === "") return; // Se vazio, deixa passar (se for required, o HTML segura)
+
+            if (!isCPFValido(cpfLimpo)) {
+                input.style.borderColor = "#c0392b";
+                input.style.backgroundColor = "#fff5f5";
+                erroMsg.style.display = 'block';
+            } else {
+                input.style.borderColor = "#d1d5db";
+                input.style.backgroundColor = "#fcfbf9";
+                erroMsg.style.display = 'none';
+            }
+        }
+
+        // Algoritmo Matemático
+        function isCPFValido(cpf) {
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+            let soma = 0, resto;
+            for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+            resto = (soma * 10) % 11;
+            if ((resto === 10) || (resto === 11)) resto = 0;
+            if (resto !== parseInt(cpf.substring(9, 10))) return false;
+            soma = 0;
+            for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+            resto = (soma * 10) % 11;
+            if ((resto === 10) || (resto === 11)) resto = 0;
+            return resto === parseInt(cpf.substring(10, 11));
+        }
+
+        // BLOQUEIO DO SUBMIT (O Importante)
+        document.getElementById('formAdmin').addEventListener('submit', function (event) {
+            const cpfInput = document.getElementById('cpf');
+            // Só valida se tiver algo digitado
+            if (cpfInput.value && !isCPFValido(cpfInput.value.replace(/\D/g, ''))) {
+                alert("ERRO: O CPF informado é inválido. Corrija antes de salvar.");
+                cpfInput.focus();
+                event.preventDefault(); // Cancela o envio
+            }
+        });
+    </script>
 
 </body>
+
 </html>

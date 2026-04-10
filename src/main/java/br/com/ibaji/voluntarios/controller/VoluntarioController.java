@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/voluntarios")
 public class VoluntarioController {
 
     private final VoluntarioService servico;
@@ -24,7 +23,7 @@ public class VoluntarioController {
         this.baseRepository = baseRepository;
     }
 
-    @GetMapping("/novo")
+    @GetMapping("/cadastro")
     public String exibirFormulario(Model modelo, HttpServletRequest request) {
 
         request.getSession(true);
@@ -45,8 +44,13 @@ public class VoluntarioController {
             RedirectAttributes redirect) {
 
 
-        if (arquivo == null || arquivo.isEmpty()) {
-            erros.rejectValue("termosAceitos", "erro.arquivo", "O arquivo de antecedentes é obrigatório.");
+        boolean isMaiorIdade = false;
+        if (formDto.getDataNascimento() != null) {
+            isMaiorIdade = java.time.Period.between(formDto.getDataNascimento(), java.time.LocalDate.now()).getYears() >= 18;
+        }
+
+        if (isMaiorIdade && (arquivo == null || arquivo.isEmpty())) {
+            erros.rejectValue("termosAceitos", "erro.arquivo", "O arquivo de antecedentes é obrigatório para maiores de 18 anos.");
         }
 
         if (erros.hasErrors()) {
@@ -57,7 +61,7 @@ public class VoluntarioController {
         try {
             servico.registrarVoluntario(formDto, arquivo);
             redirect.addFlashAttribute("mensagemSucesso", "Inscrição realizada com glória!");
-            return "redirect:/voluntarios/sucesso";
+            return "redirect:/sucesso";
         } catch (Exception e) {
             modelo.addAttribute("mensagemErro", "Erro no sistema: " + e.getMessage());
             modelo.addAttribute("listaMinisterios", servico.listarTodosMinisterios());

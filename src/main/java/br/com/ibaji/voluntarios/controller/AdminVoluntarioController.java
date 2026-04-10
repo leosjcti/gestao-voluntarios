@@ -19,8 +19,8 @@ public class AdminVoluntarioController {
     private final BaseRepository baseRepository;
 
     public AdminVoluntarioController(VoluntarioService service,
-                                     MinisterioService ministerioService,
-                                     BaseRepository baseRepository) {
+            MinisterioService ministerioService,
+            BaseRepository baseRepository) {
         this.service = service;
         this.ministerioService = ministerioService;
         this.baseRepository = baseRepository;
@@ -38,6 +38,19 @@ public class AdminVoluntarioController {
         return "admin-voluntario-form";
     }
 
+    // Formulário de Visualização (Somente Leitura)
+    @GetMapping("/visualizar/{id}")
+    public String visualizar(@PathVariable Long id, Model model) {
+        VoluntarioAdminDTO dto = service.buscarParaEdicao(id);
+
+        model.addAttribute("voluntario", dto);
+        model.addAttribute("statusOpcoes", StatusTermo.values());
+        model.addAttribute("listaBases", baseRepository.findAll());
+        model.addAttribute("modoLeitura", true);
+
+        return "admin-voluntario-form";
+    }
+
     // Salvar Edição
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute VoluntarioAdminDTO dto, RedirectAttributes attr) {
@@ -46,7 +59,8 @@ public class AdminVoluntarioController {
             attr.addFlashAttribute("sucesso", "Voluntário salvo com sucesso!");
         } catch (Exception e) {
             attr.addFlashAttribute("erro", "Erro ao salvar: " + e.getMessage());
-            // Se der erro, volta pro form (idealmente teria que repopular as bases aqui também,
+            // Se der erro, volta pro form (idealmente teria que repopular as bases aqui
+            // também,
             // mas vamos simplificar o redirect)
             return "redirect:/admin/voluntarios/novo";
         }
@@ -68,7 +82,7 @@ public class AdminVoluntarioController {
     @GetMapping("/novo")
     public String novo(Model model) {
         model.addAttribute("voluntario", new VoluntarioAdminDTO()); // DTO Vazio
-        //model.addAttribute("ministerios", ministerioService.listarTodos());
+        // model.addAttribute("ministerios", ministerioService.listarTodos());
         model.addAttribute("statusOpcoes", StatusTermo.values());
         model.addAttribute("listaBases", baseRepository.findAll());
         return "admin-voluntario-form"; // Reusa o mesmo HTML

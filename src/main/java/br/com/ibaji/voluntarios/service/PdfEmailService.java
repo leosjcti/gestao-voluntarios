@@ -65,6 +65,16 @@ public class PdfEmailService {
         Context context = new Context();
         context.setVariable("voluntario", voluntario);
 
+        try {
+            org.springframework.core.io.ClassPathResource imgFile = new org.springframework.core.io.ClassPathResource(
+                    "static/images/assinatura_ednaldo.png");
+            byte[] bytes = org.springframework.util.StreamUtils.copyToByteArray(imgFile.getInputStream());
+            String base64Img = java.util.Base64.getEncoder().encodeToString(bytes);
+            context.setVariable("base64Assinatura", base64Img);
+        } catch (Exception e) {
+            System.err.println("Aviso: Nao foi possivel carregar a assinatura do pastor: " + e.getMessage());
+        }
+
         LocalDate hoje = LocalDate.now();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
         context.setVariable("dataExtenso", hoje.format(fmt));
@@ -85,7 +95,8 @@ public class PdfEmailService {
     }
 
     // Ajustei a assinatura para receber o 'destinatario' explicitamente
-    private void enviarEmailComAnexo(String destinatario, Voluntario voluntario, byte[] pdfBytes) throws MessagingException {
+    private void enviarEmailComAnexo(String destinatario, Voluntario voluntario, byte[] pdfBytes)
+            throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true); // true = multipart (anexo)
 

@@ -37,12 +37,12 @@ public class VoluntarioService {
     private final PdfEmailService pdfEmailService;
 
     public VoluntarioService(VoluntarioRepository voluntarioRepo, MinisterioRepository ministerioRepo,
-                             AntecedentesCriminaisRepository antecedentesRepo, S3Service s3Service, PdfEmailService pdfEmailService) {
+            AntecedentesCriminaisRepository antecedentesRepo, S3Service s3Service, PdfEmailService pdfEmailService) {
         this.voluntarioRepository = voluntarioRepo;
         this.ministerioRepository = ministerioRepo;
         this.antecedentesRepository = antecedentesRepo;
         this.s3Service = s3Service;
-        this.pdfEmailService =  pdfEmailService;
+        this.pdfEmailService = pdfEmailService;
     }
 
     public List<MinisterioDTO> listarTodosMinisterios() {
@@ -61,6 +61,7 @@ public class VoluntarioService {
         voluntario.setCpf(dto.getCpf());
         voluntario.setDataNascimento(dto.getDataNascimento());
         voluntario.setTermosAceitos(dto.getTermosAceitos());
+        voluntario.setMembroIbaji(dto.isMembroIbaji());
 
         // Lógica de datas (mantém igual)
         LocalDate hoje = LocalDate.now();
@@ -113,6 +114,7 @@ public class VoluntarioService {
         dto.setCpf(v.getCpf());
         dto.setStatusTermo(v.getStatusTermo());
         dto.setAntecedentesAnalisados(v.getAntecedentesAnalisados());
+        dto.setMembroIbaji(v.getMembroIbaji() != null && v.getMembroIbaji());
 
         // Mapeia os IDs dos ministérios
         List<Long> ids = v.getMinisterios().stream().map(Ministerio::getId).toList();
@@ -145,6 +147,7 @@ public class VoluntarioService {
         v.setCpf(dto.getCpf()); // Não esqueça do CPF se adicionou no DTO
         v.setStatusTermo(dto.getStatusTermo());
         v.setAntecedentesAnalisados(dto.getAntecedentesAnalisados());
+        v.setMembroIbaji(dto.isMembroIbaji());
 
         // Ministérios
         if (dto.getIdsMinisterios() != null) {
@@ -163,9 +166,12 @@ public class VoluntarioService {
         // Cálculos de Datas automáticas (Apenas na criação)
         if (dto.getId() == null) {
             LocalDate hoje = LocalDate.now();
-            if (v.getDataTermo() == null) v.setDataTermo(hoje);
-            if (v.getProximaRenovacao() == null) v.setProximaRenovacao(hoje.plusYears(1));
-            if (v.getStatusTermo() == null) v.setStatusTermo(StatusTermo.ATIVO);
+            if (v.getDataTermo() == null)
+                v.setDataTermo(hoje);
+            if (v.getProximaRenovacao() == null)
+                v.setProximaRenovacao(hoje.plusYears(1));
+            if (v.getStatusTermo() == null)
+                v.setStatusTermo(StatusTermo.ATIVO);
         }
 
         // Salva para gerar o ID (necessário para o S3)
@@ -228,7 +234,7 @@ public class VoluntarioService {
     }
 
     // DTO Interno para o Gráfico (pode colocar no pacote DTO se preferir)
-    public record DadoGrafico(String label, long valor, int alturaPercentual) {}
-
+    public record DadoGrafico(String label, long valor, int alturaPercentual) {
+    }
 
 }

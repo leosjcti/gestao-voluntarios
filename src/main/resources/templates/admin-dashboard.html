@@ -1,107 +1,143 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Painel Administrativo</title>
     <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
     <style>
-        .search-box { display: flex; gap: 10px; margin-bottom: 20px; max-width: 500px; }
-        .search-input { flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            max-width: 500px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
     </style>
 </head>
+
 <body>
 
-<div th:replace="~{fragments :: navbar(ativo='voluntarios')}"></div>
+    <div th:replace="~{fragments :: navbar(ativo='voluntarios')}"></div>
 
-<div class="container">
+    <div class="container">
 
-    <div class="page-header">
-        <h2 class="page-title">Gestão de Voluntários</h2>
-        <a href="/admin/voluntarios/novo" class="btn btn-primary">+ Novo Voluntário</a>
-    </div>
-
-    <form action="/admin" method="get" class="search-box">
-        <input type="text" name="busca" class="search-input" placeholder="Buscar por nome..." th:value="${busca}">
-        <button type="submit" class="btn btn-primary">🔍 Buscar</button>
-        <a href="/admin" class="btn btn-secondary" th:if="${busca != null}">Limpar</a>
-    </form>
-
-    <div th:if="${sucesso}" style="background:#dcfce7; color:#166534; padding:12px; border-radius:8px; margin-bottom:20px;">✅ <span th:text="${sucesso}"></span></div>
-    <div th:if="${erro}" style="background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:20px;">⚠️ <span th:text="${erro}"></span></div>
-
-    <div class="table-responsive">
-        <table>
-            <thead>
-            <tr>
-                <th>Nome / Email</th>
-                <th>Telefone</th>
-                <th>Ministérios</th>
-                <th>Data Nascimento</th>
-                <th>Status</th>
-                <th style="text-align: center;">Doc. Analisado</th>
-                <th style="text-align: right;">Ações</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="v : ${voluntariosPage.content}">
-
-                <td>
-                    <div th:text="${v.nomeCompleto}" style="font-weight: 600; color: var(--text-dark);">Nome</div>
-                    <div th:text="${v.email}" style="font-size: 12px; color: #777;">email</div>
-                </td>
-                <td th:text="${v.telefone}">Tel</td>
-                <td>
-                    <span th:each="m : ${v.ministerios}" th:text="${m.nome}" style="display: inline-block; background: #ece7df; padding: 2px 7px; border-radius: 4px; font-size: 11px; margin-right: 4px; color: var(--primary-brown); font-weight: 600;"></span>
-                </td>
-                <td th:text="${v.dataNascimento != null ? #temporals.format(v.dataNascimento, 'dd/MM/yyyy') : '-'}"></td>
-                <td>
-                    <span th:if="${v.statusTermo?.name() == 'ATIVO'}" class="badge badge-success">Ativo</span>
-                    <span th:if="${v.statusTermo?.name() == 'VENCIDO'}" class="badge badge-danger">Vencido</span>
-                    <span th:if="${v.statusTermo?.name() == 'PENDENTE'}" class="badge badge-warning">Pendente</span>
-                </td>
-
-                <td style="text-align: center;">
-                    <div th:if="${v.antecedentes != null}" style="display:flex; align-items:center; justify-content:center; gap:8px;">
-                        <a th:href="@{/admin/download/{id}(id=${v.id})}"
-                           class="btn btn-primary" style="font-size: 11px; padding: 4px 8px;" title="Baixar">⬇</a>
-
-                        <span th:if="${v.antecedentesAnalisados}" title="Aprovado" style="cursor:help; font-size: 1.2em;">✅</span>
-                        <span th:unless="${v.antecedentesAnalisados}" title="Pendente Análise" style="cursor:help; font-size: 1.2em;">⚠️</span>
-                    </div>
-
-                    <span th:unless="${v.antecedentes != null}" class="text-muted" style="font-size: 12px; color: #aaa;">Pendente</span>
-                </td>
-
-                <td style="text-align: right;">
-                    <a th:href="@{/admin/voluntarios/editar/{id}(id=${v.id})}" class="btn btn-secondary" style="padding: 6px 10px;" title="Editar">✏️</a>
-                    <a th:href="@{/admin/voluntarios/deletar/{id}(id=${v.id})}" class="btn btn-danger" style="padding: 6px 10px;" onclick="return confirm('Tem certeza?')" title="Excluir">🗑️</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div th:if="${voluntariosPage.totalPages > 1}">
-        <div class="pagination">
-            <a th:if="${voluntariosPage.hasPrevious()}"
-               th:href="@{/admin(page=${voluntariosPage.number - 1}, busca=${busca})}"
-               class="page-link">←</a>
-
-            <a th:each="i : ${#numbers.sequence(0, voluntariosPage.totalPages - 1)}"
-               th:href="@{/admin(page=${i}, busca=${busca})}"
-               th:text="${i + 1}"
-               th:class="${i == voluntariosPage.number} ? 'page-link active' : 'page-link'"></a>
-
-            <a th:if="${voluntariosPage.hasNext()}"
-               th:href="@{/admin(page=${voluntariosPage.number + 1}, busca=${busca})}"
-               class="page-link">→</a>
+        <div class="page-header">
+            <h2 class="page-title">Gestão de Voluntários</h2>
+            <a href="/admin/voluntarios/novo" class="btn btn-primary" sec:authorize="hasRole('SUPER_ADMIN')">+ Novo
+                Voluntário</a>
         </div>
-        <div class="page-info">
-            Página <span th:text="${voluntariosPage.number + 1}"></span> de <span th:text="${voluntariosPage.totalPages}"></span>
-        </div>
-    </div>
 
-</div>
+        <form action="/admin" method="get" class="search-box">
+            <input type="text" name="busca" class="search-input" placeholder="Buscar por nome..." th:value="${busca}">
+            <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+            <a href="/admin" class="btn btn-secondary" th:if="${busca != null}">Limpar</a>
+        </form>
+
+        <div th:if="${sucesso}"
+            style="background:#dcfce7; color:#166534; padding:12px; border-radius:8px; margin-bottom:20px;">✅ <span
+                th:text="${sucesso}"></span></div>
+        <div th:if="${erro}"
+            style="background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:20px;">⚠️ <span
+                th:text="${erro}"></span></div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome / Email</th>
+                        <th>Telefone</th>
+                        <th>Ministérios</th>
+                        <th>Data Nascimento</th>
+                        <th>Status</th>
+                        <th style="text-align: center;">Doc. Analisado</th>
+                        <th style="text-align: right;">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="v : ${voluntariosPage.content}">
+
+                        <td>
+                            <div th:text="${v.nomeCompleto}" style="font-weight: 600; color: var(--text-dark);">Nome
+                            </div>
+                            <div th:text="${v.email}" style="font-size: 12px; color: #777;">email</div>
+                        </td>
+                        <td th:text="${v.telefone}">Tel</td>
+                        <td>
+                            <span th:each="m : ${v.ministerios}" th:text="${m.nome}"
+                                style="display: inline-block; background: #ece7df; padding: 2px 7px; border-radius: 4px; font-size: 11px; margin-right: 4px; color: var(--primary-brown); font-weight: 600;"></span>
+                        </td>
+                        <td
+                            th:text="${v.dataNascimento != null ? #temporals.format(v.dataNascimento, 'dd/MM/yyyy') : '-'}">
+                        </td>
+                        <td>
+                            <span th:if="${v.statusTermo?.name() == 'ATIVO'}" class="badge badge-success">Ativo</span>
+                            <span th:if="${v.statusTermo?.name() == 'VENCIDO'}"
+                                class="badge badge-danger">Vencido</span>
+                            <span th:if="${v.statusTermo?.name() == 'PENDENTE'}"
+                                class="badge badge-warning">Pendente</span>
+                        </td>
+
+                        <td style="text-align: center;">
+                            <div th:if="${v.antecedentes != null}"
+                                style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                                <a th:href="@{/admin/download/{id}(id=${v.id})}" class="btn btn-primary"
+                                    style="font-size: 11px; padding: 4px 8px;" title="Baixar">⬇</a>
+
+                                <span th:if="${v.antecedentesAnalisados}" title="Aprovado"
+                                    style="cursor:help; font-size: 1.2em;">✅</span>
+                                <span th:unless="${v.antecedentesAnalisados}" title="Pendente Análise"
+                                    style="cursor:help; font-size: 1.2em;">⚠️</span>
+                            </div>
+
+                            <span th:unless="${v.antecedentes != null}" class="text-muted"
+                                style="font-size: 12px; color: #aaa;">Pendente</span>
+                        </td>
+
+                        <td style="text-align: right;">
+                            <a th:href="@{/admin/voluntarios/visualizar/{id}(id=${v.id})}" class="btn btn-secondary"
+                                style="padding: 6px 10px; margin-right: 4px;" title="Visualizar">🔍</a>
+
+                            <th:block sec:authorize="hasRole('SUPER_ADMIN')">
+                                <a th:href="@{/admin/voluntarios/editar/{id}(id=${v.id})}" class="btn btn-secondary"
+                                    style="padding: 6px 10px;" title="Editar">✏️</a>
+                                <a th:href="@{/admin/voluntarios/deletar/{id}(id=${v.id})}" class="btn btn-danger"
+                                    style="padding: 6px 10px;" onclick="return confirm('Tem certeza?')"
+                                    title="Excluir">🗑️</a>
+                            </th:block>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${voluntariosPage.totalPages > 1}">
+            <div class="pagination">
+                <a th:if="${voluntariosPage.hasPrevious()}"
+                    th:href="@{/admin(page=${voluntariosPage.number - 1}, busca=${busca})}" class="page-link">←</a>
+
+                <a th:each="i : ${#numbers.sequence(0, voluntariosPage.totalPages - 1)}"
+                    th:href="@{/admin(page=${i}, busca=${busca})}" th:text="${i + 1}"
+                    th:class="${i == voluntariosPage.number} ? 'page-link active' : 'page-link'"></a>
+
+                <a th:if="${voluntariosPage.hasNext()}"
+                    th:href="@{/admin(page=${voluntariosPage.number + 1}, busca=${busca})}" class="page-link">→</a>
+            </div>
+            <div class="page-info">
+                Página <span th:text="${voluntariosPage.number + 1}"></span> de <span
+                    th:text="${voluntariosPage.totalPages}"></span>
+            </div>
+        </div>
+
+    </div>
 
 </body>
+
 </html>

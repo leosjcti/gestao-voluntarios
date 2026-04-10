@@ -26,7 +26,7 @@ public class Voluntario {
     @Column(nullable = false)
     private LocalDate dataNascimento;
 
-    private LocalDate dataTermo;      // Data que aceitou
+    private LocalDate dataTermo; // Data que aceitou
     private LocalDate proximaRenovacao; // Ex: +1 ano
 
     @Enumerated(EnumType.STRING)
@@ -35,20 +35,15 @@ public class Voluntario {
     @CreationTimestamp
     private LocalDateTime dataCriacao;
 
-
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "voluntario_ministerios",
-            joinColumns = @JoinColumn(name = "voluntario_id"),
-            inverseJoinColumns = @JoinColumn(name = "ministerio_id")
-    )
+    @JoinTable(name = "voluntario_ministerios", joinColumns = @JoinColumn(name = "voluntario_id"), inverseJoinColumns = @JoinColumn(name = "ministerio_id"))
     private Set<Ministerio> ministerios = new HashSet<>();
 
     @OneToOne(mappedBy = "voluntario", cascade = CascadeType.ALL)
     private AntecedentesCriminais antecedentes;
 
     private Boolean antecedentesAnalisados = false;
-
+    private Boolean membroIbaji = false;
 
     // --- MENOR DE IDADE ---
     private boolean menorIdade;
@@ -56,7 +51,6 @@ public class Voluntario {
     private String cpfResponsavel;
     private String emailResponsavel;
     private String telefoneResponsavel;
-
 
     public Long getId() {
         return id;
@@ -90,8 +84,13 @@ public class Voluntario {
         this.telefone = telefone;
     }
 
-    public String getCpf() { return cpf; }
-    public void setCpf(String cpf) { this.cpf = cpf; }
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
 
     public Boolean getTermosAceitos() {
         return termosAceitos;
@@ -157,19 +156,60 @@ public class Voluntario {
         this.statusTermo = statusTermo;
     }
 
+    public Boolean getAntecedentesAnalisados() {
+        return antecedentesAnalisados;
+    }
 
-    public Boolean getAntecedentesAnalisados() { return antecedentesAnalisados; }
-    public void setAntecedentesAnalisados(Boolean antecedentesAnalisados) { this.antecedentesAnalisados = antecedentesAnalisados; }
+    public void setAntecedentesAnalisados(Boolean antecedentesAnalisados) {
+        this.antecedentesAnalisados = antecedentesAnalisados;
+    }
+
+    public Boolean getMembroIbaji() {
+        return membroIbaji;
+    }
+
+    public void setMembroIbaji(Boolean membroIbaji) {
+        this.membroIbaji = membroIbaji;
+    }
 
     // Menor de idade
-    public boolean isMenorIdade() { return menorIdade; }
-    public void setMenorIdade(boolean menorIdade) { this.menorIdade = menorIdade; }
-    public String getNomeResponsavel() { return nomeResponsavel; }
-    public void setNomeResponsavel(String nomeResponsavel) { this.nomeResponsavel = nomeResponsavel; }
-    public String getCpfResponsavel() { return cpfResponsavel; }
-    public void setCpfResponsavel(String cpfResponsavel) { this.cpfResponsavel = cpfResponsavel; }
-    public String getEmailResponsavel() { return emailResponsavel; }
-    public void setEmailResponsavel(String emailResponsavel) { this.emailResponsavel = emailResponsavel; }
-    public String getTelefoneResponsavel() { return telefoneResponsavel; }
-    public void setTelefoneResponsavel(String telefoneResponsavel) { this.telefoneResponsavel = telefoneResponsavel; }
+    public boolean isMenorIdade() {
+        return menorIdade;
+    }
+
+    public void setMenorIdade(boolean menorIdade) {
+        this.menorIdade = menorIdade;
+    }
+
+    public String getNomeResponsavel() {
+        return nomeResponsavel;
+    }
+
+    public void setNomeResponsavel(String nomeResponsavel) {
+        this.nomeResponsavel = nomeResponsavel;
+    }
+
+    public String getCpfResponsavel() {
+        return cpfResponsavel;
+    }
+
+    public void setCpfResponsavel(String cpfResponsavel) {
+        this.cpfResponsavel = cpfResponsavel;
+    }
+
+    public String getEmailResponsavel() {
+        return emailResponsavel;
+    }
+
+    public void setEmailResponsavel(String emailResponsavel) {
+        this.emailResponsavel = emailResponsavel;
+    }
+
+    public String getTelefoneResponsavel() {
+        return telefoneResponsavel;
+    }
+
+    public void setTelefoneResponsavel(String telefoneResponsavel) {
+        this.telefoneResponsavel = telefoneResponsavel;
+    }
 }
