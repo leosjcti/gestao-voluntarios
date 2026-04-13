@@ -19,7 +19,7 @@ public class SecurityConfig {
                         .csrf(csrf -> csrf.ignoringRequestMatchers("/salvar"))
                         .authorizeHttpRequests((requests) -> requests
                                 // 🔥 ALTERAÇÃO 2: Trocamos "/voluntarios/**" pelas rotas limpas
-                                .requestMatchers("/", "/cadastro", "/salvar", "/sucesso", "/css/**", "/js/**", "/images/**")
+                                .requestMatchers("/", "/cadastro", "/salvar", "/sucesso", "/voluntarios/novo", "/css/**", "/js/**", "/images/**")
                                 .permitAll()
 
                                 .requestMatchers("/admin/usuarios/**").hasRole("SUPER_ADMIN")

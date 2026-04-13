@@ -96,9 +96,9 @@ public class VoluntarioService {
             antecedentes.setStatus(StatusAntecedentes.PENDENTE_ANALISE);
 
             antecedentesRepository.save(antecedentes);
-
-            pdfEmailService.gerarEEnviarTermo(salvo);
         }
+        
+        pdfEmailService.gerarEEnviarTermo(salvo);
     }
 
     public VoluntarioAdminDTO buscarParaEdicao(Long id) {

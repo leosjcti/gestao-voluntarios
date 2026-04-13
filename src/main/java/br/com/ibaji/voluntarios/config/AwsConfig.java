@@ -30,22 +30,15 @@ public class AwsConfig {
 
     @Bean
     public S3Client clienteS3() {
-        System.out.println(">>> MODO HARDCODE ATIVADO <<<");
-
-        // --- PREENCHA AQUI COM AS CHAVES NOVAS ---
-        // Cuidado: Não deixe espaços em branco dentro das aspas!
-        String accessKeyFixa = "dcf81cb7c0060fc318dc613946a646733a7976c7";
-        String secretKeyFixa = "1IHvgc7X9R7kesLf448JvAshMovtVrMGf9AIZG0EID8=";
-        String regionFixa = "sa-saopaulo-1";
-        String endpointFixo = "https://gri2dbzfssib.compat.objectstorage.sa-saopaulo-1.oraclecloud.com";
+        System.out.println(">>> LENDO DADOS DE ACESSO DO S3 VIA VARIAVEIS (APPLICATION.PROPERTIES / .ENV) <<<");
 
         return S3Client.builder()
-                .httpClient(software.amazon.awssdk.http.apache.ApacheHttpClient.builder().build())
-                .region(Region.of(regionFixa))
-                .endpointOverride(URI.create(endpointFixo))
-                .forcePathStyle(true) // Obrigatório para Oracle
+                .httpClient(ApacheHttpClient.builder().build())
+                .region(Region.of(regiaoAws))
+                .endpointOverride(endpointS3 != null && !endpointS3.isEmpty() ? URI.create(endpointS3) : null)
+                .forcePathStyle(true) // Obrigatório para Oracle Cloud
                 .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(accessKeyFixa, secretKeyFixa)))
+                        AwsBasicCredentials.create(accessKey, secretKey)))
                 .build();
     }
 }
