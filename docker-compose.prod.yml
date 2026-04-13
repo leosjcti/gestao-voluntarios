@@ -11,9 +11,9 @@ services:
       - JAVA_TOOL_OPTIONS=-Xmx450m
 
       # Banco de Dados
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/voluntariado_db
-      - SPRING_DATASOURCE_USERNAME=voluntario_user
-      - SPRING_DATASOURCE_PASSWORD=senha_segura_producao
+      - SPRING_DATASOURCE_URL=${DB_URL:-jdbc:postgresql://db:5432/voluntariado_db}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME:-voluntario_user}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-senha_segura_producao}
 
       # --- CONFIGURAÇÃO ORACLE S3 ---
       - AWS_REGION=sa-saopaulo-1
@@ -21,12 +21,12 @@ services:
       - AWS_S3_BUCKET_NAME=voluntariado-antecedentes-bucket
 
       # Correção: Passando com o nome da variável do Java E do Sistema para garantir
-      - AWS_ACCESS_KEY_ID='a43f458e5793515ac285137dd091365b2c248533'
-      - AWS_SECRET_ACCESS_KEY='fNAshd8slTOlUu1uO1Akhy4UzE6N/YdeRbP30ul7rXs='
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 
       # Redundância para o Java pegar direto (caso o properties falhe)
-      - AWS_ACCESS_KEY='a43f458e5793515ac285137dd091365b2c248533'
-      - AWS_SECRET_KEY='fNAshd8slTOlUu1uO1Akhy4UzE6N/YdeRbP30ul7rXs='
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
 
       # --- CONFIGURAÇÃO E-MAIL ---
       - SPRING_MAIL_HOST=smtp.gmail.com
@@ -44,8 +44,8 @@ services:
     container_name: voluntariado-db
     restart: always
     environment:
-      - POSTGRES_USER=voluntario_user
-      - POSTGRES_PASSWORD=senha_segura_producao
+      - POSTGRES_USER=${DB_USERNAME:-voluntario_user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-senha_segura_producao}
       - POSTGRES_DB=voluntariado_db
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data
