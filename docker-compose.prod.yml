@@ -11,9 +11,9 @@ services:
       - JAVA_TOOL_OPTIONS=-Xmx450m
 
       # Banco de Dados
-      - SPRING_DATASOURCE_URL=${DB_URL:-jdbc:postgresql://db:5432/voluntariado_db}
-      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME:-voluntario_user}
-      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-senha_segura_producao}
+      - SPRING_DATASOURCE_URL=${DB_URL}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
 
       # --- CONFIGURAÇÃO ORACLE S3 ---
       - AWS_REGION=sa-saopaulo-1
@@ -33,7 +33,7 @@ services:
       - SPRING_MAIL_PORT=587
       - SPRING_MAIL_USERNAME=ibaji.gestaoministerial@gmail.com
       # CORREÇÃO: Aspas obrigatórias aqui por causa dos espaços
-      - SPRING_MAIL_PASSWORD=${EMAIL_PASSWORD:-SUA_SENHA_AQUI}
+      - SPRING_MAIL_PASSWORD=${EMAIL_PASSWORD}
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     depends_on:
@@ -44,8 +44,8 @@ services:
     container_name: voluntariado-db
     restart: always
     environment:
-      - POSTGRES_USER=${DB_USERNAME:-voluntario_user}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-senha_segura_producao}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=voluntariado_db
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data
