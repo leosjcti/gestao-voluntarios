@@ -52,6 +52,9 @@ public class Voluntario {
     private String emailResponsavel;
     private String telefoneResponsavel;
 
+    // --- ANTECEDENTES EXTRA INFO ---
+    private String statusAntecedentes;
+    private String chaveAutenticacaoDocumento;
     public Long getId() {
         return id;
     }
@@ -211,5 +214,21 @@ public class Voluntario {
 
     public void setTelefoneResponsavel(String telefoneResponsavel) {
         this.telefoneResponsavel = telefoneResponsavel;
+    }
+
+    public String getStatusAntecedentes() {
+        return statusAntecedentes;
+    }
+
+    public void setStatusAntecedentes(String statusAntecedentes) {
+        this.statusAntecedentes = statusAntecedentes;
+    }
+
+    public String getChaveAutenticacaoDocumento() {
+        return chaveAutenticacaoDocumento;
+    }
+
+    public void setChaveAutenticacaoDocumento(String chaveAutenticacaoDocumento) {
+        this.chaveAutenticacaoDocumento = chaveAutenticacaoDocumento;
     }
 }

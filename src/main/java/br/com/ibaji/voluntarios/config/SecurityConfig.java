@@ -22,20 +22,24 @@ public class SecurityConfig {
                                 .requestMatchers("/", "/cadastro", "/salvar", "/sucesso", "/voluntarios/novo", "/css/**", "/js/**", "/images/**")
                                 .permitAll()
 
-                                .requestMatchers("/admin/usuarios/**").hasRole("SUPER_ADMIN")
+                                .requestMatchers("/admin/usuarios/**").hasAnyRole("ADMIN_ALTO", "SUPER_ADMIN")
                                 .requestMatchers("/admin/voluntarios/novo",
                                         "/admin/voluntarios/editar/**",
                                         "/admin/voluntarios/salvar",
                                         "/admin/voluntarios/deletar/**")
-                                .hasRole("SUPER_ADMIN")
+                                .hasAnyRole("ADMIN_MEDIO", "ADMIN_ALTO", "ADMIN", "SUPER_ADMIN")
                                 .requestMatchers("/admin/bases/novo", "/admin/bases/editar/**",
                                         "/admin/bases/salvar", "/admin/bases/deletar/**")
-                                .hasRole("SUPER_ADMIN")
+                                .hasAnyRole("ADMIN_MEDIO", "ADMIN_ALTO", "ADMIN", "SUPER_ADMIN")
                                 .requestMatchers("/admin/ministerios/novo",
                                         "/admin/ministerios/editar/**",
                                         "/admin/ministerios/salvar",
                                         "/admin/ministerios/deletar/**")
-                                .hasRole("SUPER_ADMIN")
+                                .hasAnyRole("ADMIN_MEDIO", "ADMIN_ALTO", "ADMIN", "SUPER_ADMIN")
+
+                                .requestMatchers("/admin/download/**").hasAnyRole("ADMIN_ALTO", "SUPER_ADMIN")
+
+                                .requestMatchers("/admin/**").hasAnyRole("ADMIN_BASICO", "ADMIN_MEDIO", "ADMIN_ALTO", "ADMIN", "SUPER_ADMIN")
 
                                 // Qualquer outra coisa exige login
                                 .anyRequest().authenticated())

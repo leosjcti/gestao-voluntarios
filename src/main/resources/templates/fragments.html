@@ -169,7 +169,7 @@
         <a href="/admin" class="nav-link" th:classappend="${ativo == 'voluntarios'} ? 'active'">🙋 <span style="margin-left:5px">Voluntários</span></a>
         <a href="/admin/ministerios" class="nav-link" th:classappend="${ativo == 'ministerios'} ? 'active'">🏛️ <span style="margin-left:5px">Ministérios</span></a>
         <a href="/admin/relatorios" class="nav-link" th:classappend="${ativo == 'relatorios'} ? 'active'">📊 <span style="margin-left:5px">Relatórios</span></a>
-        <a href="/admin/usuarios" class="nav-link" th:classappend="${ativo == 'usuarios'} ? 'active'" sec:authorize="hasRole('SUPER_ADMIN')">🔑 <span style="margin-left:5px">Usuários</span></a>
+        <a href="/admin/usuarios" class="nav-link" th:classappend="${ativo == 'usuarios'} ? 'active'" sec:authorize="hasRole('ADMIN_ALTO')">🔑 <span style="margin-left:5px">Usuários</span></a>
         <form th:action="@{/logout}" method="post" class="logout-form">
             <button class="logout-btn" type="submit">Sair do Sistema</button>
         </form>

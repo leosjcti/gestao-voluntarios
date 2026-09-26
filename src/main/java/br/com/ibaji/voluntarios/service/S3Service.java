@@ -20,11 +20,19 @@ public class S3Service {
     @Value("${aws.s3.bucket-name}")
     private String nomeBucket;
 
+    @Value("${aws.s3.mock:false}")
+    private boolean mockS3;
+
     public S3Service(S3Client clienteS3) {
         this.clienteS3 = clienteS3;
     }
 
     public String enviarArquivo(MultipartFile file, Long volunteerId) {
+        if (mockS3) {
+            System.out.println("MOCK S3: Bypass de envio ativado localmente para o arquivo: " + file.getOriginalFilename());
+            return "antecedentes/" + volunteerId + "/mock-s3-file.jpg";
+        }
+
         try {
             // 1. Processa/Comprime a imagem
             ImagemUtil.ImagemProcessada imagem = ImagemUtil.comprimir(file);
@@ -58,6 +66,10 @@ public class S3Service {
     }
 
     public ResponseInputStream<GetObjectResponse> baixarArquivo(String chaveArquivo) {
+        if (mockS3) {
+            throw new RuntimeException("Ambiente local (Mock S3): Download de arquivos não suportado.");
+        }
+
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(nomeBucket)
                 .key(chaveArquivo)

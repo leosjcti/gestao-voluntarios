@@ -19,17 +19,35 @@ public class CriarAdminInicial implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Verifica se o usuário 'admin' JÁ existe especificamente
-        if (repository.findByLogin("admin").isEmpty()) {
-            Usuario admin = new Usuario();
-            admin.setLogin("admin");
+        // 1. ADMIN ALTO (Nível 3) - Força atualização se já existir
+        Usuario admin = repository.findByLogin("admin").orElseGet(() -> {
+            Usuario u = new Usuario();
+            u.setLogin("admin");
+            return u;
+        });
+        admin.setSenha(passwordEncoder.encode("Admin123"));
+        admin.setRole("ADMIN_ALTO");
+        repository.save(admin);
+        System.out.println("--- USUÁRIO ADMIN ALTO ATUALIZADO/CRIADO ---");
 
-            // Defina a senha que você quer aqui
-            admin.setSenha(passwordEncoder.encode("Admin123"));
+        // 2. ADMIN MEDIO (Nível 2)
+        if (repository.findByLogin("medio").isEmpty()) {
+            Usuario medio = new Usuario();
+            medio.setLogin("medio");
+            medio.setSenha(passwordEncoder.encode("Medio123"));
+            medio.setRole("ADMIN_MEDIO");
+            repository.save(medio);
+            System.out.println("--- USUÁRIO ADMIN MEDIO CRIADO ---");
+        }
 
-            admin.setRole("SUPER_ADMIN");
-            repository.save(admin);
-            System.out.println("--- USUÁRIO ADMIN RECRIADO COM SUCESSO ---");
+        // 3. ADMIN BASICO (Nível 1)
+        if (repository.findByLogin("basico").isEmpty()) {
+            Usuario basico = new Usuario();
+            basico.setLogin("basico");
+            basico.setSenha(passwordEncoder.encode("Basico123"));
+            basico.setRole("ADMIN_BASICO");
+            repository.save(basico);
+            System.out.println("--- USUÁRIO ADMIN BASICO CRIADO ---");
         }
     }
 }

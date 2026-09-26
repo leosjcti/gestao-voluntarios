@@ -34,7 +34,7 @@
                     style="background-color: #fff; border: 1px solid #ccc; color: #555;">
                     ⚙️ Gerenciar Bases
                 </a>
-                <a href="/admin/ministerios/novo" class="btn btn-primary" sec:authorize="hasRole('SUPER_ADMIN')">+ Novo
+                <a href="/admin/ministerios/novo" class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN_MEDIO', 'ADMIN_ALTO')">+ Novo
                     Ministério</a>
             </div>
         </div>
@@ -61,7 +61,7 @@
                         <th>Pastor Resp.</th>
                         <th>Liderança</th>
                         <th>Descrição</th>
-                        <th style="text-align: right;" sec:authorize="hasRole('SUPER_ADMIN')">Ações</th>
+                        <th style="text-align: right;" sec:authorize="hasAnyRole('ADMIN_MEDIO', 'ADMIN_ALTO')">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,7 +86,7 @@
                         <td th:text="${#strings.abbreviate(m.descricao, 30)}" style="color: #888; font-style: italic;">
                             Desc</td>
 
-                        <td style="text-align: right;" sec:authorize="hasRole('SUPER_ADMIN')">
+                        <td style="text-align: right;" sec:authorize="hasAnyRole('ADMIN_MEDIO', 'ADMIN_ALTO')">
                             <a th:href="@{/admin/ministerios/editar/{id}(id=${m.id})}" class="btn btn-secondary"
                                 style="padding: 4px 8px;" title="Editar">✏️</a>
                             <a th:href="@{/admin/ministerios/deletar/{id}(id=${m.id})}" class="btn btn-danger"

@@ -7,6 +7,8 @@
     <title>Inscrição de Voluntários</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <style>
         /* === PALETA IBAJI === */
@@ -583,6 +585,11 @@
                         compromisso.</label>
                 </div>
                 <div class="erro" th:if="${#fields.hasErrors('termosAceitos')}" th:errors="*{termosAceitos}"></div>
+            </div>
+
+            <!-- Cloudflare Turnstile Widget -->
+            <div class="campo" style="display: flex; justify-content: center; margin-top: 1.5rem; margin-bottom: 1rem;">
+                <div class="cf-turnstile" th:data-sitekey="${turnstileSiteKey}" data-theme="light"></div>
             </div>
 
             <button type="submit">Enviar Inscrição</button>

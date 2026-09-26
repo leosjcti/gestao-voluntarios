@@ -1,8 +1,8 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-# Copia o JAR
+RUN addgroup -S spring && adduser -S spring -G spring
 COPY voluntariado-1.0.0.jar app.jar
-# Expõe a porta
+RUN chown spring:spring app.jar
+USER spring:spring
 EXPOSE 8080
-# Roda a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -30,7 +30,7 @@
 
         <div class="page-header">
             <h2 class="page-title">Gestão de Voluntários</h2>
-            <a href="/admin/voluntarios/novo" class="btn btn-primary" sec:authorize="hasRole('SUPER_ADMIN')">+ Novo
+            <a href="/admin/voluntarios/novo" class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN_MEDIO', 'ADMIN_ALTO')">+ Novo
                 Voluntário</a>
         </div>
 
@@ -89,6 +89,7 @@
                             <div th:if="${v.antecedentes != null}"
                                 style="display:flex; align-items:center; justify-content:center; gap:8px;">
                                 <a th:href="@{/admin/download/{id}(id=${v.id})}" class="btn btn-primary"
+                                    sec:authorize="hasRole('ADMIN_ALTO')"
                                     style="font-size: 11px; padding: 4px 8px;" title="Baixar">⬇</a>
 
                                 <span th:if="${v.antecedentesAnalisados}" title="Aprovado"
@@ -105,7 +106,7 @@
                             <a th:href="@{/admin/voluntarios/visualizar/{id}(id=${v.id})}" class="btn btn-secondary"
                                 style="padding: 6px 10px; margin-right: 4px;" title="Visualizar">🔍</a>
 
-                            <th:block sec:authorize="hasRole('SUPER_ADMIN')">
+                             <th:block sec:authorize="hasAnyRole('ADMIN_MEDIO', 'ADMIN_ALTO')">
                                 <a th:href="@{/admin/voluntarios/editar/{id}(id=${v.id})}" class="btn btn-secondary"
                                     style="padding: 6px 10px;" title="Editar">✏️</a>
                                 <a th:href="@{/admin/voluntarios/deletar/{id}(id=${v.id})}" class="btn btn-danger"

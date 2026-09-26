@@ -35,14 +35,17 @@ public class VoluntarioService {
     private final AntecedentesCriminaisRepository antecedentesRepository;
     private final S3Service s3Service;
     private final PdfEmailService pdfEmailService;
+    private final DocumentAnalysisService documentAnalysisService;
 
     public VoluntarioService(VoluntarioRepository voluntarioRepo, MinisterioRepository ministerioRepo,
-            AntecedentesCriminaisRepository antecedentesRepo, S3Service s3Service, PdfEmailService pdfEmailService) {
+            AntecedentesCriminaisRepository antecedentesRepo, S3Service s3Service, 
+            PdfEmailService pdfEmailService, DocumentAnalysisService documentAnalysisService) {
         this.voluntarioRepository = voluntarioRepo;
         this.ministerioRepository = ministerioRepo;
         this.antecedentesRepository = antecedentesRepo;
         this.s3Service = s3Service;
         this.pdfEmailService = pdfEmailService;
+        this.documentAnalysisService = documentAnalysisService;
     }
 
     public List<MinisterioDTO> listarTodosMinisterios() {
@@ -96,6 +99,22 @@ public class VoluntarioService {
             antecedentes.setStatus(StatusAntecedentes.PENDENTE_ANALISE);
 
             antecedentesRepository.save(antecedentes);
+
+            try {
+                java.io.File tempFile = java.io.File.createTempFile("antecedentes-", ".pdf");
+                arquivo.transferTo(tempFile);
+                
+                org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                    new org.springframework.transaction.support.TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                            documentAnalysisService.processarDocumentoAssincrono(salvo.getId(), tempFile);
+                        }
+                    }
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         
         pdfEmailService.gerarEEnviarTermo(salvo);

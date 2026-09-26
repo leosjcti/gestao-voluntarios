@@ -3,8 +3,10 @@ package br.com.ibaji.voluntarios.controller;
 import br.com.ibaji.voluntarios.model.dto.VoluntarioFormDTO;
 import br.com.ibaji.voluntarios.repository.BaseRepository;
 import br.com.ibaji.voluntarios.service.VoluntarioService;
+import br.com.ibaji.voluntarios.service.TurnstileService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,20 +19,26 @@ public class VoluntarioController {
 
     private final VoluntarioService servico;
     private final BaseRepository baseRepository;
+    private final TurnstileService turnstileService;
 
-    public VoluntarioController(VoluntarioService servico, BaseRepository baseRepository) {
+    @Value("${cloudflare.turnstile.site-key}")
+    private String siteKey;
+
+    public VoluntarioController(VoluntarioService servico, BaseRepository baseRepository, TurnstileService turnstileService) {
         this.servico = servico;
         this.baseRepository = baseRepository;
+        this.turnstileService = turnstileService;
     }
 
     @GetMapping("/cadastro")
     public String exibirFormulario(Model modelo, HttpServletRequest request) {
+        System.out.println("Sitekey enviada ao template: '" + siteKey + "'");
 
         request.getSession(true);
 
         modelo.addAttribute("formDto", new VoluntarioFormDTO());
-        //modelo.addAttribute("listaMinisterios", servico.listarTodosMinisterios());
         modelo.addAttribute("listaBases", baseRepository.findAll());
+        modelo.addAttribute("turnstileSiteKey", siteKey);
         return "formulario-voluntario";
     }
 
@@ -38,11 +46,32 @@ public class VoluntarioController {
     public String salvarVoluntario(
             @Valid @ModelAttribute("formDto") VoluntarioFormDTO formDto,
             BindingResult erros,
-            @RequestParam(value = "arquivoAntecedentes", required = false)
-            MultipartFile arquivo,
+            @RequestParam(value = "arquivoAntecedentes", required = false) MultipartFile arquivo,
+            @RequestParam(value = "cf-turnstile-response", required = false) String turnstileToken,
+            HttpServletRequest request,
             Model modelo,
             RedirectAttributes redirect) {
 
+        // Forçar a criação de sessão para evitar erro de commit do Thymeleaf/CSRF
+        request.getSession(true);
+
+        // Obter IP do cliente tratando proxies/Cloudflare
+        String clientIp = request.getHeader("CF-Connecting-IP");
+        if (clientIp == null || clientIp.isEmpty()) {
+            clientIp = request.getHeader("X-Forwarded-For");
+            if (clientIp != null && clientIp.contains(",")) {
+                clientIp = clientIp.split(",")[0].trim();
+            }
+        }
+        if (clientIp == null || clientIp.isEmpty()) {
+            clientIp = request.getRemoteAddr();
+        }
+
+        // Validar Token Turnstile
+        boolean captchaValido = turnstileService.verificarToken(turnstileToken, clientIp);
+        if (!captchaValido) {
+            erros.reject("erro.captcha", "A verificação de segurança anti-robô falhou. Por favor, marque a caixa do Turnstile.");
+        }
 
         boolean isMaiorIdade = false;
         if (formDto.getDataNascimento() != null) {
@@ -54,7 +83,14 @@ public class VoluntarioController {
         }
 
         if (erros.hasErrors()) {
+            System.out.println("Sitekey enviada no erro: '" + siteKey + "'");
             modelo.addAttribute("listaBases", baseRepository.findAll());
+            modelo.addAttribute("turnstileSiteKey", siteKey);
+            
+            // Repassa o erro geral de captcha se houver
+            if (!captchaValido) {
+                modelo.addAttribute("mensagemErro", "A verificação de segurança falhou. Por favor, complete o Turnstile.");
+            }
             return "formulario-voluntario";
         }
 
@@ -64,7 +100,8 @@ public class VoluntarioController {
             return "redirect:/sucesso";
         } catch (Exception e) {
             modelo.addAttribute("mensagemErro", "Erro no sistema: " + e.getMessage());
-            modelo.addAttribute("listaMinisterios", servico.listarTodosMinisterios());
+            modelo.addAttribute("listaBases", baseRepository.findAll());
+            modelo.addAttribute("turnstileSiteKey", siteKey);
             return "formulario-voluntario";
         }
     }

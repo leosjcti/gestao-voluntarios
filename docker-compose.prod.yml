@@ -5,10 +5,10 @@ services:
     container_name: voluntariado-app
     restart: always
     ports:
-      - "80:8080"
+      - "127.0.0.1:8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - JAVA_TOOL_OPTIONS=-Xmx450m
+      - JAVA_TOOL_OPTIONS=-Xms450m -Xmx450m -XX:MaxMetaspaceSize=128m
 
       # Banco de Dados
       - SPRING_DATASOURCE_URL=${DB_URL}
@@ -36,6 +36,10 @@ services:
       - SPRING_MAIL_PASSWORD=${EMAIL_PASSWORD}
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+
+      # --- CONFIGURAÇÃO CLOUDFLARE TURNSTILE ---
+      - TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY}
+      - TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY}
     depends_on:
       - db
 

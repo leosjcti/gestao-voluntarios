@@ -374,14 +374,16 @@
 
                     </div>
 
-                    <div class="section-title">Documentação</div>
-                    <div class="upload-box">
-                        <label style="color: #854d0e; font-weight:bold; display:block; margin-bottom:5px;">
-                            Anexar/Substituir Atestado
-                        </label>
-                        <input type="file" name="arquivoAntecedentes" style="background:white; width:auto;" />
-                        <div style="font-size:12px; color:#666; margin-top:5px;">
-                            Selecione um arquivo apenas se desejar adicionar ou substituir o atual.
+                    <div sec:authorize="hasRole('ADMIN_ALTO')">
+                        <div class="section-title">Documentação</div>
+                        <div class="upload-box">
+                            <label style="color: #854d0e; font-weight:bold; display:block; margin-bottom:5px;">
+                                Anexar/Substituir Atestado
+                            </label>
+                            <input type="file" name="arquivoAntecedentes" style="background:white; width:auto;" />
+                            <div style="font-size:12px; color:#666; margin-top:5px;">
+                                Selecione um arquivo apenas se desejar adicionar ou substituir o atual.
+                            </div>
                         </div>
                     </div>
                 </fieldset>

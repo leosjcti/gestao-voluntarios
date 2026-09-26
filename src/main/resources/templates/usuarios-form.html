@@ -30,7 +30,9 @@
             <label>Permissão:</label>
             <select th:field="*{role}">
                 <option value="ADMIN">Admin Comum (Acessa tudo menos usuários)</option>
-                <option value="SUPER_ADMIN">Super Admin (Acesso Total)</option>
+                <option value="ADMIN_ALTO">Nível 3 - Admin Alto (Acesso Total)</option>
+                <option value="ADMIN_MEDIO">Nível 2 - Admin Médio (Edição sem Docs)</option>
+                <option value="ADMIN_BASICO">Nível 1 - Admin Básico (Visualização)</option>
             </select>
 
             <div class="actions">

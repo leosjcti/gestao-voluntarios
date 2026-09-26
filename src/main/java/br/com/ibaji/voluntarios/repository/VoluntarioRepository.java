@@ -85,4 +85,7 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
     long countByStatusTermo(StatusTermo status);
 
     long countByMenorIdadeTrue();
+
+    @Query("SELECT v.nomeCompleto FROM Voluntario v WHERE v.id = :id")
+    java.util.Optional<String> findNomeById(@org.springframework.data.repository.query.Param("id") Long id);
 }
