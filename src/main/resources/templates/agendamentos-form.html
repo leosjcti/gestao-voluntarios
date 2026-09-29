@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Novo Agendamento</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+    <style>
+        .form-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(139, 94, 52, 0.1); max-width: 700px; margin: 0 auto; }
+        .section-title { color: var(--primary-brown); font-size: 15px; font-weight: 700; margin-bottom: 15px; margin-top: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+        .section-title:first-child { margin-top: 0; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        label { margin-bottom: 5px; font-weight: 600; color: var(--text-dark); font-size: 14px; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; background: #fcfbf9; box-sizing: border-box; }
+        input[type="checkbox"] { width: auto; display: inline-block; margin-right: 8px; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-gold); background: white; box-shadow: 0 0 0 3px rgba(217, 163, 74, 0.2); }
+        .actions { margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eee; padding-top: 20px;}
+
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{fragments :: navbar('agendamentos')}"></th:block>
+
+<div class="container">
+    <div class="form-card">
+        <div th:if="${erro}" style="background-color: var(--danger-bg); color: var(--danger); padding: 15px; border-radius: 6px; margin-bottom: 20px;" th:text="${erro}"></div><h2 class="page-title" style="margin-bottom: 20px; font-size: 20px;">Novo Agendamento</h2>
+
+        <form th:action="@{/admin/agendamentos/novo}" th:object="${dto}" method="post">
+
+            <div class="section-title">Dados Gerais</div>
+            <div class="form-group full-width">
+                <label>Título do Evento:</label>
+                <input type="text" th:field="*{titulo}" required />
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Ministério:</label>
+                    <select th:field="*{ministerioId}" required>
+                        <option value="">Selecione...</option>
+                        <option th:each="m : ${ministerios}" th:value="${m.id}" th:text="${m.nome}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Espaço/Sala:</label>
+                    <select th:field="*{espacoId}" required>
+                        <option value="">Selecione...</option>
+                        <option th:each="e : ${espacos}" th:value="${e.id}" th:text="${e.nome}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">Data e Horário</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Início:</label>
+                    <input type="datetime-local" th:field="*{dataInicioBase}" required />
+                </div>
+                <div class="form-group">
+                    <label>Fim:</label>
+                    <input type="datetime-local" th:field="*{dataFimBase}" required />
+                </div>
+            </div>
+
+            <div class="form-grid" style="align-items: center;">
+                <div class="form-group" style="flex-direction: row; align-items: center;">
+                    <input type="checkbox" th:field="*{isRecorrente}" id="isRecorrente"/>
+                    <label for="isRecorrente" style="margin-bottom:0; cursor:pointer;">Evento Recorrente?</label>
+                </div>
+                <div class="form-group">
+                    <label>Regra de Repetição:</label>
+                    <select th:field="*{regraRecorrencia}">
+                        <option value="UNICO">Único (Sem repetição)</option>
+                        <option value="DIARIO">Diário</option>
+                        <option value="SEMANAL">Semanal</option>
+                        <option value="MENSAL">Mensal</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">Detalhes Adicionais</div>
+            <div class="form-group full-width">
+                <label>Apoio Necessário (Equipamentos, Som, etc.):</label>
+                <textarea th:field="*{apoioNecessario}" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group full-width" style="margin-top:15px;">
+                <label>Estimativa de Participantes:</label>
+                <input type="number" th:field="*{estimativaParticipantes}" style="width: 150px;"/>
+            </div>
+
+            <div class="actions">
+                <a href="/admin/agendamentos/calendario" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar Agendamento</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

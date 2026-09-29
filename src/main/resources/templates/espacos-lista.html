@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Espaços</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+    <style>
+        .submenu-btn {
+            background: #fdfbf7;
+            border: 1px solid #d1d5db;
+            color: var(--text-dark);
+        }
+        .submenu-btn:hover {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{fragments :: navbar('agendamentos')}"></th:block>
+
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Gestão de Espaços</h1>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="/admin/espacos/novo" class="btn btn-primary">➕ Novo Espaço</a>
+            <a href="/admin/agendamentos/calendario" class="btn btn-secondary">🔙 Voltar ao Calendário</a>
+            <a href="/admin/agendamentos/conflitos" class="btn submenu-btn">⚠️ Conflitos</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Capacidade</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${espacos.empty}">
+                    <td colspan="3" style="text-align: center;">Nenhum espaço cadastrado.</td>
+                </tr>
+                <tr th:each="e : ${espacos}">
+                    <td th:text="${e.nome}"></td>
+                    <td th:text="${e.capacidade}"></td>
+                    <td th:text="${e.descricao}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

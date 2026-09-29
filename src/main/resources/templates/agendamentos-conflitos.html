@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Resolução de Conflitos</title>
+    <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+    <style>
+        .submenu-btn {
+            background: #fdfbf7;
+            border: 1px solid #d1d5db;
+            color: var(--text-dark);
+        }
+        .submenu-btn:hover {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{fragments :: navbar('agendamentos')}"></th:block>
+
+<div class="container">
+    <div th:if="${mensagem}" style="background-color: var(--success-bg); color: var(--success); padding: 15px; border-radius: 6px; margin-bottom: 20px;" th:text="${mensagem}"></div>
+
+    <div class="page-header">
+        <h1 class="page-title">Resolução de Conflitos</h1>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="/admin/agendamentos/calendario" class="btn btn-secondary">🔙 Voltar ao Calendário</a>
+            <a href="/admin/espacos" class="btn submenu-btn">🏢 Espaços</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Evento</th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Espaço Solicitado</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${conflitos.empty}">
+                    <td colspan="5" style="text-align: center;">Nenhum conflito pendente de resolução.</td>
+                </tr>
+                <tr th:each="c : ${conflitos}">
+                    <td th:text="${c.evento.titulo}"></td>
+                    <td th:text="${#temporals.format(c.dataInicio, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(c.dataFim, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${c.espaco != null ? c.espaco.nome : 'Nenhum'}"></td>
+                    <td>
+                        <form th:action="@{/admin/agendamentos/resolver-conflito/{id}(id=${c.id})}" method="post" style="display: flex; gap: 10px; align-items: center; justify-content: flex-end;">
+                            <select name="novoEspacoId" class="form-control" style="padding: 6px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="">Manter Espaço Atual (Ignorar Choque)</option>
+                                <option th:each="e : ${espacos}" th:value="${e.id}" th:text="${e.nome}"></option>
+                            </select>
+                            
+                            <button type="submit" name="acao" value="APROVAR" class="btn btn-primary" style="background-color: var(--success);">✅ Aprovar</button>
+                            <button type="submit" name="acao" value="CANCELAR" class="btn btn-danger">❌ Cancelar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
