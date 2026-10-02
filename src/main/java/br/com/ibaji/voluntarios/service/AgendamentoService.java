@@ -24,7 +24,7 @@ public class AgendamentoService {
     }
 
     @Transactional
-    public boolean criarEventoESeries(Evento evento, Espaco espacoBase, LocalDateTime dataInicioBase, LocalDateTime dataFimBase) {
+    public boolean criarEventoESeries(Evento evento, Espaco espacoBase, LocalDateTime dataInicioBase, LocalDateTime dataFimBase, Boolean excJan, Boolean excJul, Boolean excDez) {
         evento = eventoRepository.save(evento);
         
         LocalDateTime start = dataInicioBase;
@@ -34,27 +34,37 @@ public class AgendamentoService {
         String regra = evento.getRegraRecorrencia() != null ? evento.getRegraRecorrencia().toUpperCase() : "UNICO";
         boolean temConflito = false;
         
+        java.time.DayOfWeek startDow = dataInicioBase.getDayOfWeek();
+        int ordinalDow = (dataInicioBase.getDayOfMonth() - 1) / 7 + 1;
+
         do {
-            EventoOcorrencia ocorrencia = new EventoOcorrencia();
-            ocorrencia.setEvento(evento);
-            ocorrencia.setEspaco(espacoBase);
-            ocorrencia.setDataInicio(start);
-            ocorrencia.setDataFim(end);
-            
-            // Verificar conflito de forma permissiva (marca como CONFLITO mas salva)
-            if (espacoBase != null) {
-                List<EventoOcorrencia> conflitos = eventoOcorrenciaRepository.findConflitos(espacoBase.getId(), start, end);
-                if (!conflitos.isEmpty()) {
-                    ocorrencia.setStatus(StatusOcorrencia.CONFLITO);
-                    temConflito = true;
+            boolean pular = false;
+            int mesAtual = start.getMonthValue();
+            if (Boolean.TRUE.equals(excJan) && mesAtual == 1) pular = true;
+            if (Boolean.TRUE.equals(excJul) && mesAtual == 7) pular = true;
+            if (Boolean.TRUE.equals(excDez) && mesAtual == 12) pular = true;
+
+            if (!pular) {
+                EventoOcorrencia ocorrencia = new EventoOcorrencia();
+                ocorrencia.setEvento(evento);
+                ocorrencia.setEspaco(espacoBase);
+                ocorrencia.setDataInicio(start);
+                ocorrencia.setDataFim(end);
+                
+                if (espacoBase != null) {
+                    List<EventoOcorrencia> conflitos = eventoOcorrenciaRepository.findConflitos(espacoBase.getId(), start, end);
+                    if (!conflitos.isEmpty()) {
+                        ocorrencia.setStatus(StatusOcorrencia.CONFLITO);
+                        temConflito = true;
+                    } else {
+                        ocorrencia.setStatus(StatusOcorrencia.APROVADO);
+                    }
                 } else {
-                    ocorrencia.setStatus(StatusOcorrencia.APROVADO);
+                    ocorrencia.setStatus(StatusOcorrencia.PENDENTE);
                 }
-            } else {
-                ocorrencia.setStatus(StatusOcorrencia.PENDENTE);
+                
+                eventoOcorrenciaRepository.save(ocorrencia);
             }
-            
-            eventoOcorrenciaRepository.save(ocorrencia);
             
             switch (regra) {
                 case "DIARIO":
@@ -66,12 +76,18 @@ public class AgendamentoService {
                     end = end.plusWeeks(1);
                     break;
                 case "MENSAL":
-                    start = start.plusMonths(1);
-                    end = end.plusMonths(1);
+                    java.time.LocalDate nextMonthDate = start.toLocalDate().plusMonths(1);
+                    java.time.LocalDate nextOcorrenciaDate = nextMonthDate.with(java.time.temporal.TemporalAdjusters.dayOfWeekInMonth(ordinalDow, startDow));
+                    if (nextOcorrenciaDate.getMonth() != nextMonthDate.getMonth()) {
+                        nextOcorrenciaDate = nextMonthDate.with(java.time.temporal.TemporalAdjusters.lastInMonth(startDow));
+                    }
+                    long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(start.toLocalDate(), nextOcorrenciaDate);
+                    start = start.plusDays(daysBetween);
+                    end = end.plusDays(daysBetween);
                     break;
                 case "UNICO":
                 default:
-                    start = maxDate.plusDays(1); // Para sair do loop
+                    start = maxDate.plusDays(1);
                     break;
             }
         } while (start.isBefore(maxDate));
@@ -89,5 +105,9 @@ public class AgendamentoService {
         List<EventoOcorrencia> ocorrencias = eventoOcorrenciaRepository.findByEventoId(eventoId);
         eventoOcorrenciaRepository.deleteAll(ocorrencias);
         eventoRepository.deleteById(eventoId);
+    }
+
+    public Evento buscarEventoPorId(Long eventoId) {
+        return eventoRepository.findById(eventoId).orElse(null);
     }
 }

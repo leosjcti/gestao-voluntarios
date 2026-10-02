@@ -17,6 +17,9 @@ public class AgendamentoFormDTO {
 
     private Boolean isRecorrente;
     private String regraRecorrencia;
+    private Boolean excluirJaneiro;
+    private Boolean excluirJulho;
+    private Boolean excluirDezembro;
     private String apoioNecessario;
     private Integer estimativaParticipantes;
 
@@ -43,6 +46,15 @@ public class AgendamentoFormDTO {
 
     public String getRegraRecorrencia() { return regraRecorrencia; }
     public void setRegraRecorrencia(String regraRecorrencia) { this.regraRecorrencia = regraRecorrencia; }
+
+    public Boolean getExcluirJaneiro() { return excluirJaneiro; }
+    public void setExcluirJaneiro(Boolean excluirJaneiro) { this.excluirJaneiro = excluirJaneiro; }
+
+    public Boolean getExcluirJulho() { return excluirJulho; }
+    public void setExcluirJulho(Boolean excluirJulho) { this.excluirJulho = excluirJulho; }
+
+    public Boolean getExcluirDezembro() { return excluirDezembro; }
+    public void setExcluirDezembro(Boolean excluirDezembro) { this.excluirDezembro = excluirDezembro; }
 
     public String getApoioNecessario() { return apoioNecessario; }
     public void setApoioNecessario(String apoioNecessario) { this.apoioNecessario = apoioNecessario; }

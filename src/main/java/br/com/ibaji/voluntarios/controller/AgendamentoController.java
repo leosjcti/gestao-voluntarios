@@ -27,17 +27,20 @@ public class AgendamentoController {
     private final EspacoRepository espacoRepository;
     private final MinisterioRepository ministerioRepository;
     private final EventoOcorrenciaRepository eventoOcorrenciaRepository;
+    private final br.com.ibaji.voluntarios.repository.UsuarioRepository usuarioRepository;
 
     public AgendamentoController(AgendamentoService agendamentoService,
                                  GCalExportService gCalExportService,
                                  EspacoRepository espacoRepository,
                                  MinisterioRepository ministerioRepository,
-                                 EventoOcorrenciaRepository eventoOcorrenciaRepository) {
+                                 EventoOcorrenciaRepository eventoOcorrenciaRepository,
+                                 br.com.ibaji.voluntarios.repository.UsuarioRepository usuarioRepository) {
         this.agendamentoService = agendamentoService;
         this.gCalExportService = gCalExportService;
         this.espacoRepository = espacoRepository;
         this.ministerioRepository = ministerioRepository;
         this.eventoOcorrenciaRepository = eventoOcorrenciaRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @GetMapping("/calendario")
@@ -65,6 +68,10 @@ public class AgendamentoController {
         evento.setApoioNecessario(dto.getApoioNecessario());
         evento.setEstimativaParticipantes(dto.getEstimativaParticipantes());
 
+        String login = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        br.com.ibaji.voluntarios.model.Usuario criador = usuarioRepository.findByLogin(login).orElse(null);
+        evento.setCriador(criador);
+
         if (dto.getMinisterioId() != null) {
             Ministerio ministerio = ministerioRepository.findById(dto.getMinisterioId()).orElse(null);
             evento.setMinisterio(ministerio);
@@ -75,7 +82,7 @@ public class AgendamentoController {
             espaco = espacoRepository.findById(dto.getEspacoId()).orElse(null);
         }
 
-        boolean temConflito = agendamentoService.criarEventoESeries(evento, espaco, dto.getDataInicioBase(), dto.getDataFimBase());
+        boolean temConflito = agendamentoService.criarEventoESeries(evento, espaco, dto.getDataInicioBase(), dto.getDataFimBase(), dto.getExcluirJaneiro(), dto.getExcluirJulho(), dto.getExcluirDezembro());
         
         if (temConflito) {
             redirectAttributes.addFlashAttribute("erro", "Agendamento criado, MAS COM CONFLITOS! Existem eventos sobrepostos que precisarão ser avaliados pela gerência.");
@@ -120,6 +127,12 @@ public class AgendamentoController {
 
     @PostMapping("/ocorrencia/{id}/excluir")
     public String excluirOcorrencia(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String login = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        EventoOcorrencia ocorrencia = eventoOcorrenciaRepository.findById(id).orElse(null);
+        if (ocorrencia != null && ocorrencia.getEvento().getCriador() != null && !ocorrencia.getEvento().getCriador().getLogin().equals(login)) {
+            redirectAttributes.addFlashAttribute("erro", "Você não tem permissão para excluir uma ocorrência de um evento que não criou.");
+            return "redirect:/admin/agendamentos/calendario";
+        }
         agendamentoService.excluirOcorrencia(id);
         redirectAttributes.addFlashAttribute("mensagem", "Ocorrência excluída com sucesso.");
         return "redirect:/admin/agendamentos/calendario";
@@ -127,6 +140,12 @@ public class AgendamentoController {
 
     @PostMapping("/evento/{eventoId}/excluir")
     public String excluirEventoTotal(@PathVariable Long eventoId, RedirectAttributes redirectAttributes) {
+        String login = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        Evento evento = agendamentoService.buscarEventoPorId(eventoId);
+        if (evento != null && evento.getCriador() != null && !evento.getCriador().getLogin().equals(login)) {
+            redirectAttributes.addFlashAttribute("erro", "Você não tem permissão para excluir um evento que não criou.");
+            return "redirect:/admin/agendamentos/calendario";
+        }
         agendamentoService.excluirEventoTotal(eventoId);
         redirectAttributes.addFlashAttribute("mensagem", "Série de eventos excluída com sucesso.");
         return "redirect:/admin/agendamentos/calendario";

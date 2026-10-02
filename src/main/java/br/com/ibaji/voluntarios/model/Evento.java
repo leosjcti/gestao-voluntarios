@@ -23,6 +23,10 @@ public class Evento {
     @JoinColumn(name = "ministerio_id")
     private Ministerio ministerio;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "criador_id")
+    private Usuario criador;
+
     @Column(name = "is_recorrente")
     private Boolean isRecorrente = false;
 
@@ -71,6 +75,14 @@ public class Evento {
 
     public void setMinisterio(Ministerio ministerio) {
         this.ministerio = ministerio;
+    }
+
+    public Usuario getCriador() {
+        return criador;
+    }
+
+    public void setCriador(Usuario criador) {
+        this.criador = criador;
     }
 
     public Boolean getRecorrente() {

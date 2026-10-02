@@ -67,7 +67,7 @@
 
             <div class="form-grid" style="align-items: center;">
                 <div class="form-group" style="flex-direction: row; align-items: center;">
-                    <input type="checkbox" th:field="*{isRecorrente}" id="isRecorrente"/>
+                    <input type="checkbox" th:field="*{isRecorrente}" id="isRecorrente" onchange="toggleExclusoes()"/>
                     <label for="isRecorrente" style="margin-bottom:0; cursor:pointer;">Evento Recorrente?</label>
                 </div>
                 <div class="form-group">
@@ -80,6 +80,24 @@
                     </select>
                 </div>
             </div>
+
+            <div id="exclusoes-meses" class="form-group full-width" style="display: none; background: #fff8eb; padding: 10px; border-radius: 6px; margin-top: 10px; border: 1px solid #fae6c6;">
+                <label style="margin-bottom: 8px; display: block;">Pausar atividades nos meses:</label>
+                <div style="display: flex; gap: 20px;">
+                    <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center;"><input type="checkbox" th:field="*{excluirJaneiro}"> Janeiro</label>
+                    <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center;"><input type="checkbox" th:field="*{excluirJulho}"> Julho</label>
+                    <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center;"><input type="checkbox" th:field="*{excluirDezembro}"> Dezembro</label>
+                </div>
+            </div>
+
+            <script>
+                function toggleExclusoes() {
+                    var chk = document.getElementById('isRecorrente');
+                    var div = document.getElementById('exclusoes-meses');
+                    div.style.display = chk.checked ? 'block' : 'none';
+                }
+                document.addEventListener('DOMContentLoaded', toggleExclusoes);
+            </script>
 
             <div class="section-title">Detalhes Adicionais</div>
             <div class="form-group full-width">
