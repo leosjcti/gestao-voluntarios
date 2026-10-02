@@ -98,7 +98,7 @@ public class RelatorioService {
 
     // 6. Listagem para Drill-Down (Não paginado)
     public List<Voluntario> listarPorMinisterio(Long id) {
-        return voluntarioRepository.findByMinisteriosId(id);
+        return voluntarioRepository.findByMinisteriosIdOrderByNomeCompletoAsc(id);
     }
 
     // 7. Busca o nome do ministério

@@ -28,14 +28,16 @@ public class AdminController {
     @GetMapping
     public String dashboard(
             @RequestParam(value = "busca", required = false) String busca,
+            @RequestParam(value = "filtro", required = false) String filtro,
             @RequestParam(value = "page", defaultValue = "0") int page,
             Model model) {
 
         int tamanhoPagina = 10;
-        Page<Voluntario> paginaVoluntarios = voluntarioService.listarPaginado(busca, page, tamanhoPagina);
+        Page<Voluntario> paginaVoluntarios = voluntarioService.listarPaginado(busca, filtro, page, tamanhoPagina);
 
         model.addAttribute("voluntariosPage", paginaVoluntarios);
         model.addAttribute("busca", busca);
+        model.addAttribute("filtro", filtro);
 
         return "admin-dashboard";
     }

@@ -26,7 +26,7 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
     // Traz quem vence entre HOJE e DataLimite, ou quem já está atrasado (menor que hoje)
     List<Voluntario> findByProximaRenovacaoLessThanEqual(LocalDate dataLimite);
 
-    List<Voluntario> findByMinisteriosId(Long ministerioId);
+    List<Voluntario> findByMinisteriosIdOrderByNomeCompletoAsc(Long ministerioId);
 
     // Busca por nome ignorando maiúsculas/minúsculas, com paginação
     Page<Voluntario> findByNomeCompletoContainingIgnoreCase(String nome, Pageable pageable);
@@ -44,6 +44,12 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
     // 4. Buscar aniversariantes do mês atual
     @Query("SELECT v FROM Voluntario v WHERE MONTH(v.dataNascimento) = :mes ORDER BY DAY(v.dataNascimento) ASC")
     List<Voluntario> findAniversariantesDoMes(int mes);
+
+    Page<Voluntario> findByMenorIdadeTrue(Pageable pageable);
+    Page<Voluntario> findByAntecedentesAnalisadosFalse(Pageable pageable);
+    Page<Voluntario> findByStatusTermo(StatusTermo status, Pageable pageable);
+    @Query("SELECT v FROM Voluntario v WHERE MONTH(v.dataCriacao) = :mes AND YEAR(v.dataCriacao) = :ano")
+    Page<Voluntario> findNovosNoMes(int mes, int ano, Pageable pageable);
 
 
     @Query(value = """

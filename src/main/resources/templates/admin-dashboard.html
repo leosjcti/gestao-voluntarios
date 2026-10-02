@@ -122,14 +122,14 @@
         <div th:if="${voluntariosPage.totalPages > 1}">
             <div class="pagination">
                 <a th:if="${voluntariosPage.hasPrevious()}"
-                    th:href="@{/admin(page=${voluntariosPage.number - 1}, busca=${busca})}" class="page-link">←</a>
+                    th:href="@{/admin(page=${voluntariosPage.number - 1}, busca=${busca}, filtro=${filtro})}" class="page-link">←</a>
 
                 <a th:each="i : ${#numbers.sequence(0, voluntariosPage.totalPages - 1)}"
-                    th:href="@{/admin(page=${i}, busca=${busca})}" th:text="${i + 1}"
+                    th:href="@{/admin(page=${i}, busca=${busca}, filtro=${filtro})}" th:text="${i + 1}"
                     th:class="${i == voluntariosPage.number} ? 'page-link active' : 'page-link'"></a>
 
                 <a th:if="${voluntariosPage.hasNext()}"
-                    th:href="@{/admin(page=${voluntariosPage.number + 1}, busca=${busca})}" class="page-link">→</a>
+                    th:href="@{/admin(page=${voluntariosPage.number + 1}, busca=${busca}, filtro=${filtro})}" class="page-link">→</a>
             </div>
             <div class="page-info">
                 Página <span th:text="${voluntariosPage.number + 1}"></span> de <span

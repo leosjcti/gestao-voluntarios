@@ -222,8 +222,19 @@ public class VoluntarioService {
         voluntarioRepository.deleteById(id);
     }
 
-    public Page<Voluntario> listarPaginado(String busca, int pagina, int tamanho) {
+    public Page<Voluntario> listarPaginado(String busca, String filtro, int pagina, int tamanho) {
         Pageable pageable = PageRequest.of(pagina, tamanho, Sort.by("nomeCompleto").ascending());
+
+        if (filtro != null && !filtro.isBlank()) {
+            LocalDate hoje = LocalDate.now();
+            return switch (filtro) {
+                case "novos" -> voluntarioRepository.findNovosNoMes(hoje.getMonthValue(), hoje.getYear(), pageable);
+                case "menores" -> voluntarioRepository.findByMenorIdadeTrue(pageable);
+                case "analise" -> voluntarioRepository.findByAntecedentesAnalisadosFalse(pageable);
+                case "vencidos" -> voluntarioRepository.findByStatusTermo(StatusTermo.VENCIDO, pageable);
+                default -> voluntarioRepository.findAll(pageable);
+            };
+        }
 
         if (busca != null && !busca.isBlank()) {
             return voluntarioRepository.findByNomeCompletoContainingIgnoreCase(busca, pageable);

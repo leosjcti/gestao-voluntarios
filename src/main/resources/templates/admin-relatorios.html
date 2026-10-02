@@ -157,33 +157,33 @@
 
     <div class="kpi-grid">
 
-        <div class="kpi-card kpi-total">
+        <a href="/admin" class="kpi-card kpi-total" style="text-decoration: none;">
             <span class="kpi-title">Total Voluntários</span>
             <span class="kpi-value" th:text="${resumo.total}">0</span>
-        </div>
+        </a>
 
-        <div class="kpi-card kpi-novos">
+        <a href="/admin?filtro=novos" class="kpi-card kpi-novos" style="text-decoration: none;">
             <span class="kpi-title">Novos (Mês)</span>
             <span class="kpi-value" th:text="${resumo.novosMes}">0</span>
-        </div>
+        </a>
 
-        <div class="kpi-card kpi-menores">
+        <a href="/admin?filtro=menores" class="kpi-card kpi-menores" style="text-decoration: none;">
             <span class="kpi-title">Menores de Idade</span>
             <span class="kpi-value" style="color: #9c27b0;" th:text="${resumo.menores}">0</span>
             <span class="kpi-sub">Monitorar Maioridade</span>
-        </div>
+        </a>
 
-        <div class="kpi-card kpi-integracao">
+        <a href="/admin?filtro=analise" class="kpi-card kpi-integracao" style="text-decoration: none;">
             <span class="kpi-title">Análise Pendente</span>
             <span class="kpi-value" style="color: #d97706;" th:text="${resumo.analisePendente}">0</span>
             <span class="kpi-sub">Docs aguardando OK</span>
-        </div>
+        </a>
 
-        <div class="kpi-card kpi-atestado">
+        <a href="/admin?filtro=vencidos" class="kpi-card kpi-atestado" style="text-decoration: none;">
             <span class="kpi-title">Termos Vencidos</span>
             <span class="kpi-value" style="color: #dc2626;" th:text="${resumo.termosVencidos}">0</span>
             <span class="kpi-sub">Renovação Necessária</span>
-        </div>
+        </a>
     </div>
 
     <div class="charts-row">

@@ -283,7 +283,7 @@
                 <h2 class="page-title"
                     th:text="${modoLeitura} ? 'Visualizar Voluntário' : (${voluntario.id == null} ? 'Novo Voluntário' : 'Editar Voluntário')">
                 </h2>
-                <a href="/admin" class="btn-back">← Voltar para Lista</a>
+                <a href="javascript:void(0);" onclick="if(document.referrer.indexOf(window.location.host) !== -1) { history.back(); } else { window.location.href='/admin'; }" class="btn-back">← Voltar para Lista</a>
             </div>
 
             <form id="formAdmin" th:action="@{/admin/voluntarios/salvar}" th:object="${voluntario}" method="post"
