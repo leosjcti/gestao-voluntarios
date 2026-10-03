@@ -54,9 +54,47 @@ public class RelatorioController {
 
     // Rota para o Drill-down (Detalhe do Ministério)
     @GetMapping("/detalhe/{id}")
-    public String detalheMinisterio(@PathVariable Long id, Model model) {
-        model.addAttribute("voluntarios", service.listarPorMinisterio(id));
+    public String detalheMinisterio(
+            @PathVariable Long id, 
+            @RequestParam(value = "status", required = false) br.com.ibaji.voluntarios.model.enums.StatusTermo status,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            Model model) {
+        
+        int pageSize = 10;
+        model.addAttribute("voluntariosPage", service.listarPorMinisterio(id, status, page, pageSize));
         model.addAttribute("nomeMinisterio", service.buscarNomeMinisterio(id));
+        model.addAttribute("status", status);
+        model.addAttribute("statusOpcoes", br.com.ibaji.voluntarios.model.enums.StatusTermo.values());
+        model.addAttribute("ministerioId", id);
+        
         return "admin-relatorios-detalhe";
+    }
+
+    @GetMapping("/detalhe/{id}/exportar")
+    public void exportarCSV(
+            @PathVariable Long id,
+            @RequestParam(value = "status", required = false) br.com.ibaji.voluntarios.model.enums.StatusTermo status,
+            jakarta.servlet.http.HttpServletResponse response) throws java.io.IOException {
+        
+        String nomeMin = service.buscarNomeMinisterio(id).replaceAll("[^a-zA-Z0-9_-]", "_");
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"voluntarios_" + nomeMin + ".csv\"");
+
+        java.io.PrintWriter writer = response.getWriter();
+        writer.println("Nome,Telefone,Email,Status,Proxima Renovacao");
+        
+        java.util.List<br.com.ibaji.voluntarios.model.Voluntario> voluntarios = service.listarTodosPorMinisterio(id, status);
+        
+        for (br.com.ibaji.voluntarios.model.Voluntario v : voluntarios) {
+            String nome = v.getNomeCompleto() != null ? v.getNomeCompleto() : "";
+            String tel = v.getTelefone() != null ? v.getTelefone() : "";
+            String email = v.getEmail() != null ? v.getEmail() : "";
+            String st = v.getStatusTermo() != null ? v.getStatusTermo().name() : "";
+            String prox = v.getProximaRenovacao() != null ? v.getProximaRenovacao().toString() : "";
+            
+            writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n", nome, tel, email, st, prox);
+        }
+        writer.flush();
     }
 }

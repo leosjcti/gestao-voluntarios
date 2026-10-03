@@ -96,9 +96,21 @@ public class RelatorioService {
         return resumo;
     }
 
-    // 6. Listagem para Drill-Down (Não paginado)
-    public List<Voluntario> listarPorMinisterio(Long id) {
-        return voluntarioRepository.findByMinisteriosIdOrderByNomeCompletoAsc(id);
+    // 6. Listagem para Drill-Down (Paginado e com filtro)
+    public Page<Voluntario> listarPorMinisterio(Long id, StatusTermo status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (status != null) {
+            return voluntarioRepository.findByMinisteriosIdAndStatusTermoOrderByNomeCompletoAsc(id, status, pageable);
+        }
+        return voluntarioRepository.findByMinisteriosIdOrderByNomeCompletoAsc(id, pageable);
+    }
+    
+    // Lista completa para exportacao (sem paginacao, apenas ordenado)
+    public List<Voluntario> listarTodosPorMinisterio(Long id, StatusTermo status) {
+        if (status != null) {
+            return voluntarioRepository.findByMinisteriosIdAndStatusTermoOrderByNomeCompletoAsc(id, status, Pageable.unpaged()).getContent();
+        }
+        return voluntarioRepository.findByMinisteriosIdOrderByNomeCompletoAsc(id, Pageable.unpaged()).getContent();
     }
 
     // 7. Busca o nome do ministério

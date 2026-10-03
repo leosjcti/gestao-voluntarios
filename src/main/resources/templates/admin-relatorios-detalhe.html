@@ -4,6 +4,63 @@
 <head>
     <title>Detalhe do Ministério</title>
     <th:block th:replace="~{fragments :: estilos-globais}"></th:block>
+    <style>
+        .filter-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(139, 94, 52, 0.05);
+            border: 1px solid #ece7df;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--primary-brown);
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            background-color: white;
+            min-width: 180px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-brown);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-excel {
+            background-color: #107c41;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+        
+        .btn-excel:hover {
+            background-color: #0c5e31;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,8 +72,28 @@
             <h2 class="page-title">
                 Voluntários: <span th:text="${nomeMinisterio}" style="color: var(--accent-gold);"></span>
             </h2>
-            <a href="/admin/relatorios" class="btn btn-secondary">← Voltar</a>
+            <div class="header-actions">
+                <a th:href="@{/admin/relatorios/detalhe/{id}/exportar(id=${ministerioId}, status=${status})}" class="btn btn-excel">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16" fill="currentColor">
+                        <path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM155.7 250.2L192 302.1l36.3-51.9c7.6-10.9 22.6-13.5 33.4-5.9s13.5 22.6 5.9 33.4L221.3 344l46.4 66.2c7.6 10.9 5 25.8-5.9 33.4s-25.8 5-33.4-5.9L192 385.8l-36.3 51.9c-7.6 10.9-22.6 13.5-33.4 5.9s-13.5-22.6-5.9-33.4L162.7 344l-46.4-66.2c-7.6-10.9-5-25.8 5.9-33.4s25.8-5 33.4 5.9z"/>
+                    </svg>
+                    Exportar Excel
+                </a>
+                <a href="/admin/relatorios" class="btn btn-secondary">← Voltar</a>
+            </div>
         </div>
+
+        <form th:action="@{/admin/relatorios/detalhe/{id}(id=${ministerioId})}" method="get" class="filter-box">
+            <label for="status" class="filter-label">Filtrar por Status:</label>
+            <select name="status" id="status" class="filter-select" onchange="this.form.submit()">
+                <option value="">Todos os status</option>
+                <option th:each="opcao : ${statusOpcoes}"
+                        th:value="${opcao}"
+                        th:text="${opcao}"
+                        th:selected="${status == opcao}"></option>
+            </select>
+            <a th:if="${status != null}" th:href="@{/admin/relatorios/detalhe/{id}(id=${ministerioId})}" class="btn btn-secondary" style="padding: 8px 12px;">Limpar</a>
+        </form>
 
         <div class="table-responsive">
             <table>
@@ -25,25 +102,49 @@
                         <th>Nome</th>
                         <th>Telefone</th>
                         <th>Email</th>
+                        <th>Status</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="v : ${voluntarios}">
+                    <tr th:each="v : ${voluntariosPage.content}">
                         <td th:text="${v.nomeCompleto}">Nome</td>
                         <td th:text="${v.telefone}">Tel</td>
                         <td th:text="${v.email}">Email</td>
+                        <td>
+                            <span th:if="${v.statusTermo?.name() == 'ATIVO' or v.statusTermo?.name() == 'VIGENTE'}" class="badge badge-success" th:text="${v.statusTermo}"></span>
+                            <span th:if="${v.statusTermo?.name() == 'VENCIDO'}" class="badge badge-danger">Vencido</span>
+                            <span th:if="${v.statusTermo?.name() == 'PENDENTE'}" class="badge badge-warning">Pendente</span>
+                        </td>
                         <td>
                             <a th:href="@{/admin/voluntarios/visualizar/{id}(id=${v.id})}" class="btn btn-secondary"
                                 style="font-size: 12px; padding: 4px 8px;">Ver Cadastro</a>
                         </td>
                     </tr>
-                    <tr th:if="${voluntarios.empty}">
-                        <td colspan="4" style="text-align: center; padding: 20px;">Nenhum voluntário neste ministério.
+                    <tr th:if="${voluntariosPage.empty}">
+                        <td colspan="5" style="text-align: center; padding: 20px;">Nenhum voluntário encontrado.
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div th:if="${voluntariosPage.totalPages > 1}">
+            <div class="pagination">
+                <a th:if="${voluntariosPage.hasPrevious()}"
+                    th:href="@{/admin/relatorios/detalhe/{id}(id=${ministerioId}, page=${voluntariosPage.number - 1}, status=${status})}" class="page-link">←</a>
+
+                <a th:each="i : ${#numbers.sequence(0, voluntariosPage.totalPages - 1)}"
+                    th:href="@{/admin/relatorios/detalhe/{id}(id=${ministerioId}, page=${i}, status=${status})}" th:text="${i + 1}"
+                    th:class="${i == voluntariosPage.number} ? 'page-link active' : 'page-link'"></a>
+
+                <a th:if="${voluntariosPage.hasNext()}"
+                    th:href="@{/admin/relatorios/detalhe/{id}(id=${ministerioId}, page=${voluntariosPage.number + 1}, status=${status})}" class="page-link">→</a>
+            </div>
+            <div class="page-info">
+                Página <span th:text="${voluntariosPage.number + 1}"></span> de <span
+                    th:text="${voluntariosPage.totalPages}"></span>
+            </div>
         </div>
     </div>
 </body>

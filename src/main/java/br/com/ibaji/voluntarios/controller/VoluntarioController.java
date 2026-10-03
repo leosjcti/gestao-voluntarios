@@ -82,6 +82,14 @@ public class VoluntarioController {
             erros.rejectValue("termosAceitos", "erro.arquivo", "O arquivo de antecedentes é obrigatório para maiores de 18 anos.");
         }
 
+        if (servico.existePorCpf(formDto.getCpf())) {
+            erros.rejectValue("cpf", "erro.cpf", "Já existe um voluntário cadastrado com este CPF.");
+        }
+        
+        if (servico.existePorNome(formDto.getNomeCompleto())) {
+            erros.rejectValue("nomeCompleto", "erro.nomeCompleto", "Já existe um voluntário cadastrado com este nome.");
+        }
+
         if (erros.hasErrors()) {
             System.out.println("Sitekey enviada no erro: '" + siteKey + "'");
             modelo.addAttribute("listaBases", baseRepository.findAll());
@@ -109,5 +117,17 @@ public class VoluntarioController {
     @GetMapping("/sucesso")
     public String paginaSucesso() {
         return "sucesso";
+    }
+
+    @GetMapping("/api/validar-cpf")
+    @ResponseBody
+    public boolean validarCpf(@RequestParam String cpf) {
+        return !servico.existePorCpf(cpf);
+    }
+
+    @GetMapping("/api/validar-nome")
+    @ResponseBody
+    public boolean validarNome(@RequestParam String nome) {
+        return !servico.existePorNome(nome);
     }
 }

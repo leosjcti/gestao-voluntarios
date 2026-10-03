@@ -412,8 +412,9 @@
 
             <div class="campo">
                 <label>Nome Completo</label>
-                <input type="text" th:field="*{nomeCompleto}" placeholder="Ex: João da Silva">
+                <input type="text" th:field="*{nomeCompleto}" id="nomeCompleto" placeholder="Ex: João da Silva" onblur="validarNome(this)">
                 <div class="erro" th:if="${#fields.hasErrors('nomeCompleto')}" th:errors="*{nomeCompleto}"></div>
+                <div id="erro-nome-js" class="js-error-msg" style="display:none; color: red; font-size: 0.9rem;">Já existe um voluntário cadastrado com este nome.</div>
             </div>
 
             <div class="campo">
@@ -421,7 +422,7 @@
                 <input type="text" th:field="*{cpf}" id="cpf" placeholder="000.000.000-00" maxlength="14"
                     oninput="aplicarMascaraCPF(this)" onblur="validarCPF(this)">
                 <div class="erro" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></div>
-                <div id="erro-cpf-js" class="js-error-msg">CPF inválido. Verifique os números.</div>
+                <div id="erro-cpf-js" class="js-error-msg" style="display:none; color: red; font-size: 0.9rem;">CPF inválido. Verifique os números.</div>
             </div>
 
             <div class="campo">
@@ -622,17 +623,69 @@
             const cpfLimpo = input.value.replace(/\D/g, '');
             const erroMsg = document.getElementById('erro-cpf-js');
 
-            if (cpfLimpo === "") return;
-
-            if (!isCPFValido(cpfLimpo)) {
-                input.classList.add('input-error');
-                erroMsg.style.display = 'block';
-                input.setCustomValidity("CPF Inválido");
-            } else {
+            if (cpfLimpo === "") {
                 input.classList.remove('input-error');
                 erroMsg.style.display = 'none';
                 input.setCustomValidity("");
+                return;
             }
+
+            if (!isCPFValido(cpfLimpo)) {
+                input.classList.add('input-error');
+                erroMsg.innerText = "CPF inválido. Verifique os números.";
+                erroMsg.style.display = 'block';
+                input.setCustomValidity("CPF Inválido");
+                return;
+            }
+            
+            // Check API
+            fetch('/api/validar-cpf?cpf=' + encodeURIComponent(input.value))
+                .then(r => r.json())
+                .then(isDisponivel => {
+                    if (!isDisponivel) {
+                        input.classList.add('input-error');
+                        erroMsg.innerText = "Já existe um voluntário cadastrado com este CPF.";
+                        erroMsg.style.display = 'block';
+                        input.setCustomValidity("CPF já cadastrado");
+                    } else {
+                        input.classList.remove('input-error');
+                        erroMsg.style.display = 'none';
+                        input.setCustomValidity("");
+                    }
+                }).catch(() => {
+                    input.classList.remove('input-error');
+                    erroMsg.style.display = 'none';
+                    input.setCustomValidity("");
+                });
+        }
+
+        function validarNome(input) {
+            const nome = input.value.trim();
+            const erroMsg = document.getElementById('erro-nome-js');
+            if (nome === "") {
+                input.classList.remove('input-error');
+                erroMsg.style.display = 'none';
+                input.setCustomValidity("");
+                return;
+            }
+            
+            fetch('/api/validar-nome?nome=' + encodeURIComponent(nome))
+                .then(r => r.json())
+                .then(isDisponivel => {
+                    if (!isDisponivel) {
+                        input.classList.add('input-error');
+                        erroMsg.style.display = 'block';
+                        input.setCustomValidity("Nome já cadastrado");
+                    } else {
+                        input.classList.remove('input-error');
+                        erroMsg.style.display = 'none';
+                        input.setCustomValidity("");
+                    }
+                }).catch(() => {
+                    input.classList.remove('input-error');
+                    erroMsg.style.display = 'none';
+                    input.setCustomValidity("");
+                });
         }
 
         function isCPFValido(cpf) {

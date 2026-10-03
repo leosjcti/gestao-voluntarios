@@ -54,6 +54,16 @@ public class VoluntarioService {
                 .collect(Collectors.toList());
     }
 
+    public boolean existePorCpf(String cpf) {
+        if (cpf == null || cpf.isBlank()) return false;
+        return voluntarioRepository.existsByCpf(cpf);
+    }
+
+    public boolean existePorNome(String nomeCompleto) {
+        if (nomeCompleto == null || nomeCompleto.isBlank()) return false;
+        return voluntarioRepository.existsByNomeCompleto(FormatadorTexto.padronizarNome(nomeCompleto));
+    }
+
     @Transactional
     public void registrarVoluntario(VoluntarioFormDTO dto, MultipartFile arquivo) {
         Voluntario voluntario = new Voluntario();

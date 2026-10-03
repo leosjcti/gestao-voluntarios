@@ -12,6 +12,9 @@ import java.util.List;
 
 public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
 
+    boolean existsByCpf(String cpf);
+    boolean existsByNomeCompleto(String nomeCompleto);
+
     // 1. Relatório de Quantidade (LEFT JOIN para trazer quem tem 0 também)
     @Query(value = """
         SELECT m.id as id, m.nome as nome, COUNT(vm.voluntario_id) as quantidade 
@@ -26,7 +29,9 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
     // Traz quem vence entre HOJE e DataLimite, ou quem já está atrasado (menor que hoje)
     List<Voluntario> findByProximaRenovacaoLessThanEqual(LocalDate dataLimite);
 
-    List<Voluntario> findByMinisteriosIdOrderByNomeCompletoAsc(Long ministerioId);
+    Page<Voluntario> findByMinisteriosIdOrderByNomeCompletoAsc(Long ministerioId, Pageable pageable);
+
+    Page<Voluntario> findByMinisteriosIdAndStatusTermoOrderByNomeCompletoAsc(Long ministerioId, StatusTermo status, Pageable pageable);
 
     // Busca por nome ignorando maiúsculas/minúsculas, com paginação
     Page<Voluntario> findByNomeCompletoContainingIgnoreCase(String nome, Pageable pageable);
