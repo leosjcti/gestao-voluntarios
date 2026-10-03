@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 @Service
 public class RegraAntecedentesService {
 
-    private static final Pattern NADA_CONSTA_PATTERN = Pattern.compile("(?i)(nada consta|n[aã]o constam registros)");
+    private static final Pattern NADA_CONSTA_PATTERN = Pattern.compile("(?i)(nada consta|n[aã]o constam registros|n[aã]o consta)");
     private static final Pattern CHAVE_PATTERN = Pattern.compile("(?i)(?:chave|c[oó]digo) de autentica[cç][aã]o:\\s*([A-Z0-9.-]+)");
 
     public ResultadoAnalise analisar(String textoPdf, String nomeVoluntario) {

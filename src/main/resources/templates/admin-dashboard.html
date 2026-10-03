@@ -92,13 +92,13 @@
                                     sec:authorize="hasRole('ADMIN_ALTO')"
                                     style="font-size: 11px; padding: 4px 8px;" title="Baixar">⬇</a>
 
-                                <span th:if="${v.statusAntecedentes == 'APROVADO' or v.statusAntecedentes == 'APROVADO_PRELIMINAR'}" title="Aprovado"
+                                <span th:if="${v.statusAntecedentes == 'APROVADO' or v.statusAntecedentes == 'APROVADO_PRELIMINAR' or (v.antecedentesAnalisados and #strings.isEmpty(v.statusAntecedentes))}" title="Aprovado"
                                     style="cursor:help; font-size: 1.2em;">✅</span>
                                 <span th:if="${v.statusAntecedentes == 'REVISAO_MANUAL'}" title="Revisão Manual"
                                     style="cursor:help; font-size: 1.2em;">⚠️</span>
                                 <span th:if="${v.statusAntecedentes == 'REJEITADO'}" title="Rejeitado"
                                     style="cursor:help; font-size: 1.2em;">❌</span>
-                                <span th:if="${v.statusAntecedentes == null or v.statusAntecedentes == 'PENDENTE_ANALISE'}" title="Pendente Análise"
+                                <span th:if="${v.statusAntecedentes == 'PENDENTE_ANALISE' or (!v.antecedentesAnalisados and #strings.isEmpty(v.statusAntecedentes))}" title="Pendente Análise"
                                     style="cursor:help; font-size: 1.2em;">⏳</span>
                             </div>
 
