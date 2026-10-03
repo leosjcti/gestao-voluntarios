@@ -10,7 +10,7 @@ import javax.mail.internet.MimeMessage;
 public class TestMail {
     public static void main(String[] args) {
         String from = "ibaji.gestaoministerial@gmail.com";
-        String password = "ysxhmdqmwippmzyh";
+        String password = System.getenv("EMAIL_PASSWORD"); // Usar variavel de ambiente
 
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
