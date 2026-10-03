@@ -12,6 +12,24 @@ public class TestMail {
         String from = "ibaji.gestaoministerial@gmail.com";
         String password = System.getenv("EMAIL_PASSWORD"); // Usar variavel de ambiente
 
+        // Fallback para ler do arquivo .env caso esteja rodando localmente na IDE sem as variaveis setadas
+        if (password == null || password.isEmpty()) {
+            try {
+                password = java.nio.file.Files.lines(java.nio.file.Paths.get(".env"))
+                        .filter(line -> line.startsWith("EMAIL_PASSWORD="))
+                        .map(line -> line.substring("EMAIL_PASSWORD=".length()).trim())
+                        .findFirst()
+                        .orElse(null);
+            } catch (Exception e) {
+                System.out.println("Aviso: Arquivo .env não encontrado.");
+            }
+        }
+
+        if (password == null || password.isEmpty()) {
+            System.err.println("ERRO: Configure a variável EMAIL_PASSWORD no sistema ou no arquivo .env");
+            return;
+        }
+
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
         prop.put("mail.smtp.port", "587");
